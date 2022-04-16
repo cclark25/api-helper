@@ -1,0 +1,3 @@
+[submodule "dependencies/TypeScriptToLua"]
+	path = dependencies/TypeScriptToLua
+	url = https://github.com/TypeScriptToLua/TypeScriptToLua.git

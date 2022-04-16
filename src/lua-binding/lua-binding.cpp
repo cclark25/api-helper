@@ -3,18 +3,23 @@
 #include "../api-object.h"
 #include <sol/sol.hpp>
 #include <cstdarg>
+#include <lualib_bundle.h>
 
-namespace APILua {
+namespace APILua
+{
 	using namespace APICore;
 	using namespace sol;
 
-	std::function<sol::variadic_results(sol::variadic_args)> wrapFunction(std::shared_ptr<APICore::APIObject> source) {
+	std::function<sol::variadic_results(sol::variadic_args)> wrapFunction(std::shared_ptr<APICore::APIObject> source)
+	{
 		auto functionSource = source->getFunctionDefault();
 		auto functionParameters = source->getParameterTypes();
-		auto wrapped = [functionSource, functionParameters](sol::variadic_args args) {
+		auto wrapped = [functionSource, functionParameters](sol::variadic_args args)
+		{
 			std::vector<std::shared_ptr<void>> vectorArgs;
 
-			for (int i = 0; i < functionParameters.size(); i++) {
+			for (int i = 0; i < functionParameters.size(); i++)
+			{
 				auto paramterType = functionParameters.at(i);
 				sol::stack_proxy var = args[i];
 				auto type = var.get_type();
@@ -22,7 +27,8 @@ namespace APILua {
 
 #define ConvertData(type) std::shared_ptr<type>(new type(var.as<type>()))
 
-				switch (paramterType->getType()) {
+				switch (paramterType->getType())
+				{
 				case DataPrimitive::null:
 					vectorArgs.push_back(std::shared_ptr<void>(nullptr));
 					break;
@@ -52,70 +58,106 @@ namespace APILua {
 			}
 			std::cout << "Vector args length: " << vectorArgs.size() << "\n";
 			auto x = functionSource(nullptr, vectorArgs);
-			return sol::variadic_results {};
+			return sol::variadic_results{};
 		};
 
 		return wrapped;
 	}
 
 	void bindAPI(
-	     sol::table& luaState, std::shared_ptr<APIObject> source, int index = -1, std::shared_ptr<void> dataOverride = std::shared_ptr<void>(nullptr)) {
+		sol::table &luaState, std::shared_ptr<APIObject> source, int index = -1, std::shared_ptr<void> dataOverride = std::shared_ptr<void>(nullptr))
+	{
+
 		auto placeHolderNameForSearch = source->getName();
-		switch (source->getType()) {
+		switch (source->getType())
+		{
 
-		case DataPrimitive::null: {
-		} break;
+		case DataPrimitive::null:
+		{
+		}
+		break;
 
-		case DataPrimitive::string: {
+		case DataPrimitive::string:
+		{
 			auto str = source->getStringDefault();
-			if (index >= 0) {
+			if (index >= 0)
+			{
 				luaState[index] = dataOverride != nullptr ? *CastSharedPtr(std::string, dataOverride) : str;
 			}
-			else {
+			else
+			{
 				luaState[placeHolderNameForSearch] = dataOverride != nullptr ? *CastSharedPtr(std::string, dataOverride) : str;
 			}
-		} break;
-		case DataPrimitive::int32: {
+		}
+		break;
+		case DataPrimitive::int32:
+		{
 			auto i = source->getInt32Default();
-			if (index >= 0) {
+			if (index >= 0)
+			{
 				luaState[index] = dataOverride != nullptr ? *CastSharedPtr(int32_t, dataOverride) : i;
 			}
-			else {
+			else
+			{
 				luaState[placeHolderNameForSearch] = dataOverride != nullptr ? *CastSharedPtr(int32_t, dataOverride) : i;
 			}
-		} break;
-		case DataPrimitive::function: {
+		}
+		break;
+		case DataPrimitive::function:
+		{
 			luaState.set_function(placeHolderNameForSearch, wrapFunction(source));
-		} break;
-		case DataPrimitive::object: {
-			if (index >= 0) {
+		}
+		break;
+		case DataPrimitive::object:
+		{
+			if (index >= 0)
+			{
 				luaState[index] = sol::new_table();
 			}
-			else {
+			else
+			{
 				luaState[placeHolderNameForSearch] = sol::new_table();
 			}
 			auto table = (index < 0 ? (sol::table)luaState[placeHolderNameForSearch] : (sol::table)luaState[index]);
 
-			for (APICore::FieldMap field : source->getFields()) {
+			for (APICore::FieldMap field : source->getFields())
+			{
 				bindAPI(table, field.value);
 			}
-		} break;
-		case DataPrimitive::array: {
-			if (index >= 0) {
+		}
+		break;
+		case DataPrimitive::array:
+		{
+			if (index >= 0)
+			{
 				luaState[index] = sol::new_table();
 			}
-			else {
+			else
+			{
 				luaState[placeHolderNameForSearch] = sol::new_table();
 			}
 			auto table = (index < 0 ? (sol::table)luaState[placeHolderNameForSearch] : (sol::table)luaState[index]);
-			for (int i = 1; i <= source->getArrayType().defaultValues.size(); i++) {
+			for (int i = 1; i <= source->getArrayType().defaultValues.size(); i++)
+			{
 				bindAPI(table, source->getArrayType().type, i, source->getArrayType().defaultValues.at(i - 1));
 			}
-		} break;
+		}
+		break;
 
-		case DataPrimitive::classType: {
-			luaState[placeHolderNameForSearch] = ((sol::function) luaState["__TS__Class"])();
-		} break;
+		case DataPrimitive::classType:
+		{
+			auto state = sol::state::state_view(luaState.lua_state());
+
+			auto createClass = state["____lualib"]["__TS__Class"];
+
+			luaState[placeHolderNameForSearch] = createClass();
+			luaState[placeHolderNameForSearch]["name"] = placeHolderNameForSearch;
+			luaState[placeHolderNameForSearch]["prototype"]["____constructor"] = [](sol::table self){
+				self["abc"] = "abc string";
+				self["def"] = 123;
+			};
+		}
+		break;
 
 		default:
 			std::cerr << "Unknown type: " << source->getType() << "\n";
@@ -125,11 +167,17 @@ namespace APILua {
 		}
 	}
 
-	void bindAPI(std::string apiName, sol::state& luaState, std::vector<std::shared_ptr<APIObject>> source) {
+	void bindAPI(std::string apiName, sol::state &luaState, std::vector<std::shared_ptr<APIObject>> source)
+	{
+		luaState.open_libraries(sol::lib::base, sol::lib::package, sol::lib::table, sol::lib::math, sol::lib::string);
+		luaState.require_script("lualib_bundle", ((char *)lualib_bundle), true);
+		luaState.script("____lualib = require('lualib_bundle');") ; 
+
 		luaState[apiName] = sol::new_table();
 		auto table = (sol::table)(luaState[apiName]);
 
-		for (auto definition : source) {
+		for (auto definition : source)
+		{
 			bindAPI(table, definition);
 		}
 	}

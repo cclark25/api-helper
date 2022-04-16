@@ -8,7 +8,7 @@
 #include <memory>
 #include "./data-primitive.cpp"
 
-#define APIFuncParams std::shared_ptr<void> thisPtr, std::vector<std::shared_ptr<void>>&parameters
+#define APIFuncParams std::shared_ptr<void> thisPtr, std::vector<std::shared_ptr<void>> &parameters
 #define CastSharedPtr(type, data) (*((std::shared_ptr<type>*)(&data)))
 
 namespace APICore {
@@ -201,5 +201,6 @@ namespace APICore {
 #include "./types/function.cpp"
 #include "./types/object.cpp"
 #include "./types/array.cpp"
+#include "./types/class.cpp"
 
 #endif
