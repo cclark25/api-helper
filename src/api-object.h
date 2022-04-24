@@ -7,22 +7,23 @@
 #include <map>
 #include <memory>
 #include "./data-primitive.cpp"
+#include "./data-wrapper.cpp"
+#include "./macros.hpp"
 
-#define APIFuncParams std::shared_ptr<void> thisPtr, std::vector<std::shared_ptr<void>> &parameters
-#define CastSharedPtr(type, data) (*((std::shared_ptr<type>*)(&data)))
 
 namespace APICore {
+	using namespace std;
 	class APIObject;
 
 	enum AccessModifier { publicField, privateField, protectedField, readOnlyField };
 	struct FieldMap {
 		AccessModifier access;
-		std::shared_ptr<APIObject> value;
+		shared_ptr<APIObject> value;
 	};
 
 	struct ArrayTyping {
 		/** Type of each element in the array */
-		std::shared_ptr<APIObject> type;
+		shared_ptr<APIObject> type;
 		/**
 		 * Optional field restricting the length of the array.
 		 * Negative numbers indicate unlimited length
@@ -31,13 +32,13 @@ namespace APICore {
 		/**
 		 * Array of values to use to populate the array.
 		 */
-		std::vector<std::shared_ptr<void>> defaultValues;
+		vector<shared_ptr<DataWrapper>> defaultValues;
 	};
 
-	typedef std::function<std::shared_ptr<void>(APIFuncParams)> StandardFunction;
-	typedef std::vector<std::shared_ptr<APIObject>> StandardFunctionParameters;
+	typedef std::function<shared_ptr<void>(APIFuncParams)> StandardFunction;
+	typedef vector<shared_ptr<APIObject>> StandardFunctionParameters;
 
-	std::shared_ptr<APIObject> getNullObj();
+	shared_ptr<APIObject> getNullObj();
 
 	class APIObject {
 	private:
@@ -68,10 +69,8 @@ namespace APICore {
 			case DataPrimitive::null:
 				break;
 			case DataPrimitive::int32:
-				this->int32Val = other.int32Val;
-				break;
 			case DataPrimitive::string:
-				this->stringVal = other.stringVal;
+				this->dataWrapper = other.dataWrapper;
 				break;
 			case DataPrimitive::function:
 				this->functionVal = other.functionVal;
@@ -84,7 +83,7 @@ namespace APICore {
 				throw "Unsupported type";
 			}
 		}
-		APIObject(std::shared_ptr<APIObject> other) : APIObject(*other) {
+		APIObject(shared_ptr<APIObject> other) : APIObject(*other) {
 		}
 		DataPrimitive getType() const {
 			return this->type;
@@ -96,28 +95,26 @@ namespace APICore {
 			return this->description;
 		};
 
+		std::shared_ptr<DataWrapper> dataWrapper = emptyDataWrapper; 
+
 		// null
 
 	public:
-		static std::shared_ptr<APIObject> makeNull(std::string name, std::string description);
+		static shared_ptr<APIObject> makeNull(std::string name, std::string description);
 		//
 
 		// int32
 	private:
-		int32_t int32Val;
 
 	public:
-		int32_t getInt32Default() const;
-		static std::shared_ptr<APIObject> makeInt32(std::string name, std::string description, int32_t int32Val);
+		static shared_ptr<APIObject> makeInt32(std::string name, std::string description, std::shared_ptr<DataWrapper> wrapper);
 		//
 
 		// string
 	private:
-		std::string stringVal;
 
 	public:
-		std::string getStringDefault() const;
-		static std::shared_ptr<APIObject> makeString(std::string name, std::string description, std::string stringVal);
+		static shared_ptr<APIObject> makeString(std::string name, std::string description, std::shared_ptr<DataWrapper> wrapper);
 		//
 
 		// function
@@ -125,13 +122,13 @@ namespace APICore {
 		/**
 		 * @brief Function source for function object definitions.
 		 * @param (Data*)thisPtr Value to use for member object references.
-		 * @returns std::vector<Data> results - List of results returned by the function through the API.
+		 * @returns vector<Data> results - List of results returned by the function through the API.
 		 */
 		StandardFunction functionVal;
 		/**
 		 * @brief APIObject describing the type of the thisPtr object passed into the functionVal, if any.
 		 */
-		std::shared_ptr<APIObject> thisType = getNullObj();
+		shared_ptr<APIObject> thisType = getNullObj();
 		/**
 		 * @brief List of parameter types definitions, in order, that will be passed into the call to functionVal
 		 */
@@ -139,27 +136,27 @@ namespace APICore {
 		/**
 		 * @brief APIObject describing the return type of the call to functionVal, if any.
 		 */
-		std::shared_ptr<APIObject> returnType = getNullObj();
+		shared_ptr<APIObject> returnType = getNullObj();
 
 
 	public:
-		std::function<std::shared_ptr<void>(APIFuncParams)> getFunctionDefault() const;
-		std::shared_ptr<APIObject> getThisType() const;
+		std::function<shared_ptr<void>(APIFuncParams)> getFunctionDefault() const;
+		shared_ptr<APIObject> getThisType() const;
 		StandardFunctionParameters getParameterTypes() const;
-		std::shared_ptr<APIObject> getReturnType();
-		static std::shared_ptr<APIObject> makeFunction(std::string name, std::string description,
-		     std::function<std::shared_ptr<void>(APIFuncParams)> functionVal, StandardFunctionParameters(params),
-		     std::shared_ptr<APIObject> returnType = getNullObj(), std::shared_ptr<APIObject> thisType = getNullObj());
+		shared_ptr<APIObject> getReturnType();
+		static shared_ptr<APIObject> makeFunction(std::string name, std::string description,
+		     std::function<shared_ptr<void>(APIFuncParams)> functionVal, StandardFunctionParameters(params),
+		     shared_ptr<APIObject> returnType = getNullObj(), shared_ptr<APIObject> thisType = getNullObj());
 
 		//
 
 		// object
 	private:
-		std::vector<FieldMap> fields;
+		vector<FieldMap> fields;
 
 	public:
-		const std::vector<FieldMap> getFields();
-		static std::shared_ptr<APIObject> makeObject(std::string name, std::string description, std::vector<FieldMap> fields);
+		const vector<FieldMap> getFields();
+		static shared_ptr<APIObject> makeObject(std::string name, std::string description, vector<FieldMap> fields);
 
 		//
 
@@ -169,22 +166,22 @@ namespace APICore {
 
 	public:
 		const ArrayTyping getArrayType() const;
-		static std::shared_ptr<APIObject> makeArray(std::string name, std::string description, ArrayTyping arrayType);
+		static shared_ptr<APIObject> makeArray(std::string name, std::string description, ArrayTyping arrayType);
 
 		//
 
 		// classType
 	private:
-		std::shared_ptr<APIObject> prototype;
-		std::shared_ptr<APIObject> constructor;
+		shared_ptr<APIObject> prototype;
+		shared_ptr<APIObject> constructor;
 
 	public:
-		std::shared_ptr<APIObject> getPrototype();
-		std::shared_ptr<APIObject> getConstructor();
+		shared_ptr<APIObject> getPrototype();
+		shared_ptr<APIObject> getConstructor();
 
-		static std::shared_ptr<APIObject> makeClass(std::string name, std::string description,
-		     std::function<std::shared_ptr<void>(APIFuncParams)> constructor, StandardFunctionParameters(params), std::vector<FieldMap> staticFields,
-		     std::vector<FieldMap> prototypeFields);
+		static shared_ptr<APIObject> makeClass(std::string name, std::string description,
+		     std::function<shared_ptr<void>(APIFuncParams)> constructor, StandardFunctionParameters(params), vector<FieldMap> staticFields,
+		     vector<FieldMap> prototypeFields);
 
 		//
 	public:

@@ -1,20 +1,64 @@
 #ifndef API_LUA_BINDING
 #define API_LUA_BINDING
 #include "../api-object.h"
+#include "../data-wrapper.cpp"
 #include <sol/sol.hpp>
 #include <cstdarg>
 #include <lualib_bundle.h>
+#include <memory>
 
 namespace APILua
 {
 	using namespace APICore;
 	using namespace sol;
 
-	std::function<sol::variadic_results(sol::variadic_args)> wrapFunction(std::shared_ptr<APICore::APIObject> source)
+	template <typename underType>
+	void BindGetterSetter(
+		std::shared_ptr<DataWrapper> dataOverride,
+		std::shared_ptr<APIObject> source,
+		APICore::DataPrimitive dataPrimative,
+		sol::table luaState,
+		std::string placeHolderNameForSearch,
+		int index)
+	{
+		std::shared_ptr<DataWrapper> wrapper = dataOverride != emptyDataWrapper ? dataOverride
+																				: source->dataWrapper;
+		if (wrapper->getDataType() != dataPrimative)
+		{
+			throw std::string("Wrong data primitive. Got: ") + (to_string(wrapper->getDataType())) + std::string(", Expected: ") + to_string(dataPrimative);
+		}
+		auto setDescriptor = sol::state_view(luaState.lua_state())["____lualib"]["__TS__SetDescriptor"];
+
+		sol::table getterSetterObject(luaState.lua_state(), sol::new_table());
+
+		if (wrapper->canGet())
+		{
+			getterSetterObject.set("get", [wrapper]()
+								   {
+				auto dataPtr = wrapper->get();
+				return *(CastSharedPtr(underType, dataPtr)); });
+		}
+		if (wrapper->canSet())
+		{
+			getterSetterObject.set("set", [wrapper](sol::table self, underType value)
+								   { wrapper->set(std::shared_ptr<underType>(new underType(value))); });
+		}
+
+		if (index >= 0)
+		{
+			setDescriptor(luaState, index, getterSetterObject, false);
+		}
+		else
+		{
+			setDescriptor(luaState, placeHolderNameForSearch, getterSetterObject, false);
+		}
+	}
+
+	std::function<sol::variadic_results(sol::variadic_args, sol::this_state)> wrapFunction(std::shared_ptr<APICore::APIObject> source)
 	{
 		auto functionSource = source->getFunctionDefault();
 		auto functionParameters = source->getParameterTypes();
-		auto wrapped = [functionSource, functionParameters](sol::variadic_args args)
+		auto wrapped = [functionSource, functionParameters, source](sol::variadic_args args, sol::this_state L)
 		{
 			std::vector<std::shared_ptr<void>> vectorArgs;
 
@@ -57,15 +101,56 @@ namespace APILua
 #undef ConvertData
 			}
 			std::cout << "Vector args length: " << vectorArgs.size() << "\n";
-			auto x = functionSource(nullptr, vectorArgs);
-			return sol::variadic_results{};
+			auto result = functionSource(nullptr, vectorArgs);
+			sol::variadic_results results;
+			auto returnType = source->getReturnType();
+
+			#define WrapResult(typename) results.push_back({ L, sol::in_place, *CastSharedPtr(typename, result) })
+
+			switch (returnType->getType())
+			{
+			case DataPrimitive::string:
+				WrapResult(std::string);
+				break;
+
+			case DataPrimitive::int32:
+				WrapResult(std::int32_t);
+				break;
+
+			case DataPrimitive::null :
+				break;
+
+			case DataPrimitive::object :
+			 	// TODO: Add support for returning objects
+				// WrapResult(std::string);
+				break;
+
+			case DataPrimitive::function :
+				// TODO: Add support for returning functions
+				// WrapResult(std::function);
+				break;
+
+			case DataPrimitive::array :
+			 	// TODO: Add support for returning arrays
+				// WrapResult(std::string);
+				break;
+			
+			default:
+				break;
+			}
+			
+			#undef WrapResult
+			return results;
 		};
 
 		return wrapped;
 	}
 
 	void bindAPI(
-		sol::table &luaState, std::shared_ptr<APIObject> source, int index = -1, std::shared_ptr<void> dataOverride = std::shared_ptr<void>(nullptr))
+		sol::table &luaState,
+		std::shared_ptr<APIObject> source,
+		int index = -1,
+		std::shared_ptr<DataWrapper> dataOverride = emptyDataWrapper)
 	{
 
 		auto placeHolderNameForSearch = source->getName();
@@ -79,28 +164,14 @@ namespace APILua
 
 		case DataPrimitive::string:
 		{
-			auto str = source->getStringDefault();
-			if (index >= 0)
-			{
-				luaState[index] = dataOverride != nullptr ? *CastSharedPtr(std::string, dataOverride) : str;
-			}
-			else
-			{
-				luaState[placeHolderNameForSearch] = dataOverride != nullptr ? *CastSharedPtr(std::string, dataOverride) : str;
-			}
+			// BindGetterSetter(std::string, DataPrimitive::string)
+			BindGetterSetter<std::string>(dataOverride, source, DataPrimitive::string, luaState, placeHolderNameForSearch, index);
 		}
 		break;
 		case DataPrimitive::int32:
 		{
-			auto i = source->getInt32Default();
-			if (index >= 0)
-			{
-				luaState[index] = dataOverride != nullptr ? *CastSharedPtr(int32_t, dataOverride) : i;
-			}
-			else
-			{
-				luaState[placeHolderNameForSearch] = dataOverride != nullptr ? *CastSharedPtr(int32_t, dataOverride) : i;
-			}
+			// BindGetterSetter(int32_t, DataPrimitive::int32)
+			BindGetterSetter<int32_t>(dataOverride, source, DataPrimitive::int32, luaState, placeHolderNameForSearch, index);
 		}
 		break;
 		case DataPrimitive::function:
@@ -139,7 +210,10 @@ namespace APILua
 			auto table = (index < 0 ? (sol::table)luaState[placeHolderNameForSearch] : (sol::table)luaState[index]);
 			for (int i = 1; i <= source->getArrayType().defaultValues.size(); i++)
 			{
-				bindAPI(table, source->getArrayType().type, i, source->getArrayType().defaultValues.at(i - 1));
+				bindAPI(table,
+						source->getArrayType().type,
+						i,
+						source->getArrayType().defaultValues.at(i - 1));
 			}
 		}
 		break;
@@ -152,9 +226,19 @@ namespace APILua
 
 			luaState[placeHolderNameForSearch] = createClass();
 			luaState[placeHolderNameForSearch]["name"] = placeHolderNameForSearch;
-			luaState[placeHolderNameForSearch]["prototype"]["____constructor"] = [](sol::table self){
-				self["abc"] = "abc string";
-				self["def"] = 123;
+
+			auto createdTable = (sol::table)luaState[placeHolderNameForSearch];
+			for (APICore::FieldMap field : source->getFields())
+			{
+				bindAPI(createdTable, field.value);
+			}
+
+			luaState[placeHolderNameForSearch]["prototype"]["____constructor"] = [source](sol::table self)
+			{
+				for (APICore::FieldMap field : source->getPrototype()->getFields())
+				{
+					bindAPI(self, field.value);
+				}
 			};
 		}
 		break;
@@ -171,7 +255,7 @@ namespace APILua
 	{
 		luaState.open_libraries(sol::lib::base, sol::lib::package, sol::lib::table, sol::lib::math, sol::lib::string);
 		luaState.require_script("lualib_bundle", ((char *)lualib_bundle), true);
-		luaState.script("____lualib = require('lualib_bundle');") ; 
+		luaState.script("____lualib = require('lualib_bundle');");
 
 		luaState[apiName] = sol::new_table();
 		auto table = (sol::table)(luaState[apiName]);

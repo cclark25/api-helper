@@ -9,13 +9,18 @@ allegroFlags= -lallegro -lallegro_image -lallegro_primitives -lallegro_audio
 OUT_DIR=./dist
 lualibFile=./include/typescript-to-lua/lualib_bundle.h
 luaLibSrc=./dependencies/TypeScriptToLua/dist/lualib/lualib_bundle.lua
-# DEPENDENCIES=./Dependencies/AllegroCPPWrappers/BUILD/AllegroWrappers.o
+
+testString:="abc"
+includeParameters=-I"./include" -I"./include/lua/include" -I"./include/sol" -I"./include/typescript-to-lua"
+cppVersionParameter=--std=c++17
+gppAdditionalParameter=-g
+
 test: a.out
 	echo "Test Built";
 
-a.out: ./src/**/* ./test/**
+a.out: ./src/**/* ./src/* ./test/*.cpp
 	make $(lualibFile)
-	g++ ./test/main.cpp --std=c++17 -I"./include" -I"./include/lua/include" -I"./include/sol" -I"./include/typescript-to-lua" -L"./include/lua/lib" -llua -ldl
+	g++ $(gppAdditionalParameter) ./test/main.cpp $(cppVersionParameter) $(includeParameters) -L"./include/lua/lib" -llua -ldl
 
 $(lualibFile): $(luaLibSrc)
 	echo -e "#ifndef T2L_HEADERS \n#define T2L_HEADERS" > $(lualibFile); \
