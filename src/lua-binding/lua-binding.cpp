@@ -1,7 +1,7 @@
 #ifndef API_LUA_BINDING
 #define API_LUA_BINDING
 #include "../api-object.h"
-#include "../data-wrapper.cpp"
+#include "../data-wrappers/data-wrapper.hpp"
 #include <sol/sol.hpp>
 #include <cstdarg>
 #include <lualib_bundle.h>

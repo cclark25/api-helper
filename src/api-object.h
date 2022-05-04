@@ -7,7 +7,7 @@
 #include <map>
 #include <memory>
 #include "./data-primitive.cpp"
-#include "./data-wrapper.cpp"
+#include "./data-wrappers/data-wrapper.hpp"
 #include "./macros.hpp"
 
 
@@ -67,10 +67,8 @@ namespace APICore {
 			switch (this->type) {
 
 			case DataPrimitive::null:
-				break;
 			case DataPrimitive::int32:
 			case DataPrimitive::string:
-				this->dataWrapper = other.dataWrapper;
 				break;
 			case DataPrimitive::function:
 				this->functionVal = other.functionVal;
@@ -95,7 +93,6 @@ namespace APICore {
 			return this->description;
 		};
 
-		std::shared_ptr<DataWrapper> dataWrapper = emptyDataWrapper; 
 
 		// null
 
