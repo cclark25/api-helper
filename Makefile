@@ -18,9 +18,9 @@ gppAdditionalParameter=-g
 test: a.out
 	echo "Test Built";
 
-a.out: ./src/**/* ./src/* ./test/*.cpp
+a.out: ./src/**/* ./src/* ./test/lua-test/*
 	make $(lualibFile)
-	g++ $(gppAdditionalParameter) ./test/main.cpp $(cppVersionParameter) $(includeParameters) -L"./include/lua/lib" -llua -ldl
+	g++ $(gppAdditionalParameter) ./test/lua-test/main.cpp $(cppVersionParameter) $(includeParameters) -L"./include/lua/lib" -llua -ldl
 
 $(lualibFile): $(luaLibSrc)
 	echo -e "#ifndef T2L_HEADERS \n#define T2L_HEADERS" > $(lualibFile); \

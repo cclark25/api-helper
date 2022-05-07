@@ -2,29 +2,40 @@
 #define INT_DATA_WRAPPER
 #include <string>
 #include <memory>
-#include "../data-primitive.cpp"
+#include "../data-primitive.hpp"
 #include "../macros.hpp"
 #include "./data-wrapper.hpp"
 
-namespace APICore {
+namespace APICore
+{
 
-    class IntWrapper : public DataWrapper
+    class Int32Wrapper : public DataWrapper
     {
-        Data intData;
+        virtual DataPrimitive getDataType()
+        {
+            return DataPrimitive::int32;
+        }
+    };
+    class Int32ContainerWrapper : public Int32Wrapper
+    {
+        std::shared_ptr<int32_t> intData;
 
     public:
-        IntWrapper(int32_t data = 32) : DataWrapper(GetSet::readAndWrite)
+        Int32ContainerWrapper(int32_t data = 0)
         {
-            this->dataType = DataPrimitive::int32;
             this->intData = std::shared_ptr<int32_t>(new int32_t(data));
         }
+
+        virtual bool canGet() { return true; }
+        virtual bool canSet() { return true; }
+
         virtual Data get()
         {
             return this->intData;
         }
         virtual void set(Data data)
         {
-            *(CastSharedPtr(int32_t, this->intData)) = *(CastSharedPtr(int32_t, intData));
+            *(this->intData) = *(CastSharedPtr(int32_t, data));
         }
     };
 

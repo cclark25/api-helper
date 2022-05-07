@@ -2,7 +2,7 @@
 #define API_DATA_WRAPPER
 #include <string>
 #include <memory>
-#include "../data-primitive.cpp"
+#include "../data-primitive.hpp"
 #include "../macros.hpp"
 
 #define HasGetAccess(accessLevel) accessLevel == GetSet::readAndWrite || GetSet::readOnly
@@ -10,55 +10,24 @@
 
 namespace APICore
 {
+    using namespace APICore;
     typedef std::shared_ptr<void> Data;
-    enum GetSet
-    {
-        readOnly,
-        writeOnly,
-        readAndWrite,
-        noAccess
-    };
+    
     class DataWrapper
     {
-    protected:
-        DataPrimitive dataType = DataPrimitive::null;
-        GetSet accessLevel;
-
     public:
-        DataWrapper(GetSet accessLevel)
-        {
-            this->accessLevel = accessLevel;
-        }
-        GetSet getAccessLevel()
-        {
-            return this->accessLevel;
-        }
-        bool canGet()
-        {
-            return HasGetAccess(this->accessLevel);
-        }
-        bool canSet()
-        {
-            return HasSetAccess(this->accessLevel);
-        }
-        virtual DataPrimitive getDataType()
-        {
-            return this->dataType;
-        }
-        virtual Data get()
-        {
-            // TODO: Throw some standard error object instead of a string.
-            throw "Could not read data. Getter not provided.";
-        };
-        virtual void set(Data data)
-        {
-            // TODO: Throw some standard error object instead of a string.
-            throw "Could not write data. Setter not provided.";
-        };
-        virtual ~DataWrapper() {}
+        virtual bool canGet(){throw "Not Implemented!";};
+        virtual bool canSet(){throw "Not Implemented!";};
+        virtual DataPrimitive getDataType(){throw "Not Implemented!";};
+        virtual Data get(){throw "Not Implemented!";};
+        virtual void set(Data data){throw "Not Implemented!";};
+        virtual ~DataWrapper(){}
     };
 
-    std::shared_ptr<DataWrapper> emptyDataWrapper(new DataWrapper(GetSet::noAccess));
 }
+
+#include "./string-wrapper.hpp"
+#include "./int-wrapper.hpp"
+// #include "./object-wrapper.hpp"
 
 #endif

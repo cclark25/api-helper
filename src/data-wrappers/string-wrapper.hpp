@@ -2,19 +2,24 @@
 #define STRING_DATA_WRAPPER
 #include <string>
 #include <memory>
-#include "../data-primitive.cpp"
+#include "../data-primitive.hpp"
 #include "../macros.hpp"
 #include "./data-wrapper.hpp"
 
 namespace APICore {
-    class StringWrapper : public DataWrapper
+    class StringWrapper : public DataWrapper {
+        virtual DataPrimitive getDataType(){
+            return DataPrimitive::string;
+        }
+    };
+
+    class StringContainerWrapper : public StringWrapper
     {
         Data stringData;
 
     public:
-        StringWrapper(std::string data = "Default string data") : DataWrapper(GetSet::readAndWrite)
+        StringContainerWrapper(std::string data = "")
         {
-            this->dataType = DataPrimitive::string;
             this->stringData = std::shared_ptr<std::string>(new std::string(data));
         }
         virtual Data get()
@@ -25,6 +30,12 @@ namespace APICore {
         {
             *(CastSharedPtr(std::string, this->stringData)) = *(CastSharedPtr(std::string, data));
         }
+        virtual DataPrimitive getDataType(){
+            return DataPrimitive::string;
+        }
+        
+        virtual bool canGet() { return true; }
+        virtual bool canSet() { return true; }
     };
 
 }
