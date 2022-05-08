@@ -16,6 +16,12 @@ int main()
 	{
 		sol::state lua;
 
+		auto objectValue = std::shared_ptr<ObjectWrapper>(new ObjectContainerWrapper());
+		objectValue->setField(
+			"field1",
+			std::shared_ptr<StringContainerWrapper>(new StringContainerWrapper("Field string."))
+		);
+
 		APILua::BindAPI("API", lua, {
 			{
 				"stringValue",
@@ -24,6 +30,10 @@ int main()
 			{
 				"intValue",
 				std::shared_ptr<Int32ContainerWrapper>(new Int32ContainerWrapper(0))
+			},
+			{
+				"objectValue",
+				objectValue
 			}
 		});
 

@@ -23,7 +23,13 @@ print("intValue: " .. (API.intValue))
 --     end
 -- end
 
-print("nullValue type: " .. type(API.nullValue))
-print("nullValue: " .. (API.nullValue))
-API.nullValue = 1
-print("nullValue: " .. (API.nullValue))
+
+print("objectValue type: " .. type(API.objectValue))
+print("objectValue field1: " .. (API.objectValue.field1))
+
+local ____lualib = require('lualib_bundle');
+for ____, ____value in ipairs(____lualib.__TS__ObjectEntries(API.objectValue)) do
+    local key = ____value[1]
+    local value = ____value[2]
+    print((("objectValue at field \"" .. key) .. "\": ") .. tostring(value))
+end
