@@ -15,31 +15,29 @@ int main()
 	try
 	{
 		sol::state lua;
+		
+		lua.open_libraries(sol::lib::base, sol::lib::package, sol::lib::table, sol::lib::math, sol::lib::string, sol::lib::coroutine);
 
 		auto objectValue = std::shared_ptr<ObjectWrapper>(new ObjectContainerWrapper());
+		auto arrayVector = std::vector<std::shared_ptr<DataWrapper>>();
+		arrayVector.push_back(std::shared_ptr<StringContainerWrapper>(new StringContainerWrapper("Test string.")));
+		arrayVector.push_back(std::shared_ptr<StringContainerWrapper>(new StringContainerWrapper("Test string.")));
+		arrayVector.push_back(std::shared_ptr<StringContainerWrapper>(new StringContainerWrapper("Test string.")));
+
 		objectValue->setField(
 			"field1",
-			std::shared_ptr<StringContainerWrapper>(new StringContainerWrapper("Field string."))
-		);
+			std::shared_ptr<StringContainerWrapper>(new StringContainerWrapper("Field string.")));
 
 		APILua::BindAPI("API", lua, {
-			{
-				"stringValue",
-				std::shared_ptr<StringContainerWrapper>(new StringContainerWrapper("Test string."))
-			},
-			{
-				"intValue",
-				std::shared_ptr<Int32ContainerWrapper>(new Int32ContainerWrapper(0))
-			},
-			{
-				"objectValue",
-				objectValue
-			}
+			{"stringValue", std::shared_ptr<StringContainerWrapper>(new StringContainerWrapper("Test string."))},
+			{"intValue", std::shared_ptr<Int32ContainerWrapper>(new Int32ContainerWrapper(0))},
+			{"objectValue", objectValue},
+			{"arrayValue", std::shared_ptr<ArrayWrapper>(new ArrayContainerWrapper(arrayVector))}
 		});
 
 		try
 		{
-			lua.script_file("./test/lua-test/test-lua.lua");
+			lua.script_file("../test/lua-test/test-lua.lua");
 		}
 		catch (sol::error e)
 		{

@@ -3,7 +3,6 @@
 #include "../data-wrappers/data-wrapper.hpp"
 #include "../data-wrappers/int-wrapper.hpp"
 #include <sol/sol.hpp>
-#include <lualib_bundle.h>
 #include <map>
 #include <functional>
 
@@ -12,6 +11,7 @@ namespace APILua
     using namespace APICore;
     using namespace sol;
 
+    const std::string TEMPORARY_FIELD_NAME = "_temporaryField";
 
     template <typename KeyType>
     void BindWrapper(
@@ -45,7 +45,7 @@ namespace APILua
 
         sol::table getterSetterObject(luaState.lua_state(), sol::new_table());
         auto setDescriptor = sol::state_view(luaState.lua_state())["____lualib"]["__TS__SetDescriptor"];
-
+        auto x = setDescriptor.valid();
         if (wrapper->canGet())
         {
             getterSetterObject.set("get", getter);
@@ -80,6 +80,51 @@ namespace APILua
             });
     }
 
+    template <typename KeyType>
+    void BindArrayWrapper(sol::table luaState,
+                          KeyType key,
+                          std::shared_ptr<ArrayWrapper> wrapper)
+    {
+        BindBasicWrapper<KeyType, sol::table>(
+            luaState,
+            key,
+            wrapper,
+            [wrapper, luaState]()
+            {
+                sol::table table(luaState.lua_state(), sol::new_table());
+                auto data = wrapper->get();
+                auto createGenerator = sol::state_view(luaState.lua_state())["____lualib"]["__TS__Generator"];
+                auto x = createGenerator.get_type();
+                auto generator = (sol::function)createGenerator([wrapper, luaState]()
+                                                                {
+                    auto data = wrapper->get();
+                    auto elements = CastSharedPtr(ArrayVector, data);
+                    auto yield = sol::state_view(luaState.lua_state())["coroutine"]["yield"];
+
+                    sol::table tempTable(luaState.lua_state(), sol::new_table());
+                    for(auto element : *elements){
+                        // BindWrapper(tempTable, TEMPORARY_FIELD_NAME, element);
+                        // yield(tempTable[TEMPORARY_FIELD_NAME]);
+                        // yield("123");
+                    } });
+                auto y = generator.get_type();
+                auto state = sol::state_view(luaState.lua_state());
+
+                auto symbol = ((state["____lualib"]["Symbol"]["iterator"]));
+                // auto symbol = std::string(state.do_string("\
+                //     return tostring(require('lualib_bundle').Symbol.iterator);\
+                // "));
+                // auto z = symbol.get_type();
+
+                table[symbol] = [generator]()
+                {
+                    return generator();
+                };
+
+                return table;
+            });
+    }
+
     /**
      * KeyType is string or int
      */
@@ -104,6 +149,9 @@ namespace APILua
             break;
             // case DataPrimitive::string:
             //     break;
+        case DataPrimitive::array:
+            // BindArrayWrapper<KeyType>(luaState, key, CastSharedPtr(ArrayWrapper, wrapper));
+            break;
 
         default:
             throw sol::error("Unsupported type.");
@@ -111,11 +159,27 @@ namespace APILua
         }
     }
 
+    int LoadFile(lua_State *L)
+    {
+        std::string path = "binding-helpers/" + sol::stack::get<std::string>(L) + ".lua";
+
+        auto i = luaL_loadfilex(L, path.c_str(), "text");
+        if (i == 0)
+        {
+            return 1;
+        }
+        else
+        {
+            return i;
+        }
+    }
     void BindAPI(std::string apiName, sol::state &luaState, std::map<std::string, std::shared_ptr<DataWrapper>> source)
     {
         luaState.open_libraries(sol::lib::base, sol::lib::package, sol::lib::table, sol::lib::math, sol::lib::string);
-        luaState.require_script("lualib_bundle", ((char *)lualib_bundle), true);
+        luaState.add_package_loader(LoadFile);
+
         luaState.script("____lualib = require('lualib_bundle');");
+        luaState.script("____bindingHelpers = require('lualib_bundle');");
 
         luaState[apiName] = sol::new_table();
         auto table = (sol::table)(luaState[apiName]);

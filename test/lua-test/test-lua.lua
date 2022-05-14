@@ -1,3 +1,4 @@
+
 print("API type: " .. type(API))
 print("stringValue type: " .. type(API.stringValue))
 print("stringValue: " .. (API.stringValue))
@@ -23,7 +24,6 @@ print("intValue: " .. (API.intValue))
 --     end
 -- end
 
-
 print("objectValue type: " .. type(API.objectValue))
 print("objectValue field1: " .. (API.objectValue.field1))
 
@@ -33,3 +33,8 @@ for ____, ____value in ipairs(____lualib.__TS__ObjectEntries(API.objectValue)) d
     local value = ____value[2]
     print((("objectValue at field \"" .. key) .. "\": ") .. tostring(value))
 end
+
+print("Iterator: " .. tostring(____lualib.Symbol.iterator))
+
+local ____lualib = require('lualib_bundle');
+print("arrayValue type: " .. type(API.arrayValue))

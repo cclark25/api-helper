@@ -1,0 +1,17 @@
+{
+  "name": "binding-helpers",
+  "version": "1.0.0",
+  "description": "Typescript code to aid in the binding of API operations using typescript-to-lua.",
+  "main": "index.js",
+  "scripts": {
+    "build": "rm -r ../../../dist/binding-helpers/* && tstl",
+    "dev": "tstl --watch"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "17.0.33",
+    "typescript-to-lua": "1.4.4",
+    "typescript-tstl-plugin": "0.3.2"
+  }
+}

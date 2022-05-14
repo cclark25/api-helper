@@ -29,5 +29,6 @@ namespace APICore
 #include "./string-wrapper.hpp"
 #include "./int-wrapper.hpp"
 #include "./object-wrapper.hpp"
+#include "./array-wrapper.hpp"
 
 #endif
