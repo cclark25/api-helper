@@ -1,6 +1,7 @@
 // #include "./api-object.cpp"
 #define SOL_ALL_SAFETIES_ON 1
-#include "../../src/lua-binding/lua-wrappers-binding.hpp"
+// #include "../../src/lua-binding/lua-wrappers-binding.hpp"
+#include "../../src/lua-binding/binding-types/basic-types.hpp"
 #include "../../src/data-wrappers/data-wrapper.hpp"
 #include <lualib.h>
 #include <iostream>
@@ -19,21 +20,21 @@ int main()
 		lua.open_libraries(sol::lib::base, sol::lib::package, sol::lib::table, sol::lib::math, sol::lib::string, sol::lib::coroutine);
 
 		auto objectValue = std::shared_ptr<ObjectWrapper>(new ObjectContainerWrapper());
-		auto arrayVector = std::vector<std::shared_ptr<DataWrapper>>();
-		arrayVector.push_back(std::shared_ptr<StringContainerWrapper>(new StringContainerWrapper("Test string.")));
-		arrayVector.push_back(std::shared_ptr<StringContainerWrapper>(new StringContainerWrapper("Test string.")));
-		arrayVector.push_back(std::shared_ptr<StringContainerWrapper>(new StringContainerWrapper("Test string.")));
+		// auto arrayVector = std::vector<Data>();
+		// arrayVector.push_back(std::shared_ptr<std::string>(new std::string("Test string 1.")));
+		// arrayVector.push_back(std::shared_ptr<std::string>(new std::string("Test string 2.")));
+		// arrayVector.push_back(std::shared_ptr<std::string>(new std::string("Test string 3.")));
 
 		objectValue->setField(
 			"field1",
-			std::shared_ptr<StringContainerWrapper>(new StringContainerWrapper("Field string.")));
+			std::shared_ptr<StringWrapper>(new StringContainerWrapper("Field string.")));
 
-		APILua::BindAPI("API", lua, {
+		APILua::bind<std::string>("API", lua, std::map<std::string, std::shared_ptr<DataWrapper>>({
 			{"stringValue", std::shared_ptr<StringContainerWrapper>(new StringContainerWrapper("Test string."))},
 			{"intValue", std::shared_ptr<Int32ContainerWrapper>(new Int32ContainerWrapper(0))},
-			{"objectValue", objectValue},
-			{"arrayValue", std::shared_ptr<ArrayWrapper>(new ArrayContainerWrapper(arrayVector))}
-		});
+			{"objectValue", objectValue}
+			// {"arrayValue", std::shared_ptr<ArrayWrapper>(new ArrayContainerWrapper(arrayVector))}
+		}));
 
 		try
 		{

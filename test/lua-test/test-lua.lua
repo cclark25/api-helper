@@ -26,6 +26,11 @@ print("intValue: " .. (API.intValue))
 
 print("objectValue type: " .. type(API.objectValue))
 print("objectValue field1: " .. (API.objectValue.field1))
+API.objectValue.field1 = "New field string"
+print("objectValue field1: " .. (API.objectValue.field1))
+API.objectValue = { field1 = "field1 value", field2 = "field2 value"}
+print("objectValue field1: " .. (API.objectValue.field1))
+print("objectValue field2: " .. (API.objectValue.field2))
 
 -- local ____lualib = require('lualib_bundle');
 -- for ____, ____value in ipairs(____lualib.__TS__ObjectEntries(API.objectValue)) do

@@ -10,15 +10,14 @@
 
 namespace APICore
 {
-    typedef std::map<std::string, std::shared_ptr<DataWrapper>> ObjectMap;
 
-    class ObjectWrapper : public DataWrapper
+    template <>
+    class DataWrapperSub<DataPrimitive::object> : public DataWrapper
     {
     public:
-        virtual DataPrimitive getDataType()
-        {
-            return DataPrimitive::object;
-        }
+        virtual DataPrimitive getDataType() { return DataPrimitive::object; };
+        virtual Data<DataPrimitive::object> get() { throw "Not Implemented!"; };
+        virtual void set(Data<DataPrimitive::object> data) { throw "Not Implemented!"; };
         virtual std::shared_ptr<DataWrapper> getField(std::string key)
         {
             throw "Not Implemented!";
@@ -29,7 +28,10 @@ namespace APICore
         };
     };
 
-    class ObjectContainerWrapper : public ObjectWrapper
+    using ObjectWrapper = DataWrapperSub<DataPrimitive::object>;
+
+    template <>
+    class DataContainerWrapper<DataPrimitive::object> : public ObjectWrapper
     {
         std::shared_ptr<ObjectMap> objectData;
         std::shared_ptr<ObjectTypeWrapper> objectTyping;
@@ -38,23 +40,23 @@ namespace APICore
         virtual bool canGet() { return true; }
         virtual bool canSet() { return true; }
 
-        ObjectContainerWrapper(std::shared_ptr<ObjectMap> data)
+        DataContainerWrapper<DataPrimitive::object>(std::shared_ptr<ObjectMap> data)
         {
             this->objectData = data;
         }
-        ObjectContainerWrapper(ObjectMap &data)
+        DataContainerWrapper<DataPrimitive::object>(ObjectMap &data)
         {
             this->objectData = std::shared_ptr<ObjectMap>(new ObjectMap(data));
         }
-        ObjectContainerWrapper()
+        DataContainerWrapper<DataPrimitive::object>()
         {
             this->objectData = std::shared_ptr<ObjectMap>(new ObjectMap());
         }
-        virtual Data get()
+        virtual Data<DataPrimitive::object> get()
         {
             return this->objectData;
         }
-        virtual void set(Data data)
+        virtual void set(Data<DataPrimitive::object> data)
         {
             this->objectData = CastSharedPtr(ObjectMap, data);
         }
@@ -69,7 +71,7 @@ namespace APICore
             }
             else
             {
-                return std::shared_ptr<DataWrapper>(nullptr);
+                return std::shared_ptr<DataWrapperSub<DataPrimitive::unknown>>(nullptr);
             }
         }
 
@@ -83,6 +85,9 @@ namespace APICore
         }
     };
 
+    class ObjectContainerWrapper : public DataContainerWrapper<DataPrimitive::object>
+    {
+    };
 }
 
 #endif

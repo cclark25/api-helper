@@ -44,7 +44,7 @@ export interface ExternalArrayAccessor<T> {
 	setIndex: (index: number, value: T) => void;
 	push: (value: T) => number;
 	pop: () => T;
-	insert: (position: number, value: T) => number;
+	insert: (index: number, value: T) => number;
 	length: () => number;
 }
 
@@ -108,4 +108,8 @@ export class ArrayAccessor<T> {
 	) {
 		return this.accessor.getIndex(this.indexOf(callback));
 	}
+}
+
+export function bindArrayWrapper<T>(source: ExternalArrayAccessor<T>) {
+	return new ArrayAccessor<T>(source);
 }
