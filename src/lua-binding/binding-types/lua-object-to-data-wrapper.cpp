@@ -1,10 +1,8 @@
-#ifndef LUA_OBJECT_TO_DATA_WRAPPER
-#define LUA_OBJECT_TO_DATA_WRAPPER
 
 #include <sol/sol.hpp>
 #include "../../data-primitive.hpp"
 #include "../../data-wrappers/data-wrapper.hpp"
-#include "./object-type.hpp"
+#include "./lua-object-to-data-wrapper.h"
 
 namespace APILua
 {
@@ -27,7 +25,7 @@ namespace APILua
         case sol::type::nil:
             return nullptr;
         case sol::type::table:
-            return std::shared_ptr<DataWrapper>(
+            return std::shared_ptr<SolTableWrapper>(
                 new SolTableWrapper(luaData.as<sol::table>()));
             break;
             // CaseData(sol::type::function);
@@ -42,5 +40,3 @@ namespace APILua
     }
 
 }
-
-#endif

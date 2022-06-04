@@ -1,35 +1,28 @@
-#ifndef LUA_BINDING_OBJECT_TYPE
-#define LUA_BINDING_OBJECT_TYPE
 
 #include <sol/sol.hpp>
 #include "../../data-wrappers/data-wrapper.hpp"
 #include "../../data-wrappers/object-wrapper.hpp"
-#include "./create-binding-object.hpp"
-#include "./basic-binders.hpp"
+#include "./object-type.h"
+#include "./lua-object-to-data-wrapper.h"
+#include "./create-binding-object.h"
 
 namespace APILua
 {
-    using namespace APICore;
-    class SolTableWrapper : public DataWrapperSub<DataPrimitive::object>
+
+    SolTableWrapper::SolTableWrapper(sol::table input) : tableData(input) {}
+
+    Data<DataPrimitive::object> SolTableWrapper::get()
     {
-    protected:
-        sol::table tableData;
-
-    public:
-        SolTableWrapper(sol::table input) : tableData(input) {}
-
-        virtual Data<DataPrimitive::object> get()
+        Data<DataPrimitive::object> objectMap(new ObjectMap());
+        for (auto f : this->tableData)
         {
-            Data<DataPrimitive::object> objectMap;
-            for (auto f : this->tableData)
-            {
-                std::string key = f.first.as<std::string>();
-                sol::object value = f.second;
-                objectMap->insert_or_assign(key, std::shared_ptr<StringWrapper>(new StringContainerWrapper(key)));
-                
-            }
-            return objectMap;
-        };
+            std::string key = f.first.as<std::string>();
+            sol::object value = f.second;
+            auto wrappedValue = luaObjectToDataWrapper(value);
+            auto x = *CastSharedPtr(StringWrapper,wrappedValue)->get();
+            objectMap->insert_or_assign(key, wrappedValue);
+        }
+        return objectMap;
     };
 
     template <>
@@ -56,12 +49,11 @@ namespace APILua
         {
             table["set"] = [wrapper](sol::table self, data_primitive_to_lua_type<DataPrimitive::object> data)
             {
-                for (auto f : data)
-                {
-                    std::string key = f.first.as<std::string>();
-                    sol::object value = f.second;
-                    return;
-                }
+                auto newWrapper = SolTableWrapper(data);
+
+                wrapper->set(newWrapper.get());
+
+                return;
             };
         }
 
@@ -69,5 +61,3 @@ namespace APILua
     }
 
 }
-
-#endif

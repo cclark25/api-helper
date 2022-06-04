@@ -1,13 +1,12 @@
-#ifndef CREATE_BINDING_OBJECT
-#define CREATE_BINDING_OBJECT
+#include "./create-binding-object.h"
 
-#include <sol/sol.hpp>
 #include "../../data-primitive.hpp"
 #include "../../data-wrappers/data-wrapper.hpp"
-#include "./type-templates.hpp"
-#include "./basic-binders.hpp"
+#include "./type-templates.h"
+#include "./basic-binders.h"
 
-namespace APILua {
+namespace APILua
+{
     using namespace APICore;
     template <DataPrimitive D>
     sol::table createBindingObject(sol::state &state, std::shared_ptr<DataWrapperSub<D>> wrapper);
@@ -86,7 +85,3 @@ namespace APILua {
     }
 
 }
-
-#include "./object-type.hpp"
-
-#endif

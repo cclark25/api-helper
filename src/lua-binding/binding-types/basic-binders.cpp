@@ -1,14 +1,13 @@
-#ifndef LUA_BASIC_BINDERS
-#define LUA_BASIC_BINDERS
-#include "./type-templates.hpp"
-#include "../lua-loader.hpp"
-#include "../../data-wrappers/data-wrapper.hpp"
-#include "./create-binding-object.hpp"
+#include "./basic-binders.h"
 
-namespace APILua {
-    
+#include "./create-binding-object.h"
+#include "../lua-loader.hpp"
+
+namespace APILua
+{
+
     template <typename KeyType>
-    void bindToLua(KeyType key, sol::state &state, sol::table getterSetter, sol::table *destination = nullptr)
+    void bindToLua(KeyType key, sol::state &state, sol::table getterSetter, sol::table *destination )
     {
         auto binder = sol::state_view(state)["____bindingHelpers"]["bindWrapper"];
         if (!binder.valid())
@@ -39,5 +38,3 @@ namespace APILua {
         state[key] = newTable;
     }
 }
-
-#endif
