@@ -1,7 +1,7 @@
 // #include "./api-object.cpp"
 #define SOL_ALL_SAFETIES_ON 1
 // #include "../../src/lua-binding/lua-wrappers-binding.hpp"
-#include "../../src/lua-binding/binding-types/basic-types.hpp"
+#include "../../src/lua-binding/binding-types/basic-binders.hpp"
 #include "../../src/data-wrappers/data-wrapper.hpp"
 #include <lualib.h>
 #include <iostream>

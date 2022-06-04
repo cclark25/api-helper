@@ -4,6 +4,8 @@
 #include <sol/sol.hpp>
 #include "../../data-wrappers/data-wrapper.hpp"
 #include "../../data-wrappers/object-wrapper.hpp"
+#include "./create-binding-object.hpp"
+#include "./basic-binders.hpp"
 
 namespace APILua
 {
@@ -44,7 +46,7 @@ namespace APILua
                 for (auto field : *fields)
                 {
                     auto bindingObject = createBindingObject(state, CastSharedPtr(DataWrapperSub<DataPrimitive::unknown>, field.second));
-                    bindToLua(field.first, state, bindingObject, &newTable);
+                    APILua::bindToLua<std::string>(field.first, state, bindingObject, &newTable);
                 }
 
                 return newTable;
