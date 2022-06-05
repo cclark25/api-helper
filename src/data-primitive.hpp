@@ -23,7 +23,7 @@ namespace APICore {
 	template<DataPrimitive D> struct _data_primitive_to_type { using type = void; };
 	CreateDataType(DataPrimitive::string, std::string);
 	CreateDataType(DataPrimitive::int32, int32_t);
-	CreateDataType(DataPrimitive::array, std::vector<std::shared_ptr<void>>);
+	CreateDataType(DataPrimitive::array, std::vector<std::shared_ptr<DataWrapper>>);
 	CreateDataType(DataPrimitive::object, ObjectMap);
 	CreateDataType(DataPrimitive::null, void);
 	CreateDataType(DataPrimitive::unknown, void);

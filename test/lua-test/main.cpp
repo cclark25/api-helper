@@ -17,13 +17,13 @@ int main()
 	{
 		sol::state lua;
 		
-		lua.open_libraries(sol::lib::base, sol::lib::package, sol::lib::table, sol::lib::math, sol::lib::string, sol::lib::coroutine);
+		lua.open_libraries(sol::lib::base, sol::lib::package, sol::lib::table, sol::lib::math, sol::lib::string, sol::lib::coroutine, sol::lib::debug);
 
 		auto objectValue = std::shared_ptr<ObjectWrapper>(new ObjectContainerWrapper());
-		// auto arrayVector = std::vector<Data>();
-		// arrayVector.push_back(std::shared_ptr<std::string>(new std::string("Test string 1.")));
-		// arrayVector.push_back(std::shared_ptr<std::string>(new std::string("Test string 2.")));
-		// arrayVector.push_back(std::shared_ptr<std::string>(new std::string("Test string 3.")));
+		auto array = std::shared_ptr<ArrayWrapper>(new ArrayContainerWrapper());
+		array->push(std::shared_ptr<DataWrapper>(new StringContainerWrapper("Test string 1.")));
+		array->push(std::shared_ptr<DataWrapper>(new StringContainerWrapper("Test string 2.")));
+		array->push(std::shared_ptr<DataWrapper>(new StringContainerWrapper("Test string 3.")));
 
 		objectValue->setField(
 			"field1",
@@ -32,8 +32,8 @@ int main()
 		APILua::bind<std::string>("API", lua, std::map<std::string, std::shared_ptr<DataWrapper>>({
 			{"stringValue", std::shared_ptr<StringContainerWrapper>(new StringContainerWrapper("Test string."))},
 			{"intValue", std::shared_ptr<Int32ContainerWrapper>(new Int32ContainerWrapper(0))},
-			{"objectValue", objectValue}
-			// {"arrayValue", std::shared_ptr<ArrayWrapper>(new ArrayContainerWrapper(arrayVector))}
+			{"objectValue", objectValue},
+			{"arrayValue", array}
 		}));
 
 		try

@@ -1,144 +1,122 @@
-// #ifndef ARRAY_DATA_WRAPPER
-// #define ARRAY_DATA_WRAPPER
-// #include <string>
-// #include <vector>
-// #include <memory>
-// #include "../data-primitive.hpp"
-// #include "../macros.hpp"
-// #include "./data-wrapper.hpp"
-// #include "../type-wrapper/type-wrapper.hpp"
+#ifndef ARRAY_DATA_WRAPPER
+#define ARRAY_DATA_WRAPPER
+#include <string>
+#include <map>
+#include <memory>
+#include "../data-primitive.hpp"
+#include "../macros.hpp"
+#include "./data-wrapper.hpp"
+#include "../type-wrapper/type-wrapper.hpp"
 
-// namespace APICore
-// {
-//     typedef std::vector<Data> ArrayVector;
+namespace APICore
+{
 
-//     class ArrayWrapper : public DataWrapper
-//     {
-//     public:
-//         virtual DataPrimitive getDataType()
-//         {
-//             return DataPrimitive::array;
-//         }
-//         virtual Data getIndex(size_t index)
-//         {
-//             throw "Not Implemented!";
-//         };
-//         virtual void setIndex(size_t index, Data value)
-//         {
-//             throw "Not Implemented!";
-//         };
-//         virtual size_t push(Data value)
-//         {
-//             throw "Not Implemented!";
-//         };
-//         virtual Data pop()
-//         {
-//             throw "Not Implemented!";
-//         };
-//         virtual size_t insert(size_t index, Data value)
-//         {
-//             throw "Not Implemented!";
-//         };
-//         virtual size_t getLength(){
-//             throw "Not Implemented!";
-//         };
-//         virtual DataPrimitive arrayOf(){
-//             throw "Not Implemented!";
-//         }
-//     };
+    template <>
+    class DataWrapperSub<DataPrimitive::array> : public DataWrapper
+    {
+    public:
+        virtual DataPrimitive getDataType() { return DataPrimitive::array; };
+        virtual Data<DataPrimitive::array> get() { throw "Not Implemented!"; };
+        virtual void set(Data<DataPrimitive::array> data) { throw "Not Implemented!"; };
 
-//     template<DataPrimitive primitive, typename realType>
-//     class ArrayContainerWrapper : public ArrayWrapper
-//     {
-//         std::shared_ptr<ArrayVector> arrayData;
-//         std::shared_ptr<ObjectTypeWrapper> objectTyping;
+        virtual std::shared_ptr<DataWrapper> getIndex(size_t index) { throw "Not Implemented!"; };
+        virtual void setIndex(size_t index, std::shared_ptr<DataWrapper> value) { throw "Not Implemented!"; };
+        virtual size_t push(std::shared_ptr<DataWrapper> value) { throw "Not Implemented!"; };
+        virtual std::shared_ptr<DataWrapper> pop() { throw "Not Implemented!"; };
+        virtual size_t insert(size_t index, std::shared_ptr<DataWrapper> value) { throw "Not Implemented!"; };
+        virtual size_t length() { throw "Not Implemented!"; };
+    };
 
-//     public:
-//         virtual bool canGet() { return true; }
-//         virtual bool canSet() { return true; }
+    using ArrayWrapper = DataWrapperSub<DataPrimitive::array>;
 
-//         ArrayContainerWrapper(std::shared_ptr<ArrayVector> data)
-//         {
-//             this->arrayData = data;
-//         }
-//         ArrayContainerWrapper(ArrayVector &data)
-//         {
-//             this->arrayData = std::shared_ptr<ArrayVector>(new ArrayVector(data));
-//         }
-//         ArrayContainerWrapper()
-//         {
-//             this->arrayData = std::shared_ptr<ArrayVector>(new ArrayVector());
-//         }
-//         virtual Data get()
-//         {
-//             return this->arrayData;
-//         }
-//         virtual void set(Data data)
-//         {
-//             this->arrayData = CastSharedPtr(ArrayVector, data);
-//         }
+    template <>
+    class DataContainerWrapper<DataPrimitive::array> : public ArrayWrapper
+    {
+        Data<DataPrimitive::array> arrayData;
 
-//         virtual Data getIndex(size_t index)
-//         {
-//             auto data = this->get();
-//             auto arrayData = CastSharedPtr(ArrayVector, data);
-//             if (arrayData->size() - 1 >= index)
-//             {
-//                 return arrayData->at(index);
-//             }
-//             else
-//             {
-//                 return nullptr;
-//             }
-//         }
+    public:
+        virtual bool canGet() { return true; }
+        virtual bool canSet() { return true; }
 
-//         virtual void setIndex(size_t index, Data value)
-//         {
-//             auto data = this->get();
-//             auto arrayData = CastSharedPtr(ArrayVector, data);
+        DataContainerWrapper<DataPrimitive::array>(Data<DataPrimitive::array> data)
+        {
+            this->arrayData = data;
+        }
 
-//             arrayData->at(index) = value;
-//         }
+        DataContainerWrapper<DataPrimitive::array>()
+        {
+            this->arrayData = Data<DataPrimitive::array>(new data_primitive_to_type<DataPrimitive::array>());
+        }
+        virtual Data<DataPrimitive::array> get()
+        {
+            return this->arrayData;
+        }
+        virtual void set(Data<DataPrimitive::array> data)
+        {
+            this->arrayData = CastSharedPtr(data_primitive_to_type<DataPrimitive::array>, data);
+        }
 
-//         virtual size_t push(Data value){
-//             auto data = this->get();
-//             auto arrayData = CastSharedPtr(ArrayVector, data);
+        virtual std::shared_ptr<DataWrapper> getIndex(size_t index)
+        {
+            if (index < this->length())
+            {
+                return this->arrayData->at(index);
+            }
+            else
+            {
+                return nullptr;
+            }
+        };
+        virtual void setIndex(size_t index, std::shared_ptr<DataWrapper> value)
+        {
+            if (index < this->length())
+            {
+                this->arrayData->at(index) = value;
+            }
+            else
+            {
+                throw "Cannot set at index because the index is out of range.";
+            }
+        };
+        virtual size_t push(std::shared_ptr<DataWrapper> value)
+        {
+            this->arrayData->push_back(value);
+            return this->length();
+        };
+        virtual std::shared_ptr<DataWrapper> pop()
+        {
+            size_t length = this->length();
+            if (length > 0)
+            {
+                auto lastElement = this->getIndex(length - 1);
+                this->arrayData->pop_back();
+                return lastElement;
+            }
+            else
+            {
+                return nullptr;
+            }
+        };
+        virtual size_t insert(size_t index, std::shared_ptr<DataWrapper> value)
+        {
+            if (index < this->length())
+            {
+                auto iter = this->arrayData->cbegin() += index;
+                this->arrayData->insert(iter, value);
 
-//             arrayData->push_back(value);
-//             return arrayData->size();
-//         };
+                return this->length();
+            }
+            else
+            {
+                throw "Cannot set at index because the index is out of range.";
+            }
+        };
+        virtual size_t length() { return this->arrayData->size(); };
+    };
 
-//         virtual Data pop()
-//         {
-//             auto data = this->get();
-//             auto arrayData = CastSharedPtr(ArrayVector, data);
+    class ArrayContainerWrapper : public DataContainerWrapper<DataPrimitive::array>
+    {
+    };
+}
 
-//             Data last = arrayData->back();
-//             arrayData->pop_back();
-//             return last;
-//         };
-//         virtual size_t insert(size_t index, Data value)
-//         {
-//             auto data = this->get();
-//             auto arrayData = CastSharedPtr(ArrayVector, data);
-
-//             auto it = arrayData->begin() += index;
-
-//             arrayData->insert(it, value);
-
-//             return arrayData->size();
-//         };
-//         virtual size_t getLength(){
-//             auto data = this->get();
-//             auto arrayData = CastSharedPtr(ArrayVector, data);
-//             return(arrayData->size());
-//         };
-        
-//         virtual DataPrimitive arrayOf(){
-//             return primitive;
-//         }
-//     };
-
-// }
-
-// #endif
+#endif

@@ -18,7 +18,9 @@ namespace APILua
     template <>
     sol::table createBindingObject(sol::state &state, std::shared_ptr<DataWrapperSub<DataPrimitive::null>> wrapper)
     {
-        return sol::table(state, sol::new_table());
+        auto bindingObject = sol::table(state, sol::new_table());
+        bindingObject["get"] = [](){};
+        return bindingObject;
     }
     template <>
     sol::table createBindingObject(sol::state &state, std::shared_ptr<DataWrapperSub<DataPrimitive::function>> wrapper)
@@ -26,10 +28,7 @@ namespace APILua
         return sol::table(state, sol::new_table());
     }
     template <>
-    sol::table createBindingObject(sol::state &state, std::shared_ptr<DataWrapperSub<DataPrimitive::array>> wrapper)
-    {
-        return sol::table(state, sol::new_table());
-    }
+    sol::table createBindingObject(sol::state &state, std::shared_ptr<DataWrapperSub<DataPrimitive::array>> wrapper);
     template <>
     sol::table createBindingObject(sol::state &state, std::shared_ptr<DataWrapperSub<DataPrimitive::classType>> wrapper)
     {
@@ -66,7 +65,11 @@ namespace APILua
     case DataPrimitive::Primitive:                                                                                                     \
         return createBindingObject<DataPrimitive::Primitive>(state, CastSharedPtr(DataWrapperSub<DataPrimitive::Primitive>, wrapper)); \
         break
-
+        
+        if (wrapper == nullptr)
+        {
+            return createBindingObject<DataPrimitive::null>(state, CastSharedPtr(DataWrapperSub<DataPrimitive::null>, wrapper));
+        }
         switch (wrapper->getDataType())
         {
             CaseData(string);
@@ -74,6 +77,7 @@ namespace APILua
             CaseData(object);
             CaseData(null);
             CaseData(function);
+            CaseData(array);
             CaseData(classType);
 
         default:
