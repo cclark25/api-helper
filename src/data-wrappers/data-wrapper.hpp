@@ -67,7 +67,8 @@ namespace APICore
     using StringWrapper = DataWrapperSub<DataPrimitive::string>;
     using StringContainerWrapper = DataContainerWrapper<DataPrimitive::string>;
     using UnknownWrapper = DataContainerWrapper<DataPrimitive::unknown>;
-
+    using FunctionWrapper = DataWrapperSub<DataPrimitive::function>;
+    using FunctionContainerWrapper = DataContainerWrapper<DataPrimitive::function>;
 }
 
 #include "./object-wrapper.hpp"

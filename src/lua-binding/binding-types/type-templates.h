@@ -25,6 +25,7 @@ namespace APILua
     }
     CreateDataType(DataPrimitive::array, sol::table);
     CreateDataType(DataPrimitive::object, sol::table);
+    CreateDataType(DataPrimitive::function, sol::function);
 #undef CreateDataType
 
     template <DataPrimitive D>

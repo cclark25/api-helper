@@ -3,4 +3,5 @@
 #include "./lua-object-to-data-wrapper.cpp"
 #include "./object-type.cpp"
 #include "./array-type.cpp"
+#include "./function-type.cpp"
 #include "./type-templates.h"

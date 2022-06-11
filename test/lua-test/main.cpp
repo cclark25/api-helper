@@ -16,8 +16,8 @@ int main()
 	try
 	{
 		sol::state lua;
-		
-		lua.open_libraries(sol::lib::base, sol::lib::package, sol::lib::table, sol::lib::math, sol::lib::string, sol::lib::coroutine, sol::lib::debug);
+
+		lua.open_libraries(sol::lib::base, sol::lib::package, sol::lib::table, sol::lib::math, sol::lib::string, sol::lib::coroutine, sol::lib::debug, sol::lib::os);
 
 		auto objectValue = std::shared_ptr<ObjectWrapper>(new ObjectContainerWrapper());
 		auto array = std::shared_ptr<ArrayWrapper>(new ArrayContainerWrapper());
@@ -29,12 +29,10 @@ int main()
 			"field1",
 			std::shared_ptr<StringWrapper>(new StringContainerWrapper("Field string.")));
 
-		APILua::bind<std::string>("API", lua, std::map<std::string, std::shared_ptr<DataWrapper>>({
-			{"stringValue", std::shared_ptr<StringContainerWrapper>(new StringContainerWrapper("Test string."))},
-			{"intValue", std::shared_ptr<Int32ContainerWrapper>(new Int32ContainerWrapper(0))},
-			{"objectValue", objectValue},
-			{"arrayValue", array}
-		}));
+		APILua::bind<std::string>("API", lua, std::map<std::string, std::shared_ptr<DataWrapper>>({{"stringValue", std::shared_ptr<StringContainerWrapper>(new StringContainerWrapper("Test string."))}, {"intValue", std::shared_ptr<Int32ContainerWrapper>(new Int32ContainerWrapper(0))}, {"objectValue", objectValue}, {"arrayValue", array}, {"functionValue", std::shared_ptr<FunctionWrapper>(new FunctionContainerWrapper({[](FunctionInternalType::FunctionParams params)
+																																																																																																								   {
+																																																																																																									   return std::shared_ptr<StringContainerWrapper>(new StringContainerWrapper("functionValue return value."));
+																																																																																																								   }}))}}));
 
 		try
 		{
