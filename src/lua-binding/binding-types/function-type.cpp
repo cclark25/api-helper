@@ -75,7 +75,6 @@ namespace APILua
                              {
                                  std::vector<sol::object> luaParams;
 
-                                 // luaParams.push(nullptr);
                                  for (auto param : params)
                                  {
                                      auto wrappedParam = createBindingObject<DataPrimitive::unknown>(state, CastSharedPtr(DataWrapperSub<DataPrimitive::unknown>, param));
