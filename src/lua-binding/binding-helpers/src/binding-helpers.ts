@@ -22,17 +22,26 @@ export type DataWrapperOptions<T> =
 	| DataWrapperSetOnly<T>
 	| DataWrapperReadSet<T>;
 
+export type BindWrapperTargetResult<
+	TargetType extends Object,
+	Key extends string,
+	Wrapper extends DataWrapper<any>
+> = TargetType & {
+	[K in Key]: Wrapper extends DataWrapper<infer T> ? T : never;
+};
+
 /**
  *
  * @param key Key on destination to bind the wrapper to.
  * @param wrapper Data wrapper provided by the API to bind to the destination.
  * @param destination Destination to bind the wrapper on. Defaults to the module exports.
  */
-export function bindWrapper<T, K extends string | number>(
-	key: K,
-	wrapper: DataWrapper<T>,
-	destination: Record<K, unknown> = module.exports
-) {
+export function bindWrapper<
+	T,
+	K extends string,
+	TargetType extends Object,
+	Wrapper extends DataWrapper<T>
+>(key: K, wrapper: DataWrapper<T>, destination: TargetType = module.exports) {
 	Object.defineProperty(destination, key, wrapper);
 }
 
@@ -134,68 +143,102 @@ export type ClassConstructor<
 
 export type Class<
 	ConstructorParameters extends unknown[],
-	MemberFields extends Record<string, any>
+	MemberFields extends Record<string, any>,
+	StaticFields extends Record<string, any>,
+	StaticFieldNames extends string = StaticFields extends Record<infer N, any>
+		? N
+		: never
 > = {
 	new (...params: ConstructorParameters): ClassPrototype<MemberFields>;
+} & {
+	[K in StaticFieldNames]: BindWrapperTargetResult<{}, K, StaticFields[K]>[K];
 };
+
+class InitialEmptyConstructor {}
 
 export function makeClass<
 	ConstructorParameters extends unknown[],
-	MemberFields extends Record<string, DataWrapperOptions<any>>
+	MemberFields extends Record<string, DataWrapperOptions<any>>,
+	StaticFields extends Record<string, DataWrapperOptions<any>>,
+	ClassName extends string
 >(
-	className: string,
-	constructor: ClassConstructor<ConstructorParameters, MemberFields>
-): Class<ConstructorParameters, MemberFields> {
-	const createdClass = class {
-		constructor(...params: ConstructorParameters) {
-			const constructorResult = constructor(...params);
-			const constructed = {};
+	className: ClassName,
+	constructor: ClassConstructor<ConstructorParameters, MemberFields>,
+	staticFields: StaticFields
+): Class<ConstructorParameters, MemberFields, StaticFields> {
+	/*
+		Trick to get the class name to match what was passed into the function.
+		This way, `class.name` will return that value.
+	*/
+	const classContainer = {
+		[className]: class {
+			constructor(
+				...params: ConstructorParameters | [InitialEmptyConstructor]
+			) {
+				/*
+					Trick to create an object that is an instance of the class,
+					that way we can bind all of the member fields dynamically
+					onto the object. Since the object was created with an actual
+					constructor, it is an actual instance of the class, so the 
+					`instanceof` operator will still work.
 
-			for (const [key, value] of Object.entries(constructorResult)) {
-				bindWrapper(key, value, constructed);
+					This is a workaround since TSTL does not support `Object.setPrototypeOf`.
+				*/
+				if (params[0] instanceof InitialEmptyConstructor) {
+					return;
+				}
+				const constructorResult = constructor(
+					...(params as ConstructorParameters)
+				);
+
+				const constructed = new classContainer[className](
+					new InitialEmptyConstructor()
+				);
+
+				for (const [key, value] of Object.entries(constructorResult)) {
+					bindWrapper(key, value, constructed);
+				}
+
+				return constructed as ClassPrototype<MemberFields>;
 			}
-
-			Object.setPrototypeOf(constructed, createdClass.prototype);
-			return constructed as ClassPrototype<MemberFields>;
 		}
 	};
 
-	return createdClass as {
-		new (...params: ConstructorParameters): ClassPrototype<MemberFields>;
-	};
+	for (const [key, value] of Object.entries(staticFields)) {
+		bindWrapper(key, value, classContainer[className] as any);
+	}
+
+	return classContainer[className] as Class<
+		ConstructorParameters,
+		MemberFields,
+		StaticFields
+	>;
 }
 
-declare class B {}
-
-let C = makeClass('C', (a: number, b: string) => ({
-	value: {
-		get: () => {
-			return `${a}: ${b}`;
-		},
-		set: (s: string) => {}
+const C = makeClass(
+	'C',
+	() => ({
+		b: {
+			get() {
+				console.log('b getter called');
+				return 2;
+			}
+		}
+	}),
+	{
+		a: {
+			get() {
+				console.log('a getter called');
+				return 1;
+			}
+		}
 	}
-}));
-let D = makeClass('C', (a: number, b: string) => ({
-	value: {
-		get: () => {
-			return `${a}: ${b}`;
-		},
-		set: (s: string) => {}
-	}
-}));
+);
 
-let c1 = new C(123, 'abc');
+let x = new C();
 
-console.log(c1);
-console.log(c1 instanceof C);
-console.log(c1 instanceof D);
-console.log(c1.value);
-c1.value = '';
+console.log('x instance of C: ', x instanceof C);
+console.log('x constructor: ', x['constructor']);
 
-let d1 = new D(123, 'abc');
-console.log(d1);
-console.log(d1 instanceof D);
-console.log(d1 instanceof C);
-console.log(d1.value);
-
-console.log(c1 === d1);
+console.log('x[b]', x.b);
+console.log('C[a]', C.a);
