@@ -156,6 +156,18 @@ export type Class<
 
 class InitialEmptyConstructor {}
 
+class BindAsSrc<MemberFields extends Record<string, DataWrapperOptions<any>>> {
+	constructor(public source: MemberFields) {}
+}
+
+/**
+ *
+ * @param className The name of the generated class
+ * @param constructor The function which generates the DataWrapper to bind as the class instance
+ * @param staticFields Static fields which are bound to the actual class object.
+ * @returns An object containing the generatedClass and a bindAs function which can be used by the
+ * 	C++ calling function to bind an object as an instance of the class.
+ */
 export function makeClass<
 	ConstructorParameters extends unknown[],
 	MemberFields extends Record<string, DataWrapperOptions<any>>,
@@ -165,7 +177,10 @@ export function makeClass<
 	className: ClassName,
 	constructor: ClassConstructor<ConstructorParameters, MemberFields>,
 	staticFields: StaticFields
-): Class<ConstructorParameters, MemberFields, StaticFields> {
+): {
+	generatedClass: Class<ConstructorParameters, MemberFields, StaticFields>;
+	bindAs: (sourceObject: MemberFields) => ClassPrototype<MemberFields>;
+} {
 	/*
 		Trick to get the class name to match what was passed into the function.
 		This way, `class.name` will return that value.
@@ -173,13 +188,16 @@ export function makeClass<
 	const classContainer = {
 		[className]: class {
 			constructor(
-				...params: ConstructorParameters | [InitialEmptyConstructor]
+				...params:
+					| ConstructorParameters
+					| [InitialEmptyConstructor]
+					| [BindAsSrc<MemberFields>]
 			) {
 				/*
 					Trick to create an object that is an instance of the class,
 					that way we can bind all of the member fields dynamically
 					onto the object. Since the object was created with an actual
-					constructor, it is an actual instance of the class, so the 
+					constructor, it is an actual instance of the class, so the
 					`instanceof` operator will still work.
 
 					This is a workaround since TSTL does not support `Object.setPrototypeOf`.
@@ -187,9 +205,14 @@ export function makeClass<
 				if (params[0] instanceof InitialEmptyConstructor) {
 					return;
 				}
-				const constructorResult = constructor(
-					...(params as ConstructorParameters)
-				);
+				let constructorResult: MemberFields;
+				if (params[0] instanceof BindAsSrc) {
+					constructorResult = params[0].source;
+				} else {
+					constructorResult = constructor(
+						...(params as ConstructorParameters)
+					);
+				}
 
 				const constructed = new classContainer[className](
 					new InitialEmptyConstructor()
@@ -208,37 +231,19 @@ export function makeClass<
 		bindWrapper(key, value, classContainer[className] as any);
 	}
 
-	return classContainer[className] as Class<
+	const generatedClass = classContainer[className] as Class<
 		ConstructorParameters,
 		MemberFields,
 		StaticFields
 	>;
+
+	const generatedBindAsClass: {
+		new (source: BindAsSrc<MemberFields>): ClassPrototype<MemberFields>;
+	} = generatedClass as unknown as any;
+
+	return {
+		generatedClass,
+		bindAs: (sourceObject: MemberFields) =>
+			new generatedBindAsClass(new BindAsSrc<MemberFields>(sourceObject))
+	};
 }
-
-const C = makeClass(
-	'C',
-	() => ({
-		b: {
-			get() {
-				console.log('b getter called');
-				return 2;
-			}
-		}
-	}),
-	{
-		a: {
-			get() {
-				console.log('a getter called');
-				return 1;
-			}
-		}
-	}
-);
-
-let x = new C();
-
-console.log('x instance of C: ', x instanceof C);
-console.log('x constructor: ', x['constructor']);
-
-console.log('x[b]', x.b);
-console.log('C[a]', C.a);

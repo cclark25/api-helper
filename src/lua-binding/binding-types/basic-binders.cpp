@@ -7,7 +7,7 @@ namespace APILua
 {
 
     template <typename KeyType>
-    void bindToLua(KeyType key, sol::state &state, sol::table getterSetter, sol::table *destination )
+    void bindToLua(KeyType key, sol::state &state, sol::table getterSetter, sol::table *destination)
     {
         auto binder = sol::state_view(state)["____bindingHelpers"]["bindWrapper"];
         if (!binder.valid())
@@ -16,6 +16,7 @@ namespace APILua
             state.script("____bindingHelpers = require('binding-helpers');");
             binder = sol::state_view(state)["____bindingHelpers"]["bindWrapper"];
         }
+
         if (destination == nullptr)
         {
             binder(nullptr, key, getterSetter);

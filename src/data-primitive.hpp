@@ -25,9 +25,12 @@ namespace APICore
 		object,
 		array,
 		classType,
+		classInstance,
 		unknown
 	};
 	class DataWrapper;
+	template <DataPrimitive D>
+	class DataWrapperSub;
 	using ObjectMap = std::map<std::string, std::shared_ptr<DataWrapper>>;
 	struct FunctionInternalType
 	{
@@ -48,6 +51,36 @@ namespace APICore
 		FunctionInternalType(APIFunction function, std::string externalSourceKeyName = "", std::shared_ptr<void> externalSource = nullptr) : function(function), externalSourceKeyName(externalSourceKeyName), externalSource(externalSource) {}
 	};
 
+	struct ClassInternalType
+	{
+		struct ExternalSource
+		{
+			std::shared_ptr<void> classDefinition;
+			std::function<std::shared_ptr<void>(std::shared_ptr<ObjectMap>)> bindAs;
+		};
+
+		std::string className;
+		std::function<ObjectMap(FunctionInternalType::FunctionParams)> constructor;
+		std::map<std::string, std::shared_ptr<DataWrapper>> staticFields;
+		/**
+		 * @brief
+		 * Optional source of class created by external APIs.
+		 * For example, this could be the original Lua class object (using TypescriptToLua).
+		 */
+		std::shared_ptr<ExternalSource> externalSource;
+		std::string externalSourceKeyName;
+
+		~ClassInternalType(){
+			std::cout << "ClassInternalType destructed.\n";
+		}
+	};
+
+	struct ClassInstance
+	{
+		std::shared_ptr<DataWrapperSub<DataPrimitive::classType>> classDef;
+		std::shared_ptr<DataWrapperSub<DataPrimitive::object>> data;
+	};
+
 #define CreateDataType(Primitive, Type)       \
 	template <>                               \
 	struct _data_primitive_to_type<Primitive> \
@@ -66,8 +99,8 @@ namespace APICore
 	CreateDataType(DataPrimitive::null, void);
 	CreateDataType(DataPrimitive::unknown, void);
 	CreateDataType(DataPrimitive::function, FunctionInternalType);
-	// TODO: Flesh out the classType type
-	// CreateDataType(DataPrimitive::classType, void);
+	CreateDataType(DataPrimitive::classType, ClassInternalType);
+	CreateDataType(DataPrimitive::classInstance, ClassInstance);
 
 #undef CreateDataType
 

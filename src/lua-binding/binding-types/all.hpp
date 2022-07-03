@@ -4,4 +4,5 @@
 #include "./object-type.cpp"
 #include "./array-type.cpp"
 #include "./function-type.cpp"
+#include "./class-type.cpp"
 #include "./type-templates.h"

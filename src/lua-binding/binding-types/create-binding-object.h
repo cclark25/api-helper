@@ -27,6 +27,8 @@ namespace APILua {
 
     template <>
     sol::table createBindingObject(sol::state &state, std::shared_ptr<DataWrapperSub<DataPrimitive::classType>> wrapper);
+    template <>
+    sol::table createBindingObject(sol::state &state, std::shared_ptr<DataWrapperSub<DataPrimitive::classInstance>> wrapper);
 
     template <DataPrimitive D>
     sol::table createBindingObject(sol::state &state, std::shared_ptr<DataWrapperSub<D>> wrapper);

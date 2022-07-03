@@ -78,20 +78,54 @@ API.functionValue = function(a, b, c)
 end
 print("functionValue result: " .. (API.functionValue(1, 2, "abc")))
 
-i = 1
-totalTime = 0;
-while i <= 1000000 do
-    start = os.time()
-    API.functionValue(i, i + 1, "abc")
-    API.functionValue = function(a, b, c)
-        return "Params v" .. i .. ": " .. tostring(a) .. ", " .. tostring(b) .. ", " .. tostring(c) .. "\tintValue" .. API.intValue;
-    end
-    API.functionValue(i, i + 1, "abc");
-    duration = os.time() - start
-    totalTime = totalTime + duration;
-    i = i + 1;
+-- i = 1
+-- totalTime = 0;
+-- while i <= 1000000 do
+--     start = os.time()
+--     API.functionValue(i, i + 1, "abc")
+--     API.functionValue = function(a, b, c)
+--         return "Params v" .. i .. ": " .. tostring(a) .. ", " .. tostring(b) .. ", " .. tostring(c) .. "\tintValue" .. API.intValue;
+--     end
+--     API.functionValue(i, i + 1, "abc");
+--     duration = os.time() - start
+--     totalTime = totalTime + duration;
+--     i = i + 1;
 
-    if i % 100000 == 0 then
-        print("Calls per second: " .. (i / totalTime));
-    end
-end
+--     if i % 100000 == 0 then
+--         print("Calls per second: " .. (i / totalTime));
+--     end
+-- end
+
+classInstance = ____lualib.__TS__New(API.TestClass)
+classInstance = ____lualib.__TS__New(API.TestClass)
+
+
+print("TestClass type: " .. type(API.TestClass))
+print("TestClass s1 field: " .. API.TestClass.s1)
+print("TestClass instance type: " .. type(classInstance))
+print("TestClass instance f1 field: " .. classInstance.f1)
+
+API.TestClass.s1 = "New s1 field";
+classInstance.f1 = "New f1 field";
+
+print("TestClass s1 field: " .. API.TestClass.s1)
+print("TestClass instance f1 field: " .. classInstance.f1)
+
+print("classInstance is instance of TestClass: " .. tostring(____lualib.__TS__InstanceOf(classInstance, API.TestClass)))
+
+print("testClassInstance type: " .. type(API.testClassInstance))
+print("testClassInstance f1 field: " .. API.testClassInstance.f1)
+print("testClassInstance is instance of TestClass: " .. tostring(____lualib.__TS__InstanceOf(API.testClassInstance, API.TestClass)))
+
+-- totalTime = 0;
+-- while i <= 1000000 do
+--     start = os.time()
+--     newClassInstance = ____lualib.__TS__New(API.TestClass)
+--     duration = os.time() - start
+--     totalTime = totalTime + duration;
+--     i = i + 1;
+
+--     if i % 100000 == 0 then
+--         print("TestClass instances per second: " .. (i / totalTime));
+--     end
+-- end
