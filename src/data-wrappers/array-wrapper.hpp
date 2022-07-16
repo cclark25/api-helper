@@ -18,6 +18,10 @@ namespace APICore
         virtual DataPrimitive getDataType() { return DataPrimitive::array; };
         virtual Data<DataPrimitive::array> get() { throw "Not Implemented!"; };
         virtual void set(Data<DataPrimitive::array> data) { throw "Not Implemented!"; };
+        virtual std::shared_ptr<TypeWrapperRoot> getType()
+        {
+            return basicType<DataPrimitive::array>;
+        }
 
         virtual std::shared_ptr<DataWrapper> getIndex(size_t index) { throw "Not Implemented!"; };
         virtual void setIndex(size_t index, std::shared_ptr<DataWrapper> value) { throw "Not Implemented!"; };

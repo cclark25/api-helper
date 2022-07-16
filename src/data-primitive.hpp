@@ -11,6 +11,18 @@
 
 namespace APICore
 {
+#define DATA_PRIMITIVE_VALUES                           \
+	D(null, void)                                       \
+	D(string, std::string)                              \
+	D(int32, int32_t)                                   \
+	D(function, FunctionInternalType)                   \
+	D(object, ObjectMap)                                \
+	D(array, std::vector<std::shared_ptr<DataWrapper>>) \
+	D(classType, ClassInternalType)                     \
+	D(classInstance, ClassInstance)                     \
+	D(unknown, void)
+
+#define D(Primitive, Type) Primitive,
 	/**
 	 * @brief Supported types for external API integrations.
 	 *
@@ -18,94 +30,54 @@ namespace APICore
 	 */
 	enum DataPrimitive
 	{
-		null,
-		string,
-		int32,
-		function,
-		object,
-		array,
-		classType,
-		classInstance,
-		unknown
+		DATA_PRIMITIVE_VALUES
 	};
-	class DataWrapper;
-	template <DataPrimitive D>
-	class DataWrapperSub;
-	using ObjectMap = std::map<std::string, std::shared_ptr<DataWrapper>>;
-	struct FunctionInternalType
+#undef D
+}
+
+#include "./data-primitive-classes/class-instance-type.hpp"
+#include "./data-primitive-classes/class-internal-type.hpp"
+#include "./data-primitive-classes/function-internal-type.hpp"
+#include "./data-primitive-classes/object-map.hpp"
+
+namespace APICore {
+#define D(Primitive, Type)                                     \
+	template <>                                                \
+	struct data_primitive_definition<DataPrimitive::Primitive> \
+	{                                                          \
+		static const std::string name;                         \
+	};                                                         \
+	const std::string data_primitive_definition<DataPrimitive::Primitive>::name = #Primitive;
+
+	template <DataPrimitive Primitive>
+	struct data_primitive_definition
 	{
-		using FunctionParams = std::vector<std::shared_ptr<DataWrapper>>;
-		using APIFunction = std::function<std::shared_ptr<DataWrapper>(FunctionParams)>;
-		APIFunction function;
-		/**
-		 * @brief
-		 * Optional source of functions created by external APIs.
-		 * For example, this could be the original Lua function used to create this function.
-		 * This lua function can be passed back into Lua instead of adding the overhead
-		 * of translating lua paramaters to internal types and then the return value
-		 * to Lua.
-		 */
-		std::shared_ptr<void> externalSource;
-		std::string externalSourceKeyName;
-
-		FunctionInternalType(APIFunction function, std::string externalSourceKeyName = "", std::shared_ptr<void> externalSource = nullptr) : function(function), externalSourceKeyName(externalSourceKeyName), externalSource(externalSource) {}
+		static const std::string name;
 	};
 
-	struct ClassInternalType
-	{
-		struct ExternalSource
-		{
-			std::shared_ptr<void> classDefinition;
-			std::function<std::shared_ptr<void>(std::shared_ptr<ObjectMap>)> bindAs;
-		};
+	DATA_PRIMITIVE_VALUES
 
-		std::string className;
-		std::function<ObjectMap(FunctionInternalType::FunctionParams)> constructor;
-		std::map<std::string, std::shared_ptr<DataWrapper>> staticFields;
-		/**
-		 * @brief
-		 * Optional source of class created by external APIs.
-		 * For example, this could be the original Lua class object (using TypescriptToLua).
-		 */
-		std::shared_ptr<ExternalSource> externalSource;
-		std::string externalSourceKeyName;
+#undef D
 
-		~ClassInternalType(){
-			std::cout << "ClassInternalType destructed.\n";
-		}
+#define D(Primitive, Type)                                   \
+	template <>                                              \
+	struct _data_primitive_to_type<DataPrimitive::Primitive> \
+	{                                                        \
+		using type = Type;                                   \
 	};
-
-	struct ClassInstance
-	{
-		std::shared_ptr<DataWrapperSub<DataPrimitive::classType>> classDef;
-		std::shared_ptr<DataWrapperSub<DataPrimitive::object>> data;
-	};
-
-#define CreateDataType(Primitive, Type)       \
-	template <>                               \
-	struct _data_primitive_to_type<Primitive> \
-	{                                         \
-		using type = Type;                    \
-	}
-	template <DataPrimitive D>
+	template <DataPrimitive Primitive>
 	struct _data_primitive_to_type
 	{
 		using type = void;
 	};
-	CreateDataType(DataPrimitive::string, std::string);
-	CreateDataType(DataPrimitive::int32, int32_t);
-	CreateDataType(DataPrimitive::array, std::vector<std::shared_ptr<DataWrapper>>);
-	CreateDataType(DataPrimitive::object, ObjectMap);
-	CreateDataType(DataPrimitive::null, void);
-	CreateDataType(DataPrimitive::unknown, void);
-	CreateDataType(DataPrimitive::function, FunctionInternalType);
-	CreateDataType(DataPrimitive::classType, ClassInternalType);
-	CreateDataType(DataPrimitive::classInstance, ClassInstance);
 
-#undef CreateDataType
+	DATA_PRIMITIVE_VALUES
+
+#undef D
 
 	template <DataPrimitive D>
 	using data_primitive_to_type = typename _data_primitive_to_type<D>::type;
 
+#undef DATA_PRIMITIVE_VALUES
 } // namespace APICore
 #endif

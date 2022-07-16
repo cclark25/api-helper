@@ -11,6 +11,21 @@
 using namespace APICore;
 using namespace std;
 
+void printTyping(std::string fieldName, std::shared_ptr<APICore::TypeWrapperRoot> typing, std::string padding = "")
+{
+	std::cout << padding << "API Field Name: " << fieldName << std::endl;
+	std::cout << padding << "\tType: " << typing->getTypeName() << std::endl;
+	std::cout << padding << "\tDescription: " << typing->getDescription() << std::endl;
+	if (typing->getPrimitiveType() == DataPrimitive::object)
+	{
+		auto objectTyping = CastSharedPtr(ObjectTypeWrapper, typing);
+		for (auto field : objectTyping->getFields())
+		{
+			printTyping(field.first, field.second, padding + "\t");
+		}
+	}
+}
+
 int main()
 {
 	try
@@ -50,15 +65,24 @@ int main()
 		objectValue->setField(
 			"field1",
 			std::shared_ptr<StringWrapper>(new StringContainerWrapper("Field string.")));
+		objectValue->setField(
+			"field2",
+			std::shared_ptr<Int32Wrapper>(new Int32ContainerWrapper(15)));
 
-		APILua::bind<std::string>("API", lua, std::map<std::string, std::shared_ptr<DataWrapper>>({{"TestClass", classDefinition}, {"testClassInstance", classInstance}, {"stringValue", std::shared_ptr<StringContainerWrapper>(new StringContainerWrapper("Test string."))}, {"intValue", std::shared_ptr<Int32ContainerWrapper>(new Int32ContainerWrapper(0))}, {"objectValue", objectValue}, {"arrayValue", array}, {"functionValue", std::shared_ptr<FunctionWrapper>(new FunctionContainerWrapper({[](FunctionInternalType::FunctionParams params)
-																																																																																																																   {
-																																																																																																																	   return std::shared_ptr<StringContainerWrapper>(new StringContainerWrapper("functionValue return value."));
-																																																																																																																   }}))}}));
+		auto apiMappings = std::map<std::string, std::shared_ptr<DataWrapper>>({{"TestClass", classDefinition}, {"testClassInstance", classInstance}, {"stringValue", std::shared_ptr<StringContainerWrapper>(new StringContainerWrapper("Test string."))}, {"intValue", std::shared_ptr<Int32ContainerWrapper>(new Int32ContainerWrapper(0))}, {"objectValue", objectValue}, {"arrayValue", array}, {"functionValue", std::shared_ptr<FunctionWrapper>(new FunctionContainerWrapper({[](FunctionInternalType::FunctionParams params)
+																																																																																																																					  {
+																																																																																																																						  return std::shared_ptr<StringContainerWrapper>(new StringContainerWrapper("functionValue return value."));
+																																																																																																																					  }}))}});
+		APILua::bind<std::string>("API", lua, apiMappings);
+		for (auto mapping : apiMappings)
+		{
+			auto typing = mapping.second->getType();
+			printTyping(mapping.first, typing);
+		}
 
 		try
 		{
-			lua.script_file("../test/lua-test/test-lua.lua");
+			// lua.script_file("../test/lua-test/test-lua.lua");
 		}
 		catch (sol::error e)
 		{

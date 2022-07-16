@@ -18,6 +18,14 @@ namespace APICore
         virtual DataPrimitive getDataType() { return DataPrimitive::object; };
         virtual Data<DataPrimitive::object> get() { throw "Not Implemented!"; };
         virtual void set(Data<DataPrimitive::object> data) { throw "Not Implemented!"; };
+        virtual std::shared_ptr<TypeWrapperRoot> getType()
+        {
+            std::map<std::string, std::shared_ptr<TypeWrapperRoot>> fields;
+            for(auto field : *this->get()){
+                fields.insert_or_assign(field.first, field.second->getType());
+            }
+            return std::shared_ptr<ObjectTypeWrapper>(new ObjectTypeWrapper("object","", fields));
+        }
         virtual std::shared_ptr<DataWrapper> getField(std::string key)
         {
             throw "Not Implemented!";
@@ -83,6 +91,8 @@ namespace APICore
             mappedFields->erase(key);
             mappedFields->insert_or_assign(key, value);
         }
+    
+
     };
 
     class ObjectContainerWrapper : public DataContainerWrapper<DataPrimitive::object>

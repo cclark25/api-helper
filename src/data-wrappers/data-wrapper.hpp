@@ -4,6 +4,7 @@
 #include <memory>
 #include "../data-primitive.hpp"
 #include "../macros.hpp"
+#include "../type-wrapper/type-wrapper.hpp"
 
 #define HasGetAccess(accessLevel) accessLevel == GetSet::readAndWrite || GetSet::readOnly
 #define HasSetAccess(accessLevel) accessLevel == GetSet::readAndWrite || GetSet::writeOnly
@@ -21,6 +22,7 @@ namespace APICore
         virtual bool canGet() { throw "Not Implemented!"; };
         virtual bool canSet() { throw "Not Implemented!"; };
         virtual DataPrimitive getDataType() { throw "Not Implemented!"; };
+        virtual std::shared_ptr<TypeWrapperRoot> getType() { throw "Not Implemented!"; }
         virtual ~DataWrapper() {}
     };
 
@@ -31,6 +33,10 @@ namespace APICore
         virtual DataPrimitive getDataType() { return T; };
         virtual Data<T> get() { throw "Not Implemented!"; };
         virtual void set(Data<T> data) { throw "Not Implemented!"; };
+        virtual std::shared_ptr<TypeWrapperRoot> getType()
+        {
+            return basicType<T>;
+        }
     };
 
     template <DataPrimitive T>
