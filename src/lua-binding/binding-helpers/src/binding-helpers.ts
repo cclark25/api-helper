@@ -247,3 +247,244 @@ export function makeClass<
 			new generatedBindAsClass(new BindAsSrc<MemberFields>(sourceObject))
 	};
 }
+
+export type TypeGenerationInterface = {
+	dataPrimitive:
+		| 'string'
+		| 'int32'
+		| 'null'
+		| 'object'
+		| 'function'
+		| 'array'
+		| 'classType'
+		| 'classInstance'
+		| 'unknown';
+	objectFields?: { [fieldName: string]: TypeGenerationInterface };
+	arrayOf?: TypeGenerationInterface;
+	functionDefinition?: {
+		parameters: { parameterName: string; type: TypeGenerationInterface }[];
+		returnType: TypeGenerationInterface;
+		isConstructor?: boolean;
+	};
+	classDefinition?: {
+		className: string;
+		classInstanceType: TypeGenerationInterface & {
+			dataPrimitive: 'classInstance';
+		};
+		constructor: TypeGenerationInterface & {
+			dataPrimitive: 'function';
+		};
+	};
+};
+
+interface DeclaredTyping {
+	typeName: string;
+	typeString: string;
+	dependentTypes: DeclaredTyping[];
+}
+
+export function declareType(
+	typeName: string,
+	typeDef: TypeGenerationInterface
+): DeclaredTyping {
+	return {
+		typeName,
+		typeString: `type ${typeName} = ${generateType(typeDef)}; `,
+		dependentTypes: []
+	};
+}
+
+export function declareClass(
+	classDef: TypeGenerationInterface & { dataPrimitive: 'classType' }
+): DeclaredTyping | undefined {
+	let classDefinition = classDef.classDefinition;
+	if (!classDefinition) {
+		return undefined;
+	}
+	const classCoreTypeName = `${classDefinition.className}CoreClassType`;
+	const classCoreTyping: DeclaredTyping = {
+		typeName: classCoreTypeName,
+		typeString: `declare const ${classCoreTypeName}: { new(): ( ${generateType(
+			classDefinition.classInstanceType
+		)} ) };`,
+		dependentTypes: []
+	};
+	return {
+		typeName: classDefinition.className,
+		typeString: `declare class ${classDefinition.className} extends ${
+			classCoreTyping.typeName
+		} { ${generateType({
+			...classDefinition.constructor,
+			functionDefinition: {
+				returnType: { dataPrimitive: 'unknown' },
+				parameters: [],
+				...classDefinition.constructor.functionDefinition,
+				isConstructor: true
+			}
+		})}; }`,
+		dependentTypes: [classCoreTyping]
+	};
+}
+
+export function generateType(typingParams: TypeGenerationInterface) {
+	const mappers: Record<
+		typeof typingParams['dataPrimitive'],
+		string | (() => string)
+	> = {
+		string: `string`,
+		int32: 'number',
+		null: 'null',
+		unknown: 'unknown',
+		object: () => {
+			let fieldTypesString = '';
+			let objectFields: Exclude<
+				TypeGenerationInterface['objectFields'],
+				undefined
+			> = {};
+			if (typingParams.objectFields) {
+				objectFields = typingParams.objectFields;
+			}
+
+			for (const [fieldName, field] of Object.entries(objectFields)) {
+				fieldTypesString += `"${fieldName}": ( ${generateType(
+					field
+				)} ); `;
+			}
+			return `{ ${fieldTypesString} }`;
+		},
+		array: () =>
+			`${
+				typingParams.arrayOf
+					? `( ${generateType(typingParams.arrayOf)} )`
+					: ''
+			}[]`,
+		function: () => {
+			if (!typingParams.functionDefinition) {
+				return '( ()=>unknown )';
+			}
+			const parameterString = `( ${typingParams.functionDefinition.parameters
+				.map((p) => `${p.parameterName}: ( ${generateType(p.type)} )`)
+				.join(', ')} )`;
+			if (!typingParams.functionDefinition.isConstructor) {
+				return `( ${parameterString} => ( ${generateType(
+					typingParams.functionDefinition.returnType
+				)} ) )`;
+			} else {
+				456;
+				return `constructor${parameterString}`;
+			}
+		},
+		classType: () => {
+			return '';
+		},
+		classInstance: () =>
+			generateType({ ...typingParams, dataPrimitive: 'object' })
+	};
+
+	const mapped = mappers[typingParams.dataPrimitive];
+	if (typeof mapped === 'function') {
+		return mapped();
+	} else {
+		return mapped;
+	}
+}
+
+console.log(generateType({ dataPrimitive: 'object', objectFields: {} }));
+console.log(
+	generateType({
+		dataPrimitive: 'object',
+		objectFields: {
+			f1: { dataPrimitive: 'string', objectFields: {} },
+			f2: { dataPrimitive: 'int32', objectFields: {} },
+			f3: {
+				dataPrimitive: 'object',
+				objectFields: {
+					abc: {
+						dataPrimitive: 'int32',
+						objectFields: {}
+					},
+					def: {
+						dataPrimitive: 'string',
+						objectFields: {}
+					}
+				}
+			},
+			f4: {
+				dataPrimitive: 'array',
+				arrayOf: {
+					dataPrimitive: 'object',
+					objectFields: {
+						a: { dataPrimitive: 'array' },
+						b: {
+							dataPrimitive: 'array',
+							arrayOf: { dataPrimitive: 'string' }
+						}
+					}
+				}
+			},
+			f5: {
+				dataPrimitive: 'function'
+			},
+			f6: {
+				dataPrimitive: 'function',
+				functionDefinition: {
+					parameters: [
+						{
+							parameterName: 'param1',
+							type: { dataPrimitive: 'string' }
+						},
+						{
+							parameterName: 'param2',
+							type: {
+								dataPrimitive: 'object',
+								objectFields: {
+									f1: { dataPrimitive: 'string' },
+									f2: { dataPrimitive: 'int32' }
+								}
+							}
+						}
+					],
+					returnType: {
+						dataPrimitive: 'object',
+						objectFields: { abc: { dataPrimitive: 'int32' } }
+					}
+				}
+			}
+		}
+	})
+);
+
+const classDefinition = declareClass({
+	dataPrimitive: 'classType',
+	classDefinition: {
+		className: 'TestClass',
+		classInstanceType: {
+			dataPrimitive: 'classInstance',
+			objectFields: {
+				abc: { dataPrimitive: 'int32' },
+				def: { dataPrimitive: 'string' }
+			}
+		},
+		constructor: {
+			dataPrimitive: 'function',
+			functionDefinition: {
+				parameters: [
+					{
+						parameterName: 'p1',
+						type: { dataPrimitive: 'int32' }
+					},
+					{
+						parameterName: 'p2',
+						type: { dataPrimitive: 'string' }
+					}
+				],
+				returnType: { dataPrimitive: 'unknown' },
+				isConstructor: true
+			}
+		}
+	}
+});
+console.log(
+	classDefinition!.dependentTypes.map((t) => t.typeString).join('\n')
+);
+console.log(classDefinition!.typeString);
