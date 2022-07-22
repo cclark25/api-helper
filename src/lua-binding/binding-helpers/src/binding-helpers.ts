@@ -248,17 +248,19 @@ export function makeClass<
 	};
 }
 
+type DataPrimitive =
+	| 'string'
+	| 'int32'
+	| 'null'
+	| 'object'
+	| 'function'
+	| 'array'
+	| 'classType'
+	| 'classInstance'
+	| 'unknown';
+
 export type TypeGenerationInterface = {
-	dataPrimitive:
-		| 'string'
-		| 'int32'
-		| 'null'
-		| 'object'
-		| 'function'
-		| 'array'
-		| 'classType'
-		| 'classInstance'
-		| 'unknown';
+	dataPrimitive: DataPrimitive;
 	objectFields?: { [fieldName: string]: TypeGenerationInterface };
 	arrayOf?: TypeGenerationInterface;
 	functionDefinition?: {
@@ -329,7 +331,6 @@ export function declareClass(
 	}
 
 	const classCoreTypeName = `${classDefinition.className}CoreClassType`;
-	// console.log(JSON.stringify(classDefinition.classInstanceType));
 	const instance = generateType(classDefinition.classInstanceType);
 
 	let classCoreTyping: DeclaredTyping<{
@@ -361,15 +362,31 @@ export function declareClass(
 	return result;
 }
 
+export function declareConst(
+	def: TypeGenerationInterface
+): DeclaredTyping<Record<string, DeclaredTyping<any>>> {
+	const result: DeclaredTyping<Record<string, DeclaredTyping<any>>> = {
+		typeName: 'API',
+		typeDef: def,
+		typeString: (name, typeString, dependencies) =>
+			`declare const ${name}: ${dependencies.typing.compiledType} ;`,
+		dependentTypes: {
+			typing: generateType(def)
+		}
+	};
+
+	return result;
+}
+
 export function extractAllTypes(
-	types: DeclaredTyping<any>[]
-): DeclaredTyping<any>[] {
+	types: DeclaredTyping<Record<string, DeclaredTyping<any>>>[]
+): DeclaredTyping<Record<string, DeclaredTyping<any>>>[] {
 	const allTypes: DeclaredTyping<any>[] = [...types];
 
 	for (const typing of types) {
 		allTypes.push(
 			...(extractAllTypes(
-				Object.values(typing.dependentTypes) as DeclaredTyping<any>[]
+				Object.values(typing.dependentTypes).filter((v) => v)
 			) as DeclaredTyping<any>[])
 		);
 	}
@@ -378,15 +395,15 @@ export function extractAllTypes(
 }
 
 export function generateTypeFiles(types: DeclaredTyping<any>[]) {
-	const allTypes: (DeclaredTyping<any> & { __generatedType?: string })[] = [
-		...extractAllTypes(types)
-	];
+	const allTypes: (DeclaredTyping<Record<string, DeclaredTyping<any>>> & {
+		__generatedType?: string;
+	})[] = [...extractAllTypes(types)];
 
 	const typeEntries: string[] = [];
 
 	for (const t of allTypes) {
 		const dependencies: [string, typeof allTypes[number]][] =
-			Object.entries(t.dependentTypes);
+			Object.entries(t.dependentTypes).filter(([k, v]) => v);
 		const unresolvedDependencies = dependencies.filter(
 			([k, v]) => v.__generatedType === undefined
 		);
@@ -408,8 +425,13 @@ export function generateTypeFiles(types: DeclaredTyping<any>[]) {
 				'aaaabbbbccccddddd',
 				dependencyMaps
 			);
-
-			t.__generatedType = t.isLiteralType ? typeString : t.typeName;
+			if (t.typeDef.dataPrimitive === 'classType') {
+				t.__generatedType = `typeof ${t.typeName}`;
+			} else if (t.isLiteralType) {
+				t.__generatedType = typeString;
+			} else {
+				t.__generatedType = t.typeName;
+			}
 
 			if (!t.isLiteralType) {
 				typeEntries.push(typeString);
@@ -562,7 +584,7 @@ export function generateType(typingParams: TypeGenerationInterface) {
 	return mapped;
 }
 
-const classDefinition = declareClass({
+const classDefinition: TypeGenerationInterface = {
 	dataPrimitive: 'classType',
 	classDefinition: {
 		className: 'TestClass',
@@ -591,5 +613,85 @@ const classDefinition = declareClass({
 			}
 		}
 	}
+};
+
+const api: TypeGenerationInterface = {
+	dataPrimitive: 'object',
+	objectFields: {
+		f1: { dataPrimitive: 'string', objectFields: {} },
+		f2: { dataPrimitive: 'int32', objectFields: {} },
+		f3: {
+			dataPrimitive: 'object',
+			objectFields: {
+				abc: {
+					dataPrimitive: 'int32',
+					objectFields: {}
+				},
+				def: {
+					dataPrimitive: 'string',
+					objectFields: {}
+				}
+			}
+		},
+		f4: {
+			dataPrimitive: 'array',
+			arrayOf: {
+				dataPrimitive: 'object',
+				objectFields: {
+					a: { dataPrimitive: 'array' },
+					b: {
+						dataPrimitive: 'array',
+						arrayOf: { dataPrimitive: 'string' }
+					}
+				}
+			}
+		},
+		f5: {
+			dataPrimitive: 'function'
+		},
+		f6: {
+			dataPrimitive: 'function',
+			functionDefinition: {
+				parameters: [
+					{
+						parameterName: 'param1',
+						type: { dataPrimitive: 'string' }
+					},
+					{
+						parameterName: 'param2',
+						type: {
+							dataPrimitive: 'object',
+							objectFields: {
+								f1: { dataPrimitive: 'string' },
+								f2: { dataPrimitive: 'int32' }
+							}
+						}
+					}
+				],
+				returnType: {
+					dataPrimitive: 'object',
+					objectFields: { abc: { dataPrimitive: 'int32' } }
+				}
+			}
+		},
+		TestClass: classDefinition
+	}
+};
+
+const newAPI = declareClass({
+	dataPrimitive: 'classType',
+	classDefinition: {
+		className: 'APIState',
+		classInstanceType: { ...api, dataPrimitive: 'classInstance' },
+		constructor: {
+			dataPrimitive: 'function',
+			functionDefinition: {
+				parameters: [],
+				returnType: { dataPrimitive: 'object' },
+				isConstructor: true
+			}
+		}
+	}
 });
-generateTypeFiles([classDefinition as DeclaredTyping<any>]);
+
+generateTypeFiles([newAPI!]);
