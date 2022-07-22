@@ -277,182 +277,290 @@ export type TypeGenerationInterface = {
 	};
 };
 
-interface DeclaredTyping {
+type Dependencies<S extends Dependencies<{}>> = Record<
+	string,
+	DeclaredTyping<S>
+>;
+interface DeclaredTyping<D extends Dependencies<any>> {
 	typeName: string;
-	typeString: string;
-	dependentTypes: DeclaredTyping[];
+	typeDef: TypeGenerationInterface;
+	typeString: (
+		name: string,
+		typeString: string,
+		dependencies: {
+			[K in keyof D]: { dependency: D[K]; compiledType: string };
+		}
+	) => string;
+	dependentTypes: D;
+	isLiteralType?: boolean;
 }
 
-export function declareType(
+export function declareType<
+	D extends Dependencies<{ typing: DeclaredTyping<any> }>
+>(
 	typeName: string,
-	typeDef: TypeGenerationInterface
-): DeclaredTyping {
-	return {
+	typeDef: TypeGenerationInterface,
+	dependentTypes: D
+): DeclaredTyping<D> {
+	const result: DeclaredTyping<D> = {
 		typeName,
-		typeString: `type ${typeName} = ${generateType(typeDef)}; `,
-		dependentTypes: []
+		typeDef,
+		typeString: (name, typeString, dependencies) =>
+			`type ${name} = ${dependencies.typing.compiledType}; `,
+		dependentTypes
 	};
+
+	return result;
 }
 
 export function declareClass(
 	classDef: TypeGenerationInterface & { dataPrimitive: 'classType' }
-): DeclaredTyping | undefined {
+):
+	| DeclaredTyping<{
+			classCoreTyping: DeclaredTyping<{
+				classInstanceType: DeclaredTyping<Dependencies<{}>>;
+			}>;
+			constructorType: DeclaredTyping<any>;
+	  }>
+	| undefined {
 	let classDefinition = classDef.classDefinition;
 	if (!classDefinition) {
 		return undefined;
 	}
+
 	const classCoreTypeName = `${classDefinition.className}CoreClassType`;
-	const classCoreTyping: DeclaredTyping = {
+	// console.log(JSON.stringify(classDefinition.classInstanceType));
+	const instance = generateType(classDefinition.classInstanceType);
+
+	let classCoreTyping: DeclaredTyping<{
+		classInstanceType: DeclaredTyping<any>;
+	}> = {
 		typeName: classCoreTypeName,
-		typeString: `declare const ${classCoreTypeName}: { new(): ( ${generateType(
-			classDefinition.classInstanceType
-		)} ) };`,
-		dependentTypes: []
+		typeDef: classDefinition.classInstanceType,
+		typeString: (name, typeString, dependencies) =>
+			`declare const ${name}: { new(): ( ${dependencies.classInstanceType.compiledType} ) };`,
+		dependentTypes: {
+			classInstanceType: instance
+		}
 	};
-	return {
+
+	const result: DeclaredTyping<{
+		classCoreTyping: typeof classCoreTyping;
+		constructorType: DeclaredTyping<any>;
+	}> = {
 		typeName: classDefinition.className,
-		typeString: `declare class ${classDefinition.className} extends ${
-			classCoreTyping.typeName
-		} { ${generateType({
-			...classDefinition.constructor,
-			functionDefinition: {
-				returnType: { dataPrimitive: 'unknown' },
-				parameters: [],
-				...classDefinition.constructor.functionDefinition,
-				isConstructor: true
-			}
-		})}; }`,
-		dependentTypes: [classCoreTyping]
+		typeDef: classDef,
+		typeString: (name, typeString, dependencies) =>
+			`declare class ${name} extends ${classCoreTyping.typeName} { ${dependencies.constructorType.compiledType}; }`,
+		dependentTypes: {
+			classCoreTyping,
+			constructorType: generateType(classDefinition.constructor)
+		}
 	};
+
+	return result;
+}
+
+export function extractAllTypes(
+	types: DeclaredTyping<any>[]
+): DeclaredTyping<any>[] {
+	const allTypes: DeclaredTyping<any>[] = [...types];
+
+	for (const typing of types) {
+		allTypes.push(
+			...(extractAllTypes(
+				Object.values(typing.dependentTypes) as DeclaredTyping<any>[]
+			) as DeclaredTyping<any>[])
+		);
+	}
+
+	return allTypes;
+}
+
+export function generateTypeFiles(types: DeclaredTyping<any>[]) {
+	const allTypes: (DeclaredTyping<any> & { __generatedType?: string })[] = [
+		...extractAllTypes(types)
+	];
+
+	const typeEntries: string[] = [];
+
+	for (const t of allTypes) {
+		const dependencies: [string, typeof allTypes[number]][] =
+			Object.entries(t.dependentTypes);
+		const unresolvedDependencies = dependencies.filter(
+			([k, v]) => v.__generatedType === undefined
+		);
+		const resolvedDependencies = dependencies.filter(
+			([k, v]) => v.__generatedType !== undefined
+		);
+		if (unresolvedDependencies.length === 0) {
+			const dependencyMaps = Object.fromEntries(
+				resolvedDependencies.map(([k, v]) => [
+					k,
+					{
+						compiledType: v.__generatedType!,
+						dependency: v
+					}
+				])
+			);
+			const typeString = t.typeString(
+				t.typeName,
+				'aaaabbbbccccddddd',
+				dependencyMaps
+			);
+
+			t.__generatedType = t.isLiteralType ? typeString : t.typeName;
+
+			if (!t.isLiteralType) {
+				typeEntries.push(typeString);
+			}
+		} else {
+			// console.log(
+			// 	`Type ${
+			// 		t.typeName
+			// 	} is waiting for types ${unresolvedDependencies
+			// 		.map(([k, v]) => v.typeName)
+			// 		.join(', ')}`
+			// );
+			allTypes.push(t);
+		}
+	}
+
+	console.log(typeEntries.join('\n\n'));
 }
 
 export function generateType(typingParams: TypeGenerationInterface) {
 	const mappers: Record<
 		typeof typingParams['dataPrimitive'],
-		string | (() => string)
+		() => DeclaredTyping<any>
 	> = {
-		string: `string`,
-		int32: 'number',
-		null: 'null',
-		unknown: 'unknown',
-		object: () => {
-			let fieldTypesString = '';
-			let objectFields: Exclude<
-				TypeGenerationInterface['objectFields'],
-				undefined
-			> = {};
-			if (typingParams.objectFields) {
-				objectFields = typingParams.objectFields;
-			}
+		string: () => ({
+			typeName: typingParams.dataPrimitive,
+			typeDef: typingParams,
+			typeString: () => 'string',
+			dependentTypes: {},
+			isLiteralType: true
+		}),
+		int32: () => ({
+			typeName: typingParams.dataPrimitive,
+			typeDef: typingParams,
+			typeString: () => 'number',
+			dependentTypes: {},
+			isLiteralType: true
+		}),
+		null: () => ({
+			typeName: typingParams.dataPrimitive,
+			typeDef: typingParams,
+			typeString: () => 'null',
+			dependentTypes: {},
+			isLiteralType: true
+		}),
+		unknown: () => ({
+			typeName: typingParams.dataPrimitive,
+			typeDef: typingParams,
+			typeString: () => 'unknown',
+			dependentTypes: {},
+			isLiteralType: true
+		}),
+		object: () => ({
+			typeName: typingParams.dataPrimitive,
+			typeDef: typingParams,
+			typeString: (name, typeString, dependencies) => {
+				let fieldTypesString = '';
+				let objectFields: Exclude<
+					TypeGenerationInterface['objectFields'],
+					undefined
+				> = {};
+				if (typingParams.objectFields) {
+					objectFields = typingParams.objectFields;
+				}
 
-			for (const [fieldName, field] of Object.entries(objectFields)) {
-				fieldTypesString += `"${fieldName}": ( ${generateType(
-					field
-				)} ); `;
-			}
-			return `{ ${fieldTypesString} }`;
-		},
-		array: () =>
-			`${
-				typingParams.arrayOf
-					? `( ${generateType(typingParams.arrayOf)} )`
-					: ''
-			}[]`,
-		function: () => {
-			if (!typingParams.functionDefinition) {
-				return '( ()=>unknown )';
-			}
-			const parameterString = `( ${typingParams.functionDefinition.parameters
-				.map((p) => `${p.parameterName}: ( ${generateType(p.type)} )`)
-				.join(', ')} )`;
-			if (!typingParams.functionDefinition.isConstructor) {
-				return `( ${parameterString} => ( ${generateType(
-					typingParams.functionDefinition.returnType
-				)} ) )`;
-			} else {
-				456;
-				return `constructor${parameterString}`;
-			}
-		},
-		classType: () => {
-			return '';
-		},
+				for (const [fieldName, field] of Object.entries(objectFields)) {
+					fieldTypesString += `"${fieldName}": ( ${dependencies[fieldName].compiledType} ); `;
+				}
+				return `{ ${fieldTypesString} }`;
+			},
+			dependentTypes: Object.fromEntries(
+				Object.entries(
+					typingParams.objectFields ? typingParams.objectFields : {}
+				).map(([fieldName, field]) => [fieldName, generateType(field)])
+			),
+			isLiteralType: true
+		}),
+
+		array: () => ({
+			typeName: typingParams.dataPrimitive,
+			typeDef: typingParams,
+			typeString: (name, typeString, dependencies) =>
+				`${
+					typingParams.arrayOf
+						? `( ${dependencies.compiledType} )`
+						: ''
+				}[]`,
+			dependentTypes: {
+				arrayOf: typingParams.arrayOf
+					? generateType(typingParams.arrayOf)
+					: undefined
+			},
+			isLiteralType: true
+		}),
+		function: () => ({
+			typeName: typingParams.dataPrimitive,
+			typeDef: typingParams,
+			typeString: (name, typeString, dependencies) => {
+				if (!typingParams.functionDefinition) {
+					return '( ()=>unknown )';
+				}
+				const parameterString = `( ${typingParams.functionDefinition.parameters
+					.map(
+						(p) =>
+							`${p.parameterName}: ( ${
+								dependencies[`parameter-${p.parameterName}`]
+									.compiledType
+							} )`
+					)
+					.join(', ')} )`;
+				if (!typingParams.functionDefinition.isConstructor) {
+					return `( ${parameterString} => ( ${dependencies.returnType.compiledType} ) )`;
+				} else {
+					456;
+					return `constructor${parameterString}`;
+				}
+			},
+			dependentTypes: {
+				...(typingParams.functionDefinition
+					? Object.fromEntries(
+							typingParams.functionDefinition.parameters.map(
+								(p) => [
+									`parameter-${p.parameterName}`,
+									generateType(p.type)
+								]
+							)
+					  )
+					: {}),
+				returnType: typingParams.functionDefinition
+					? generateType(typingParams.functionDefinition.returnType)
+					: undefined
+			},
+			isLiteralType: true
+		}),
+		classType: () =>
+			declareClass(
+				typingParams as TypeGenerationInterface & {
+					dataPrimitive: 'classType';
+				}
+			)!,
 		classInstance: () =>
-			generateType({ ...typingParams, dataPrimitive: 'object' })
+			generateType({
+				...typingParams,
+				dataPrimitive: 'object'
+			})
 	};
 
-	const mapped = mappers[typingParams.dataPrimitive];
-	if (typeof mapped === 'function') {
-		return mapped();
-	} else {
-		return mapped;
-	}
-}
+	const mapped = mappers[typingParams.dataPrimitive]();
 
-console.log(generateType({ dataPrimitive: 'object', objectFields: {} }));
-console.log(
-	generateType({
-		dataPrimitive: 'object',
-		objectFields: {
-			f1: { dataPrimitive: 'string', objectFields: {} },
-			f2: { dataPrimitive: 'int32', objectFields: {} },
-			f3: {
-				dataPrimitive: 'object',
-				objectFields: {
-					abc: {
-						dataPrimitive: 'int32',
-						objectFields: {}
-					},
-					def: {
-						dataPrimitive: 'string',
-						objectFields: {}
-					}
-				}
-			},
-			f4: {
-				dataPrimitive: 'array',
-				arrayOf: {
-					dataPrimitive: 'object',
-					objectFields: {
-						a: { dataPrimitive: 'array' },
-						b: {
-							dataPrimitive: 'array',
-							arrayOf: { dataPrimitive: 'string' }
-						}
-					}
-				}
-			},
-			f5: {
-				dataPrimitive: 'function'
-			},
-			f6: {
-				dataPrimitive: 'function',
-				functionDefinition: {
-					parameters: [
-						{
-							parameterName: 'param1',
-							type: { dataPrimitive: 'string' }
-						},
-						{
-							parameterName: 'param2',
-							type: {
-								dataPrimitive: 'object',
-								objectFields: {
-									f1: { dataPrimitive: 'string' },
-									f2: { dataPrimitive: 'int32' }
-								}
-							}
-						}
-					],
-					returnType: {
-						dataPrimitive: 'object',
-						objectFields: { abc: { dataPrimitive: 'int32' } }
-					}
-				}
-			}
-		}
-	})
-);
+	return mapped;
+}
 
 const classDefinition = declareClass({
 	dataPrimitive: 'classType',
@@ -484,7 +592,4 @@ const classDefinition = declareClass({
 		}
 	}
 });
-console.log(
-	classDefinition!.dependentTypes.map((t) => t.typeString).join('\n')
-);
-console.log(classDefinition!.typeString);
+generateTypeFiles([classDefinition as DeclaredTyping<any>]);
