@@ -3,6 +3,7 @@
     "target": "esnext",
     "lib": ["esnext"],
     "moduleResolution": "node",
+    "paths": {"binding-helpers":["./src/binding-helpers"]},
     "types": ["node"],
     "strict": true,
     "plugins": [{ "name": "typescript-tstl-plugin" }],
