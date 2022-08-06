@@ -1,10 +1,3 @@
-const moduleWrapper = { BindingHelpers };
-type ModuleName = keyof typeof moduleWrapper;
-export const bindingHelpersModuleName: ModuleName = Object.keys(
-	moduleWrapper
-)[0] as ModuleName;
-export const moduleResolutionPath = 'binding-helpers';
-
 module BindingHelpers {
 	/**
 	 * A wrapper object passed into the runtime to bind APIs.
@@ -293,5 +286,12 @@ module BindingHelpers {
 		};
 	}
 }
+
+const moduleWrapper = { BindingHelpers };
+type ModuleName = keyof typeof moduleWrapper;
+export const bindingHelpersModuleName: ModuleName = Object.keys(
+	moduleWrapper
+)[0] as ModuleName;
+export const moduleResolutionPath = 'binding-helpers';
 
 export default BindingHelpers;

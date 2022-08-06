@@ -6,3 +6,4 @@
 #include "./function-type.cpp"
 #include "./class-type.cpp"
 #include "./type-templates.h"
+#include "../lua-type-generation.hpp"

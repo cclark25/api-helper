@@ -1,8 +1,8 @@
 import {
 	bindingHelpersModuleName,
 	moduleResolutionPath
-} from './binding-helpers';
-import BindingHelpers from './binding-helpers';
+} from 'binding-helpers';
+import BindingHelpers from 'binding-helpers';
 
 module TypeGeneration {
 	type DataPrimitive =
@@ -97,7 +97,7 @@ module TypeGeneration {
 			typeName: classDefinition.className,
 			typeDef: classDef,
 			typeString: (name, typeString, dependencies) =>
-				`declare class ${name} extends ${`( ${bindingHelpersModuleName}.${BindingHelpers.APIClass.name} as { new(): ( ${dependencies.classInstanceType.compiledType} ) } )`} { ${
+				`class ${name} extends ${`( ${bindingHelpersModuleName}.${BindingHelpers.APIClass.name} as { new(): ( ${dependencies.classInstanceType.compiledType} ) } )`} { ${
 					dependencies.constructorType.compiledType
 				}; }`,
 			dependentTypes: {
@@ -110,19 +110,33 @@ module TypeGeneration {
 	}
 
 	export function declareConst(
+		name: string,
 		def: TypeGenerationInterface
 	): DeclaredTyping<Record<string, DeclaredTyping<any>>> {
 		const result: DeclaredTyping<Record<string, DeclaredTyping<any>>> = {
-			typeName: 'API',
+			typeName: name,
 			typeDef: def,
 			typeString: (name, typeString, dependencies) =>
-				`declare const ${name}: ${dependencies.typing.compiledType} ;`,
+				`const ${name}: ${dependencies.typing.compiledType} ;`,
 			dependentTypes: {
 				typing: generateType(def)
 			}
 		};
 
 		return result;
+	}
+
+	export function declare(name: string, def: TypeGenerationInterface) {
+		switch (def.dataPrimitive) {
+			case 'classType':
+				return declareClass(
+					def as TypeGenerationInterface & {
+						dataPrimitive: 'classType';
+					}
+				);
+			default:
+				return declareConst(name, def);
+		}
 	}
 
 	export function extractAllTypes(
@@ -191,9 +205,9 @@ module TypeGeneration {
 			}
 		}
 
-		const typingFile = `import type ${bindingHelpersModuleName} from '${moduleResolutionPath}';\nmodule ${moduleName} {\n${typeEntries.join(
-			'\n\n\texport '
-		)}\n};\nexport default ${moduleName};`;
+		const typingFile = `import type ${bindingHelpersModuleName} from '${moduleResolutionPath}';\ndeclare module ${moduleName} {\n${typeEntries
+			.map((entry) => `\n\n\texport ${entry}`)
+			.join('\n')}\n};\nexport default ${moduleName};`;
 
 		return typingFile;
 	}
@@ -278,7 +292,7 @@ module TypeGeneration {
 				dependentTypes: {
 					arrayOf: typingParams.arrayOf
 						? generateType(typingParams.arrayOf)
-						: undefined
+						: generateType({ dataPrimitive: 'unknown' })
 				},
 				isLiteralType: true
 			}),
@@ -329,7 +343,8 @@ module TypeGeneration {
 					typingParams as TypeGenerationInterface & {
 						dataPrimitive: 'classType';
 					}
-				)!,
+				) ??
+				generateType({ ...typingParams, dataPrimitive: 'unknown' }),
 			classInstance: () =>
 				generateType({
 					...typingParams,

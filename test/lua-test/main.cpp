@@ -26,7 +26,7 @@ void printTyping(std::string fieldName, std::shared_ptr<APICore::TypeWrapperRoot
 	}
 }
 
-int main()
+int main(int argc, char** argv)
 {
 	try
 	{
@@ -73,6 +73,26 @@ int main()
 																																																																																																																					  {
 																																																																																																																						  return std::shared_ptr<StringContainerWrapper>(new StringContainerWrapper("functionValue return value."));
 																																																																																																																					  }}))}});
+
+		
+		bool generateTypes = false;
+		for(int i = 1; i < argc; i++){
+			std::string param = std::string(argv[i]);
+
+			if(param == "--generateTypes"){
+				generateTypes = true;
+			}
+		}
+
+		if (generateTypes)
+		{
+			std::string typeFile = APILua::generateTypings("API", lua, apiMappings);
+
+			std::cout << typeFile << "\n";
+
+			return 0;
+		}
+
 		APILua::bind<std::string>("API", lua, apiMappings);
 		for (auto mapping : apiMappings)
 		{

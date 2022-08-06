@@ -78,6 +78,20 @@ namespace APICore {
 	template <DataPrimitive D>
 	using data_primitive_to_type = typename _data_primitive_to_type<D>::type;
 
-#undef DATA_PRIMITIVE_VALUES
+
+
+#define D(Primitive, Type)                                   \
+	{ DataPrimitive::Primitive, data_primitive_definition<DataPrimitive::Primitive>::name },
+
+	std::map<DataPrimitive, std::string> dataPrimitiveNameMap = {
+		DATA_PRIMITIVE_VALUES
+	};
+
+#undef D
+
+	template <DataPrimitive D>
+	using data_primitive_to_type = typename _data_primitive_to_type<D>::type;
+
+
 } // namespace APICore
 #endif

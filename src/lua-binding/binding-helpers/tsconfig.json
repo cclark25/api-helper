@@ -1,19 +1,22 @@
 {
-  "compilerOptions": {
-    "target": "esnext",
-    "lib": ["esnext"],
-    "moduleResolution": "node",
-    "paths": {"binding-helpers":["./src/binding-helpers"]},
-    "types": ["node"],
-    "strict": true,
-    "plugins": [{ "name": "typescript-tstl-plugin" }],
-    "outDir": "../../../dist/binding-helpers",
-    "declaration": true,
-    "declarationDir": "../../../dist/binding-helpers/@types/binding-helpers"
-  },
-  "$schema": "https://raw.githubusercontent.com/TypeScriptToLua/vscode-typescript-to-lua/master/tsconfig-schema.json",
-
-  "tstl": {
-    "luaTarget": "5.3"
-  }
+	"compilerOptions": {
+		"target": "esnext",
+		"lib": ["esnext"],
+		"moduleResolution": "node",
+		"paths": {
+			"binding-helpers": ["./src/binding-helpers"],
+			"type-generation": ["./src/type-generation"]
+		},
+		"types": ["node"],
+		"strict": true,
+		"plugins": [{ "name": "typescript-tstl-plugin" }],
+		"outDir": "../../../dist/binding-helpers",
+		"declaration": true,
+		"declarationDir": "../../../dist/binding-helpers/@types/binding-helpers"
+	},
+	"$schema": "https://raw.githubusercontent.com/TypeScriptToLua/vscode-typescript-to-lua/master/tsconfig-schema.json",
+  "include": ["./src/**/*"],
+	"tstl": {
+		"luaTarget": "5.3"
+	}
 }
