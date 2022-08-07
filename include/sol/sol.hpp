@@ -8716,7 +8716,8 @@ namespace sol {
 	// must push a single object to be the error object
 	// NOTE: the VAST MAJORITY of all Lua libraries -- C or otherwise -- expect a string for the type of error
 	// break this convention at your own risk
-	using exception_handler_function = int (*)(lua_State*, optional<const std::exception&>, string_view);
+	using exception_handler_function = 
+	int (*)(lua_State*, optional<const std::exception&>, string_view);
 
 	namespace detail {
 		inline const char (&default_exception_handler_name())[11] {

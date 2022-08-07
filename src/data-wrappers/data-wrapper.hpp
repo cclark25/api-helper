@@ -22,7 +22,7 @@ namespace APICore
         virtual bool canGet() { throw "Not Implemented!"; };
         virtual bool canSet() { throw "Not Implemented!"; };
         virtual DataPrimitive getDataType() { throw "Not Implemented!"; };
-        virtual std::shared_ptr<TypeWrapperRoot> getType() { throw "Not Implemented!"; }
+        virtual std::shared_ptr<TypeWrapperRoot> getType() { return nullptr; }
         virtual ~DataWrapper() {}
     };
 

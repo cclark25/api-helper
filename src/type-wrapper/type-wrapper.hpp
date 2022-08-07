@@ -41,7 +41,7 @@ namespace APICore
     };
 
     template <DataPrimitive D>
-    std::shared_ptr<TypeWrapper<D>> basicType(new TypeWrapper<D>(data_primitive_definition<D>::name, ""));
+    std::shared_ptr<TypeWrapper<D>> basicType(nullptr);
 
     class ObjectTypeWrapper : public TypeWrapper<DataPrimitive::object>
     {

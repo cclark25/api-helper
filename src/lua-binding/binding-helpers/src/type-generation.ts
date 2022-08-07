@@ -83,6 +83,8 @@ module TypeGeneration {
 				constructorType: DeclaredTyping<any>;
 		  }>
 		| undefined {
+		console.log(typeof classDef);
+		console.log(typeof classDef.classDefinition);
 		let classDefinition = classDef.classDefinition;
 		if (!classDefinition) {
 			return undefined;
@@ -129,11 +131,13 @@ module TypeGeneration {
 	export function declare(name: string, def: TypeGenerationInterface) {
 		switch (def.dataPrimitive) {
 			case 'classType':
-				return declareClass(
+				const createdClass = declareClass(
 					def as TypeGenerationInterface & {
 						dataPrimitive: 'classType';
 					}
 				);
+
+				return createdClass;
 			default:
 				return declareConst(name, def);
 		}
@@ -213,6 +217,9 @@ module TypeGeneration {
 	}
 
 	export function generateType(typingParams: TypeGenerationInterface) {
+		if (!typingParams) {
+			typingParams = { dataPrimitive: 'unknown' };
+		}
 		const mappers: Record<
 			typeof typingParams['dataPrimitive'],
 			() => DeclaredTyping<any>

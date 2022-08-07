@@ -26,7 +26,11 @@ void printTyping(std::string fieldName, std::shared_ptr<APICore::TypeWrapperRoot
 	}
 }
 
-int main(int argc, char** argv)
+int handler(lua_State *s, sol::optional<const std::exception &> o, sol::string_view v) { 
+	return -1;
+};
+
+int main(int argc, char **argv)
 {
 	try
 	{
@@ -74,18 +78,22 @@ int main(int argc, char** argv)
 																																																																																																																						  return std::shared_ptr<StringContainerWrapper>(new StringContainerWrapper("functionValue return value."));
 																																																																																																																					  }}))}});
 
-		
 		bool generateTypes = false;
-		for(int i = 1; i < argc; i++){
+		for (int i = 1; i < argc; i++)
+		{
 			std::string param = std::string(argv[i]);
 
-			if(param == "--generateTypes"){
+			if (param == "--generateTypes")
+			{
 				generateTypes = true;
 			}
 		}
 
 		if (generateTypes)
 		{
+
+			lua.set_exception_handler(handler);
+			
 			std::string typeFile = APILua::generateTypings("API", lua, apiMappings);
 
 			std::cout << typeFile << "\n";
