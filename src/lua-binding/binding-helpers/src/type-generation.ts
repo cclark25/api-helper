@@ -83,8 +83,6 @@ module TypeGeneration {
 				constructorType: DeclaredTyping<any>;
 		  }>
 		| undefined {
-		console.log(typeof classDef);
-		console.log(typeof classDef.classDefinition);
 		let classDefinition = classDef.classDefinition;
 		if (!classDefinition) {
 			return undefined;
@@ -310,6 +308,7 @@ module TypeGeneration {
 					if (!typingParams.functionDefinition) {
 						return '( ()=>unknown )';
 					}
+
 					const parameterString = `( ${typingParams.functionDefinition.parameters
 						.map(
 							(p) =>

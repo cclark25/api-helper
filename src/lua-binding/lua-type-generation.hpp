@@ -16,6 +16,8 @@ namespace APILua
     sol::table makeTypingObjectFromTypeDefinition(sol::state &state, std::shared_ptr<TypeWrapper<D>> typing);
     template <>
     sol::table makeTypingObjectFromTypeDefinition(sol::state &state, std::shared_ptr<TypeWrapper<DataPrimitive::function>> typing);
+    template <>
+    sol::table makeTypingObjectFromTypeDefinition(sol::state &state, std::shared_ptr<TypeWrapper<DataPrimitive::object>> typing);
 
     template <DataPrimitive D>
     sol::table makeTypingObjectFromDataWrapper(sol::state &state, std::shared_ptr<DataWrapperSub<D>> data);
@@ -48,14 +50,86 @@ namespace APILua
 
         return typeDefinitionTable;
     }
+
+    template <>
+    sol::table makeTypingObjectFromTypeDefinition<DataPrimitive::unknown>(sol::state &state, std::shared_ptr<TypeWrapper<DataPrimitive::unknown>> typing)
+    {
+        DataPrimitive prim = typing == nullptr ? DataPrimitive::unknown : typing->getPrimitiveType();
+
+        if (prim == DataPrimitive::unknown)
+        {
+            auto typeDefinitionTable = sol::table(state, sol::new_table());
+            typeDefinitionTable["dataPrimitive"] = dataPrimitiveNameMap.at(prim);
+
+            return typeDefinitionTable;
+        }
+
+#define D(Primitive, Type)                                                                                                                \
+    case DataPrimitive::Primitive:                                                                                                        \
+    {                                                                                                                                     \
+        std::shared_ptr<TypeWrapper<DataPrimitive::Primitive>> castTyping = CastSharedPtr(TypeWrapper<DataPrimitive::Primitive>, typing); \
+        return makeTypingObjectFromTypeDefinition<DataPrimitive::Primitive>(state, castTyping);                                           \
+    }                                                                                                                                     \
+    break;
+
+        switch (prim)
+        {
+            DATA_PRIMITIVE_VALUES
+        }
+
+        throw "Type generation failed for unknown type!";
+#undef D
+    }
+
     template <>
     sol::table makeTypingObjectFromTypeDefinition(sol::state &state, std::shared_ptr<TypeWrapper<DataPrimitive::function>> typing)
     {
-        auto castAsUnknown = CastSharedPtr(TypeWrapper<DataPrimitive::unknown>, typing);
-        sol::table typeDefinitionTable = makeTypingObjectFromTypeDefinition<DataPrimitive::unknown>(state, castAsUnknown);
+        auto asUnknown = std::shared_ptr<TypeWrapper<DataPrimitive::unknown>>(new TypeWrapper<DataPrimitive::unknown>(typing));
+        sol::table typeDefinitionTable = makeTypingObjectFromTypeDefinition<DataPrimitive::unknown>(state, asUnknown);
+        typeDefinitionTable["dataPrimitive"] = dataPrimitiveNameMap.at(DataPrimitive::function);
 
-        // TODO: add fields for function typing.
-        assasfasf
+        sol::table functionDefinition = sol::table(state, sol::new_table());
+        sol::table parameters = sol::table(state, sol::new_table());
+        sol::table returnType = makeTypingObjectFromTypeDefinition<DataPrimitive::unknown>(state, typing->getReturnType());
+
+        size_t parameterIndex = 1;
+        for (auto param : typing->getParams())
+        {
+            sol::table paramElement = sol::table(state, sol::new_table());
+            sol::table paramTyping = makeTypingObjectFromTypeDefinition<DataPrimitive::unknown>(state, param);
+
+            paramElement["type"] = paramTyping;
+
+            paramElement["parameterName"] = param->getTypeName();
+            parameters[parameterIndex] = paramElement;
+
+            parameterIndex++;
+        }
+
+        functionDefinition["parameters"] = parameters;
+        functionDefinition["returnType"] = returnType;
+
+        typeDefinitionTable["functionDefinition"] = functionDefinition;
+
+        return typeDefinitionTable;
+    }
+
+    template <>
+    sol::table makeTypingObjectFromTypeDefinition(sol::state &state, std::shared_ptr<TypeWrapper<DataPrimitive::object>> typing)
+    {
+        auto asUnknown = std::shared_ptr<TypeWrapper<DataPrimitive::unknown>>(new TypeWrapper<DataPrimitive::unknown>(typing));
+        sol::table typeDefinitionTable = makeTypingObjectFromTypeDefinition<DataPrimitive::unknown>(state, asUnknown);
+        typeDefinitionTable["dataPrimitive"] = dataPrimitiveNameMap.at(DataPrimitive::object);
+
+        sol::table objectFields = sol::table(state, sol::new_table());
+
+        for (std::pair<std::string, std::shared_ptr<APICore::TypeWrapper<APICore::unknown>>> param : typing->getFields())
+        {
+            sol::table fieldTyping = makeTypingObjectFromTypeDefinition<DataPrimitive::unknown>(state, param.second);
+            objectFields[param.first] = fieldTyping;
+        }
+
+        typeDefinitionTable["objectFields"] = objectFields;
 
         return typeDefinitionTable;
     }

@@ -18,9 +18,9 @@ namespace APICore
         virtual DataPrimitive getDataType() { return DataPrimitive::object; };
         virtual Data<DataPrimitive::object> get() { throw "Not Implemented!"; };
         virtual void set(Data<DataPrimitive::object> data) { throw "Not Implemented!"; };
-        virtual std::shared_ptr<TypeWrapperRoot> getType()
+        virtual std::shared_ptr<TypeWrapper<DataPrimitive::unknown>> getType()
         {
-            std::map<std::string, std::shared_ptr<TypeWrapperRoot>> fields;
+            std::map<std::string, std::shared_ptr<TypeWrapper<DataPrimitive::unknown>>> fields;
             for(auto field : *this->get()){
                 fields.insert_or_assign(field.first, field.second->getType());
             }

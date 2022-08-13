@@ -22,7 +22,7 @@ namespace APICore
         virtual bool canGet() { throw "Not Implemented!"; };
         virtual bool canSet() { throw "Not Implemented!"; };
         virtual DataPrimitive getDataType() { throw "Not Implemented!"; };
-        virtual std::shared_ptr<TypeWrapperRoot> getType() { return nullptr; }
+        virtual std::shared_ptr<TypeWrapper<DataPrimitive::unknown>> getType() { return nullptr; }
         virtual ~DataWrapper() {}
     };
 
@@ -33,7 +33,7 @@ namespace APICore
         virtual DataPrimitive getDataType() { return T; };
         virtual Data<T> get() { throw "Not Implemented!"; };
         virtual void set(Data<T> data) { throw "Not Implemented!"; };
-        virtual std::shared_ptr<TypeWrapperRoot> getType()
+        virtual std::shared_ptr<TypeWrapper<DataPrimitive::unknown>> getType()
         {
             return basicType<T>;
         }
@@ -43,11 +43,13 @@ namespace APICore
     class DataContainerWrapper : public DataWrapperSub<T>
     {
         std::shared_ptr<data_primitive_to_type<T>> internalData;
+        std::shared_ptr<TypeWrapper<T>> typing;
 
     public:
-        DataContainerWrapper<T>(data_primitive_to_type<T> data)
+        DataContainerWrapper<T>(data_primitive_to_type<T> data, std::shared_ptr<TypeWrapper<T>> typing = nullptr)
         {
             this->internalData = std::shared_ptr<data_primitive_to_type<T>>(new data_primitive_to_type<T>(data));
+            this->typing = typing;
         }
 
         virtual bool canGet() { return true; }
@@ -60,6 +62,17 @@ namespace APICore
         virtual void set(Data<T> data)
         {
             *(this->internalData) = *(CastSharedPtr(data_primitive_to_type<T>, data));
+        }
+
+        virtual std::shared_ptr<TypeWrapper<DataPrimitive::unknown>> getType()
+        {
+            if (this->typing == nullptr)
+            {
+                return basicType<T>;
+            }
+            else {
+                return this->typing;
+            }
         }
     };
 

@@ -3,6 +3,7 @@
 // #include "../../src/lua-binding/lua-wrappers-binding.hpp"
 #include "../../src/lua-binding/binding-types/all.hpp"
 #include "../../src/data-wrappers/data-wrapper.hpp"
+#include "./data/test-function.hpp"
 #include <lualib.h>
 #include <iostream>
 #include <cassert>
@@ -18,7 +19,7 @@ void printTyping(std::string fieldName, std::shared_ptr<APICore::TypeWrapperRoot
 	std::cout << padding << "\tDescription: " << typing->getDescription() << std::endl;
 	if (typing->getPrimitiveType() == DataPrimitive::object)
 	{
-		auto objectTyping = CastSharedPtr(ObjectTypeWrapper, typing);
+		auto objectTyping = CastSharedPtr(TypeWrapper<DataPrimitive::object>, typing);
 		for (auto field : objectTyping->getFields())
 		{
 			printTyping(field.first, field.second, padding + "\t");
@@ -26,7 +27,8 @@ void printTyping(std::string fieldName, std::shared_ptr<APICore::TypeWrapperRoot
 	}
 }
 
-int handler(lua_State *s, sol::optional<const std::exception &> o, sol::string_view v) { 
+int handler(lua_State *s, sol::optional<const std::exception &> o, sol::string_view v)
+{
 	return -1;
 };
 
@@ -73,10 +75,7 @@ int main(int argc, char **argv)
 			"field2",
 			std::shared_ptr<Int32Wrapper>(new Int32ContainerWrapper(15)));
 
-		auto apiMappings = std::map<std::string, std::shared_ptr<DataWrapper>>({{"TestClass", classDefinition}, {"testClassInstance", classInstance}, {"stringValue", std::shared_ptr<StringContainerWrapper>(new StringContainerWrapper("Test string."))}, {"intValue", std::shared_ptr<Int32ContainerWrapper>(new Int32ContainerWrapper(0))}, {"objectValue", objectValue}, {"arrayValue", array}, {"functionValue", std::shared_ptr<FunctionWrapper>(new FunctionContainerWrapper({[](FunctionInternalType::FunctionParams params)
-																																																																																																																					  {
-																																																																																																																						  return std::shared_ptr<StringContainerWrapper>(new StringContainerWrapper("functionValue return value."));
-																																																																																																																					  }}))}});
+		auto apiMappings = std::map<std::string, std::shared_ptr<DataWrapper>>({{"TestClass", classDefinition}, {"testClassInstance", classInstance}, {"stringValue", std::shared_ptr<StringContainerWrapper>(new StringContainerWrapper("Test string."))}, {"intValue", std::shared_ptr<Int32ContainerWrapper>(new Int32ContainerWrapper(0))}, {"objectValue", objectValue}, {"arrayValue", array}, {"functionValue", functionExampleDefinition}});
 
 		bool generateTypes = false;
 		for (int i = 1; i < argc; i++)
@@ -93,7 +92,7 @@ int main(int argc, char **argv)
 		{
 
 			lua.set_exception_handler(handler);
-			
+
 			std::string typeFile = APILua::generateTypings("API", lua, apiMappings);
 
 			std::cout << typeFile << "\n";
