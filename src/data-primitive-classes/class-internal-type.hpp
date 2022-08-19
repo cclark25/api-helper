@@ -16,7 +16,7 @@ namespace APICore {
 		};
 
 		std::string className;
-		std::function<ObjectMap(FunctionInternalType::FunctionParams)> constructor;
+		std::shared_ptr<DataWrapperSub<DataPrimitive::function>> constructor;
 		std::map<std::string, std::shared_ptr<DataWrapper>> staticFields;
 		/**
 		 * @brief

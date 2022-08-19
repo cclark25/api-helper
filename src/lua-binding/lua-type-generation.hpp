@@ -18,6 +18,8 @@ namespace APILua
     sol::table makeTypingObjectFromTypeDefinition(sol::state &state, std::shared_ptr<TypeWrapper<DataPrimitive::function>> typing);
     template <>
     sol::table makeTypingObjectFromTypeDefinition(sol::state &state, std::shared_ptr<TypeWrapper<DataPrimitive::object>> typing);
+    template <>
+    sol::table makeTypingObjectFromTypeDefinition(sol::state &state, std::shared_ptr<TypeWrapper<DataPrimitive::classType>> typing);
 
     template <DataPrimitive D>
     sol::table makeTypingObjectFromDataWrapper(sol::state &state, std::shared_ptr<DataWrapperSub<D>> data);
@@ -134,6 +136,30 @@ namespace APILua
         return typeDefinitionTable;
     }
 
+    template <>
+    sol::table makeTypingObjectFromTypeDefinition(sol::state &state, std::shared_ptr<ClassTypeWrapper> typing)
+    {
+        auto asUnknown = std::shared_ptr<TypeWrapper<DataPrimitive::unknown>>(new TypeWrapper<DataPrimitive::unknown>(typing));
+        sol::table typeDefinitionTable = makeTypingObjectFromTypeDefinition<DataPrimitive::unknown>(state, asUnknown);
+        typeDefinitionTable["dataPrimitive"] = dataPrimitiveNameMap.at(DataPrimitive::classType);
+
+        auto classDefinition = sol::table(state, sol::new_table());
+
+        auto staticTyping = typing->getStaticType();
+        auto instanceTyping = typing->getInstanceType();
+        auto constructor = typing->getConstructor();
+
+        classDefinition["classStaticType"] = makeTypingObjectFromTypeDefinition<DataPrimitive::object>(state, staticTyping);
+        classDefinition["constructor"] = makeTypingObjectFromTypeDefinition<DataPrimitive::function>(state, constructor);
+        classDefinition["classInstanceType"] = classDefinition["constructor"]["functionDefinition"]["returnType"];
+        classDefinition["constructor"]["functionDefinition"]["isConstructor"] = true;
+        classDefinition["className"] = typing->getTypeName();
+
+        typeDefinitionTable["classDefinition"] = classDefinition;
+
+        return typeDefinitionTable;
+    }
+
     template <DataPrimitive D>
     sol::table makeTypingObjectFromDataWrapper(sol::state &state, std::shared_ptr<DataWrapperSub<D>> data)
     {
@@ -184,9 +210,16 @@ namespace APILua
         sol::table typeDefinitionTable = makeTypingObject<DataPrimitive::unknown>(state, unknownWrapper);
 
         sol::table classDefinition = sol::table(state, sol::new_table());
+        auto classData = data->get();
 
-        classDefinition["className"] = data->get()->className;
-        // TODO: add type generation for class instance and constructor fields.
+        classDefinition["className"] = classData->className;
+
+        auto constructorTyping = makeTypingObject<DataPrimitive::function>(state, classData->constructor);
+        classDefinition["constructor"] = constructorTyping;
+        classDefinition["constructor"]["functionDefinition"]["isConstructor"] = true;
+
+        classDefinition["classInstanceType"] = constructorTyping["functionDefinition"]["returnType"];
+        // classDefinition["classStaticType"] = ;
 
         typeDefinitionTable["classDefinition"] = classDefinition;
         return typeDefinitionTable;

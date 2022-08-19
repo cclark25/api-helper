@@ -33,6 +33,9 @@ module TypeGeneration {
 			classInstanceType: TypeGenerationInterface & {
 				dataPrimitive: 'classInstance';
 			};
+			classStaticType: TypeGenerationInterface & {
+				dataPrimitive: 'object';
+			};
 			constructor: TypeGenerationInterface & {
 				dataPrimitive: 'function';
 			};
@@ -80,6 +83,7 @@ module TypeGeneration {
 	):
 		| DeclaredTyping<{
 				classInstanceType: DeclaredTyping<any>;
+				classStaticType: DeclaredTyping<any>;
 				constructorType: DeclaredTyping<any>;
 		  }>
 		| undefined {
@@ -89,19 +93,23 @@ module TypeGeneration {
 		}
 
 		const instance = generateType(classDefinition.classInstanceType);
+		const staticType = generateType(classDefinition.classStaticType);
 
 		const result: DeclaredTyping<{
 			classInstanceType: DeclaredTyping<any>;
+			classStaticType: DeclaredTyping<any>;
 			constructorType: DeclaredTyping<any>;
 		}> = {
 			typeName: classDefinition.className,
 			typeDef: classDef,
-			typeString: (name, typeString, dependencies) =>
-				`class ${name} extends ${`( ${bindingHelpersModuleName}.${BindingHelpers.APIClass.name} as { new(): ( ${dependencies.classInstanceType.compiledType} ) } )`} { ${
+			typeString: (name, typeString, dependencies) => {
+				return `class ${name} extends ${`( ${bindingHelpersModuleName}.${BindingHelpers.APIClass.name} as { new(): ( ${dependencies.classInstanceType.compiledType} ) } & ${dependencies.classStaticType.compiledType} )`} { ${
 					dependencies.constructorType.compiledType
-				}; }`,
+				}; }`;
+			},
 			dependentTypes: {
 				classInstanceType: instance,
+				classStaticType: staticType,
 				constructorType: generateType(classDefinition.constructor)
 			}
 		};
@@ -250,38 +258,41 @@ module TypeGeneration {
 				dependentTypes: {},
 				isLiteralType: true
 			}),
-			object: () => ({
-				typeName: typingParams.dataPrimitive,
-				typeDef: typingParams,
-				typeString: (name, typeString, dependencies) => {
-					let fieldTypesString = '';
-					let objectFields: Exclude<
-						TypeGenerationInterface['objectFields'],
-						undefined
-					> = {};
-					if (typingParams.objectFields) {
-						objectFields = typingParams.objectFields;
-					}
+			object: () => {
+				console.log('object: ' + typeof typingParams.objectFields);
+				return {
+					typeName: typingParams.dataPrimitive,
+					typeDef: typingParams,
+					typeString: (name, typeString, dependencies) => {
+						let fieldTypesString = '';
+						let objectFields: Exclude<
+							TypeGenerationInterface['objectFields'],
+							undefined
+						> = {};
+						if (typingParams.objectFields) {
+							objectFields = typingParams.objectFields;
+						}
 
-					for (const [fieldName, field] of Object.entries(
-						objectFields
-					)) {
-						fieldTypesString += `"${fieldName}": ( ${dependencies[fieldName].compiledType} ); `;
-					}
-					return `{ ${fieldTypesString} }`;
-				},
-				dependentTypes: Object.fromEntries(
-					Object.entries(
-						typingParams.objectFields
-							? typingParams.objectFields
-							: {}
-					).map(([fieldName, field]) => [
-						fieldName,
-						generateType(field)
-					])
-				),
-				isLiteralType: true
-			}),
+						for (const [fieldName, field] of Object.entries(
+							objectFields
+						)) {
+							fieldTypesString += `"${fieldName}": ( ${dependencies[fieldName].compiledType} ); `;
+						}
+						return `{ ${fieldTypesString} }`;
+					},
+					dependentTypes: Object.fromEntries(
+						Object.entries(
+							typingParams.objectFields
+								? typingParams.objectFields
+								: {}
+						).map(([fieldName, field]) => [
+							fieldName,
+							generateType(field)
+						])
+					),
+					isLiteralType: true
+				};
+			},
 
 			array: () => ({
 				typeName: typingParams.dataPrimitive,
@@ -351,11 +362,13 @@ module TypeGeneration {
 					}
 				) ??
 				generateType({ ...typingParams, dataPrimitive: 'unknown' }),
-			classInstance: () =>
-				generateType({
+			classInstance: () => {
+				console.log('classInstance: ' + typingParams.dataPrimitive);
+				return generateType({
 					...typingParams,
 					dataPrimitive: 'object'
-				})
+				});
+			}
 		};
 
 		const mapped = mappers[typingParams.dataPrimitive]();

@@ -4,6 +4,7 @@
 #include "../../src/lua-binding/binding-types/all.hpp"
 #include "../../src/data-wrappers/data-wrapper.hpp"
 #include "./data/test-function.hpp"
+#include "./data/test-class.hpp"
 #include <lualib.h>
 #include <iostream>
 #include <cassert>
@@ -45,21 +46,8 @@ int main(int argc, char **argv)
 		array->push(std::shared_ptr<DataWrapper>(new StringContainerWrapper("Test string 2.")));
 		array->push(std::shared_ptr<DataWrapper>(new StringContainerWrapper("Test string 3.")));
 
-		auto classStaticFields = std::map<std::string, std::shared_ptr<DataWrapper>>();
-		classStaticFields.insert_or_assign(
-			"s1",
-			std::shared_ptr<StringWrapper>(new StringContainerWrapper("Static field string.")));
-
-		auto classConstructor = [](FunctionInternalType::FunctionParams params)
-		{
-			auto obj = std::shared_ptr<ObjectWrapper>(new ObjectContainerWrapper());
-			obj->setField(
-				"f1",
-				std::shared_ptr<StringWrapper>(new StringContainerWrapper("Member string.")));
-			return std::map<std::string, std::shared_ptr<DataWrapper>>({{"f1", std::shared_ptr<StringWrapper>(new StringContainerWrapper("Member string."))}});
-		};
-
-		auto classDefinition = std::shared_ptr<ClassWrapper>(new ClassContainerWrapper({"TestClass", classConstructor, classStaticFields}));
+		
+		
 		auto classInstanceData = std::shared_ptr<ObjectWrapper>(new ObjectContainerWrapper());
 		classInstanceData->setField(
 			"f1",

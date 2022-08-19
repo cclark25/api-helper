@@ -21,7 +21,6 @@ namespace APILua
         if (wrapper->canGet())
         {
             APICore::Data<APICore::classType> classPtr = wrapper->get();
-            auto x = 0;
             table["get"] = [wrapper, &state]()
             {
                 APICore::Data<APICore::classType> classPtr = wrapper->get();
@@ -53,12 +52,21 @@ namespace APILua
                         wrappedParams.push_back(paramWrapper);
                         continue;
                     }
-                    auto x = &classPtr->constructor;
-                    auto constructorResults = classPtr->constructor(wrappedParams);
+
+                    auto constructor = classPtr->constructor->get();
+                    auto constructorResults = constructor->function(wrappedParams);
+                    if (~(
+                            constructorResults->getDataType() == DataPrimitive::object ||
+                            constructorResults->getDataType() == DataPrimitive::classInstance))
+                    {
+                        throw "Class constructor did not return a classInstance or an object type.";
+                    }
+
+                    auto constructorResultsObject = CastSharedPtr(DataWrapperSub<DataPrimitive::object>, constructorResults);
 
                     sol::table resultTable = sol::table(state, sol::new_table());
 
-                    for (auto field : constructorResults)
+                    for (auto field : *constructorResultsObject->get())
                     {
                         auto value = CastSharedPtr(DataWrapperSub<DataPrimitive::unknown>, field.second);
                         resultTable[field.first] = createBindingObject<DataPrimitive::unknown>(state, value);

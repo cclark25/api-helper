@@ -35,7 +35,7 @@ namespace APICore
         virtual void set(Data<T> data) { throw "Not Implemented!"; };
         virtual std::shared_ptr<TypeWrapper<DataPrimitive::unknown>> getType()
         {
-            return basicType<T>;
+            return makeBasicType<T>();
         }
     };
 
@@ -68,7 +68,7 @@ namespace APICore
         {
             if (this->typing == nullptr)
             {
-                return basicType<T>;
+                return makeBasicType<T>();
             }
             else {
                 return this->typing;
