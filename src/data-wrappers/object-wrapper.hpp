@@ -21,10 +21,11 @@ namespace APICore
         virtual std::shared_ptr<TypeWrapper<DataPrimitive::unknown>> getType()
         {
             std::map<std::string, std::shared_ptr<TypeWrapper<DataPrimitive::unknown>>> fields;
-            for(auto field : *this->get()){
+            for (auto field : *this->get())
+            {
                 fields.insert_or_assign(field.first, field.second->getType());
             }
-            return std::shared_ptr<ObjectTypeWrapper>(new ObjectTypeWrapper("object","", fields));
+            return std::shared_ptr<ObjectTypeWrapper>(new ObjectTypeWrapper("object", "", fields));
         }
         virtual std::shared_ptr<DataWrapper> getField(std::string key)
         {
@@ -48,15 +49,20 @@ namespace APICore
         virtual bool canGet() { return true; }
         virtual bool canSet() { return true; }
 
-        DataContainerWrapper<DataPrimitive::object>(std::shared_ptr<ObjectMap> data)
+        DataContainerWrapper<DataPrimitive::object>(
+            std::shared_ptr<ObjectMap> data,
+            std::shared_ptr<ObjectTypeWrapper> objectTyping = nullptr) : objectTyping(objectTyping)
         {
             this->objectData = data;
         }
-        DataContainerWrapper<DataPrimitive::object>(ObjectMap &data)
+        DataContainerWrapper<DataPrimitive::object>(
+            ObjectMap &data,
+            std::shared_ptr<ObjectTypeWrapper> objectTyping = nullptr) : objectTyping(objectTyping)
         {
             this->objectData = std::shared_ptr<ObjectMap>(new ObjectMap(data));
         }
-        DataContainerWrapper<DataPrimitive::object>()
+        DataContainerWrapper<DataPrimitive::object>(std::shared_ptr<ObjectTypeWrapper> objectTyping = nullptr)
+            : objectTyping(objectTyping)
         {
             this->objectData = std::shared_ptr<ObjectMap>(new ObjectMap());
         }
@@ -91,13 +97,13 @@ namespace APICore
             mappedFields->erase(key);
             mappedFields->insert_or_assign(key, value);
         }
-    
 
+        virtual std::shared_ptr<TypeWrapper<DataPrimitive::unknown>> getType(){
+            return this->objectTyping;
+        }
     };
 
-    class ObjectContainerWrapper : public DataContainerWrapper<DataPrimitive::object>
-    {
-    };
+    using ObjectContainerWrapper = DataContainerWrapper<DataPrimitive::object>;
 }
 
 #endif

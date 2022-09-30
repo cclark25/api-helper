@@ -90,8 +90,8 @@ namespace APICore
     using FunctionContainerWrapper = DataContainerWrapper<DataPrimitive::function>;
     using ClassWrapper = DataWrapperSub<DataPrimitive::classType>;
     using ClassContainerWrapper = DataContainerWrapper<DataPrimitive::classType>;
-    using ClassInstanceWrapper = DataWrapperSub<DataPrimitive::classInstance>;
-    using ClassInstanceContainerWrapper = DataContainerWrapper<DataPrimitive::classInstance>;
+    // using ClassInstanceWrapper = DataWrapperSub<DataPrimitive::classInstance>;
+    // using ClassInstanceContainerWrapper = DataContainerWrapper<DataPrimitive::classInstance>;
 }
 
 #include "./object-wrapper.hpp"

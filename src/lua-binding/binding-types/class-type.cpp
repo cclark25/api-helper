@@ -55,11 +55,10 @@ namespace APILua
 
                     auto constructor = classPtr->constructor->get();
                     auto constructorResults = constructor->function(wrappedParams);
-                    if (~(
-                            constructorResults->getDataType() == DataPrimitive::object ||
-                            constructorResults->getDataType() == DataPrimitive::classInstance))
+                    if (
+                            constructorResults->getDataType() != DataPrimitive::object)
                     {
-                        throw "Class constructor did not return a classInstance or an object type.";
+                        throw "Class constructor did not return an object type.";
                     }
 
                     auto constructorResultsObject = CastSharedPtr(DataWrapperSub<DataPrimitive::object>, constructorResults);
@@ -128,30 +127,30 @@ namespace APILua
         return table;
     }
 
-    template <>
-    sol::table createBindingObject<DataPrimitive::classInstance>(sol::state &state, std::shared_ptr<DataWrapperSub<DataPrimitive::classInstance>> wrapper)
-    {
-        sol::table table = sol::table(state, sol::new_table());
+    // template <>
+    // sol::table createBindingObject<DataPrimitive::classInstance>(sol::state &state, std::shared_ptr<DataWrapperSub<DataPrimitive::classInstance>> wrapper)
+    // {
+    //     sol::table table = sol::table(state, sol::new_table());
 
-        if (wrapper->canGet() && wrapper->get()->data->canGet())
-        {
-            table["get"] = [wrapper, &state]()
-            {
-                auto instanceData = wrapper->get();
-                auto classReference = instanceData->classDef->get();
-                if (classReference->externalSourceKeyName != LUA_SOURCE_FUNCTION_KEY || classReference->externalSource == nullptr)
-                {
-                    createBindingObject<DataPrimitive::classType>(state, instanceData->classDef)["get"]();
-                }
+    //     if (wrapper->canGet() && wrapper->get()->data->canGet())
+    //     {
+    //         table["get"] = [wrapper, &state]()
+    //         {
+    //             auto instanceData = wrapper->get();
+    //             auto classReference = instanceData->classDef->get();
+    //             if (classReference->externalSourceKeyName != LUA_SOURCE_FUNCTION_KEY || classReference->externalSource == nullptr)
+    //             {
+    //                 createBindingObject<DataPrimitive::classType>(state, instanceData->classDef)["get"]();
+    //             }
 
-                auto data = instanceData->data->get();
+    //             auto data = instanceData->data->get();
 
-                auto bound = classReference->externalSource->bindAs(data);
+    //             auto bound = classReference->externalSource->bindAs(data);
 
-                return *CastSharedPtr(sol::table, bound);
-            };
-        }
+    //             return *CastSharedPtr(sol::table, bound);
+    //         };
+    //     }
 
-        return table;
-    }
+    //     return table;
+    // }
 }

@@ -31,27 +31,13 @@
 
         {
             "name": "type generation",
-            "type": "cppdbg",
+            "type": "node",
             "request": "launch",
-            "program": "${workspaceFolder}/dist/engine",
-            "args": ["--generateTypes"],
-            "stopAtEntry": false,
-            "cwd": "${workspaceFolder}/dist",
-            "environment": [],
-            "externalConsole": false,
-            "MIMode": "gdb",
-            "setupCommands": [
-                {
-                    "description": "Enable pretty-printing for gdb",
-                    "text": "-enable-pretty-printing",
-                    "ignoreFailures": true
-                },
-                {
-                    "description":  "Set Disassembly Flavor to Intel",
-                    "text": "-gdb-set disassembly-flavor intel",
-                    "ignoreFailures": true
-                }
-            ]
+            "program": "${workspaceFolder}/src/lua-binding/type-helpers/src/type-generation.ts",
+            "args": [],
+            "cwd": "${workspaceFolder}/src/lua-binding/type-helpers/",
+            "preLaunchTask": "tsc: build - tsconfig.json",
+            "outFiles": ["${workspaceFolder}/dist/type-helpers" ]
         }
 
     ]

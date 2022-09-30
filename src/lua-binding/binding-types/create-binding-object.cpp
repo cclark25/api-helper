@@ -28,8 +28,8 @@ namespace APILua
     sol::table createBindingObject(sol::state &state, std::shared_ptr<DataWrapperSub<DataPrimitive::array>> wrapper);
     template <>
     sol::table createBindingObject(sol::state &state, std::shared_ptr<DataWrapperSub<DataPrimitive::classType>> wrapper);
-    template <>
-    sol::table createBindingObject(sol::state &state, std::shared_ptr<DataWrapperSub<DataPrimitive::classInstance>> wrapper);
+    // template <>
+    // sol::table createBindingObject(sol::state &state, std::shared_ptr<DataWrapperSub<DataPrimitive::classInstance>> wrapper);
 
     template <DataPrimitive D>
     sol::table createBindingObject(sol::state &state, std::shared_ptr<DataWrapperSub<D>> wrapper)
@@ -75,7 +75,7 @@ namespace APILua
             CaseData(function);
             CaseData(array);
             CaseData(classType);
-            CaseData(classInstance);
+            // CaseData(classInstance);
 
         default:
             throw sol::error("Could not bind type.");

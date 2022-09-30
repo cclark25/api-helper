@@ -161,6 +161,7 @@ do
         return result
     end
     function TypeGeneration.extractAllTypes(self, types)
+        print('Here')
         local allTypes = {__TS__Unpack(types)}
         for ____, typing in ipairs(types) do
             allTypes[#allTypes + 1] = __TS__Unpack(TypeGeneration.extractAllTypes(

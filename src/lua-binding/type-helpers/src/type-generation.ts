@@ -1,11 +1,19 @@
 import {
 	bindingHelpersModuleName,
 	moduleResolutionPath
-} from 'binding-helpers';
-import BindingHelpers from 'binding-helpers';
+} from 'binding-helpers/src/binding-helpers';
+import BindingHelpers from 'binding-helpers/src/binding-helpers';
+import * as dom from 'dts-dom';
+import {
+	constMappers,
+	declaredTypes,
+	f,
+	objectFieldMappers
+} from './data-primitive-dom';
+import * as fs from 'fs';
 
 module TypeGeneration {
-	type DataPrimitive =
+	export type DataPrimitive =
 		| 'string'
 		| 'int32'
 		| 'null'
@@ -13,12 +21,20 @@ module TypeGeneration {
 		| 'function'
 		| 'array'
 		| 'classType'
-		| 'classInstance'
 		| 'unknown';
 
 	export type TypeGenerationInterface = {
+		name: string;
 		dataPrimitive: DataPrimitive;
-		objectFields?: { [fieldName: string]: TypeGenerationInterface };
+		flags?: dom.DeclarationFlags;
+		objectDefinition?: {
+			instanceOf?: TypeGenerationInterface & {
+				dataPrimitive: 'classType';
+			};
+			objectFields: {
+				[fieldName: string]: TypeGenerationInterface;
+			};
+		};
 		arrayOf?: TypeGenerationInterface;
 		functionDefinition?: {
 			parameters: {
@@ -31,7 +47,7 @@ module TypeGeneration {
 		classDefinition?: {
 			className: string;
 			classInstanceType: TypeGenerationInterface & {
-				dataPrimitive: 'classInstance';
+				dataPrimitive: 'object';
 			};
 			classStaticType: TypeGenerationInterface & {
 				dataPrimitive: 'object';
@@ -39,6 +55,8 @@ module TypeGeneration {
 			constructor: TypeGenerationInterface & {
 				dataPrimitive: 'function';
 			};
+
+			__declared?: DeclaredTyping<any>;
 		};
 	};
 
@@ -46,6 +64,12 @@ module TypeGeneration {
 		string,
 		DeclaredTyping<S>
 	>;
+	interface CompiledDependency {
+		dependency: DeclaredTyping<any>;
+		compiledType: string;
+		instanceOfType?: string;
+	}
+
 	interface DeclaredTyping<D extends Dependencies<any>> {
 		typeName: string;
 		typeDef: TypeGenerationInterface;
@@ -53,7 +77,7 @@ module TypeGeneration {
 			name: string,
 			typeString: string,
 			dependencies: {
-				[K in keyof D]: { dependency: D[K]; compiledType: string };
+				[K in keyof D]: CompiledDependency;
 			}
 		) => string;
 		dependentTypes: D;
@@ -87,12 +111,14 @@ module TypeGeneration {
 				constructorType: DeclaredTyping<any>;
 		  }>
 		| undefined {
+		if (classDef.classDefinition?.__declared) {
+			return classDef.classDefinition.__declared;
+		}
 		let classDefinition = classDef.classDefinition;
 		if (!classDefinition) {
 			return undefined;
 		}
 
-		const instance = generateType(classDefinition.classInstanceType);
 		const staticType = generateType(classDefinition.classStaticType);
 
 		const result: DeclaredTyping<{
@@ -107,13 +133,17 @@ module TypeGeneration {
 					dependencies.constructorType.compiledType
 				}; }`;
 			},
-			dependentTypes: {
-				classInstanceType: instance,
-				classStaticType: staticType,
-				constructorType: generateType(classDefinition.constructor)
-			}
+
+			dependentTypes: {} as any
 		};
 
+		classDef.classDefinition!.__declared = result;
+		const instance = generateType(classDefinition.classInstanceType);
+		result.dependentTypes = {
+			classInstanceType: instance,
+			classStaticType: staticType,
+			constructorType: generateType(classDefinition.constructor)
+		};
 		return result;
 	}
 
@@ -124,8 +154,13 @@ module TypeGeneration {
 		const result: DeclaredTyping<Record<string, DeclaredTyping<any>>> = {
 			typeName: name,
 			typeDef: def,
-			typeString: (name, typeString, dependencies) =>
-				`const ${name}: ${dependencies.typing.compiledType} ;`,
+			typeString: (name, typeString, dependencies) => {
+				console.log('CONST: ' + dependencies.typing.instanceOfType);
+				return `const ${name}: ${
+					dependencies.typing.instanceOfType ??
+					dependencies.typing.compiledType
+				} ;`;
+			},
 			dependentTypes: {
 				typing: generateType(def)
 			}
@@ -150,16 +185,29 @@ module TypeGeneration {
 	}
 
 	export function extractAllTypes(
-		types: DeclaredTyping<Record<string, DeclaredTyping<any>>>[]
+		types: (DeclaredTyping<Record<string, DeclaredTyping<any>>> & {
+			alreadyDone?: true;
+		})[],
+		skipTypes: DeclaredTyping<any>[] = []
 	): DeclaredTyping<Record<string, DeclaredTyping<any>>>[] {
 		const allTypes: DeclaredTyping<any>[] = [...types];
 
 		for (const typing of types) {
+			if (typing.alreadyDone) {
+				continue;
+			}
+
 			allTypes.push(
 				...(extractAllTypes(
-					Object.values(typing.dependentTypes).filter((v) => v)
+					Object.values(typing.dependentTypes).filter(
+						(v) =>
+							v && !allTypes.includes(v) && !skipTypes.includes(v)
+					),
+					allTypes.concat(skipTypes)
 				) as DeclaredTyping<any>[])
 			);
+
+			typing.alreadyDone = true;
 		}
 
 		return allTypes;
@@ -170,7 +218,7 @@ module TypeGeneration {
 		types: DeclaredTyping<any>[]
 	) {
 		const allTypes: (DeclaredTyping<Record<string, DeclaredTyping<any>>> & {
-			__generatedType?: string;
+			__generatedType?: { literal: string; instanceOf?: string };
 		})[] = [...extractAllTypes(types)];
 
 		const typeEntries: string[] = [];
@@ -178,8 +226,21 @@ module TypeGeneration {
 		for (const t of allTypes) {
 			const dependencies: [string, typeof allTypes[number]][] =
 				Object.entries(t.dependentTypes).filter(([k, v]) => v);
+
+			const instanceOfDependency = t.typeDef.objectDefinition?.instanceOf
+				? dependencies.find(
+						(d) =>
+							d[1].typeDef ===
+							t.typeDef.objectDefinition?.instanceOf
+				  )
+				: undefined;
+
 			const unresolvedDependencies = dependencies.filter(
-				([k, v]) => v.__generatedType === undefined
+				([k, v]) =>
+					v.__generatedType === undefined &&
+					(instanceOfDependency
+						? v !== instanceOfDependency[1]
+						: true)
 			);
 			const resolvedDependencies = dependencies.filter(
 				([k, v]) => v.__generatedType !== undefined
@@ -189,28 +250,38 @@ module TypeGeneration {
 					resolvedDependencies.map(([k, v]) => [
 						k,
 						{
-							compiledType: v.__generatedType!,
+							compiledType: v.__generatedType!.literal,
 							dependency: v
-						}
+						} as CompiledDependency
 					])
 				);
+				// if (t.typeDef.objectDefinition?.instanceOf) {
+				// 	console.log(dump(dependencyMaps));
+				// 	console.log(dump(instanceOfDependency));
+				// }
 				const typeString = t.typeString(
 					t.typeName,
 					'aaaabbbbccccddddd',
 					dependencyMaps
 				);
+
 				if (t.typeDef.dataPrimitive === 'classType') {
-					t.__generatedType = `typeof ${t.typeName}`;
+					t.__generatedType = { literal: `typeof ${t.typeName}` };
 				} else if (t.isLiteralType) {
-					t.__generatedType = typeString;
+					t.__generatedType = { literal: typeString };
 				} else {
-					t.__generatedType = t.typeName;
+					t.__generatedType = { literal: t.typeName };
 				}
 
 				if (!t.isLiteralType) {
 					typeEntries.push(typeString);
 				}
 			} else {
+				console.log(
+					`here: ${unresolvedDependencies
+						.map((u) => u[0])
+						.join(', ')}`
+				);
 				allTypes.push(t);
 			}
 		}
@@ -222,9 +293,21 @@ module TypeGeneration {
 		return typingFile;
 	}
 
+	export function generateTypeFilesV2(
+		moduleName: string,
+		types: TypeGenerationInterface[]
+	) {
+		const module = dom.create.module(moduleName);
+
+		types.forEach((t) => f(t, true));
+		module.members.push(...declaredTypes);
+
+		return dom.emit(module);
+	}
+
 	export function generateType(typingParams: TypeGenerationInterface) {
 		if (!typingParams) {
-			typingParams = { dataPrimitive: 'unknown' };
+			typingParams = { name: '', dataPrimitive: 'unknown' };
 		}
 		const mappers: Record<
 			typeof typingParams['dataPrimitive'],
@@ -259,18 +342,22 @@ module TypeGeneration {
 				isLiteralType: true
 			}),
 			object: () => {
-				console.log('object: ' + typeof typingParams.objectFields);
 				return {
 					typeName: typingParams.dataPrimitive,
 					typeDef: typingParams,
 					typeString: (name, typeString, dependencies) => {
+						if (dependencies.instanceof) {
+							return dependencies.instanceof.compiledType;
+						}
+
 						let fieldTypesString = '';
 						let objectFields: Exclude<
-							TypeGenerationInterface['objectFields'],
+							TypeGenerationInterface['objectDefinition'],
 							undefined
-						> = {};
-						if (typingParams.objectFields) {
-							objectFields = typingParams.objectFields;
+						>['objectFields'] = {};
+						if (typingParams.objectDefinition?.objectFields) {
+							objectFields =
+								typingParams.objectDefinition.objectFields;
 						}
 
 						for (const [fieldName, field] of Object.entries(
@@ -280,16 +367,29 @@ module TypeGeneration {
 						}
 						return `{ ${fieldTypesString} }`;
 					},
-					dependentTypes: Object.fromEntries(
-						Object.entries(
-							typingParams.objectFields
-								? typingParams.objectFields
-								: {}
-						).map(([fieldName, field]) => [
-							fieldName,
-							generateType(field)
-						])
-					),
+					dependentTypes: {
+						...(typingParams.objectDefinition?.instanceOf
+							? {
+									instanceof:
+										typingParams.objectDefinition.instanceOf
+											.classDefinition?.__declared ??
+										generateType(
+											typingParams.objectDefinition
+												.instanceOf
+										)
+							  }
+							: {}),
+						...Object.fromEntries(
+							Object.entries(
+								typingParams.objectDefinition?.objectFields
+									? typingParams.objectDefinition.objectFields
+									: {}
+							).map(([fieldName, field]) => [
+								fieldName,
+								generateType(field)
+							])
+						)
+					},
 					isLiteralType: true
 				};
 			},
@@ -308,7 +408,7 @@ module TypeGeneration {
 				dependentTypes: {
 					arrayOf: typingParams.arrayOf
 						? generateType(typingParams.arrayOf)
-						: generateType({ dataPrimitive: 'unknown' })
+						: generateType({ name: '', dataPrimitive: 'unknown' })
 				},
 				isLiteralType: true
 			}),
@@ -360,15 +460,7 @@ module TypeGeneration {
 					typingParams as TypeGenerationInterface & {
 						dataPrimitive: 'classType';
 					}
-				) ??
-				generateType({ ...typingParams, dataPrimitive: 'unknown' }),
-			classInstance: () => {
-				console.log('classInstance: ' + typingParams.dataPrimitive);
-				return generateType({
-					...typingParams,
-					dataPrimitive: 'object'
-				});
-			}
+				) ?? generateType({ ...typingParams, dataPrimitive: 'unknown' })
 		};
 
 		const mapped = mappers[typingParams.dataPrimitive]();
@@ -378,3 +470,14 @@ module TypeGeneration {
 }
 
 export default TypeGeneration;
+
+const types = TypeGeneration.generateTypeFilesV2(
+	'API',
+	JSON.parse(
+		fs
+			.readFileSync('/home/christopher/GIT/api-helper/dist/test.json')
+			.toString()
+	)
+);
+
+console.log(types);

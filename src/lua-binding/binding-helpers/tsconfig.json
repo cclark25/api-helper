@@ -5,7 +5,6 @@
 		"moduleResolution": "node",
 		"paths": {
 			"binding-helpers": ["./src/binding-helpers"],
-			"type-generation": ["./src/type-generation"]
 		},
 		"types": ["node"],
 		"strict": true,
@@ -14,8 +13,8 @@
 		"declaration": true,
 		"declarationDir": "../../../dist/binding-helpers/@types/binding-helpers"
 	},
-	"$schema": "https://raw.githubusercontent.com/TypeScriptToLua/vscode-typescript-to-lua/master/tsconfig-schema.json",
-  "include": ["./src/**/*"],
+	// "$schema": "https://raw.githubusercontent.com/TypeScriptToLua/vscode-typescript-to-lua/master/tsconfig-schema.json",
+  	"include": ["./src/**/*"],
 	"tstl": {
 		"luaTarget": "5.3"
 	}

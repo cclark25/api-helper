@@ -7,29 +7,38 @@
 #include "../data-wrappers/data-wrapper.hpp"
 #include "./binding-types/create-binding-object.h"
 #include "./lua-loader.hpp"
+#include <json.hpp>
 
 namespace APILua
 {
     using namespace APICore;
+    using json = nlohmann::json;
 
     template <DataPrimitive D>
-    sol::table makeTypingObjectFromTypeDefinition(sol::state &state, std::shared_ptr<TypeWrapper<D>> typing);
-    template <>
-    sol::table makeTypingObjectFromTypeDefinition(sol::state &state, std::shared_ptr<TypeWrapper<DataPrimitive::function>> typing);
-    template <>
-    sol::table makeTypingObjectFromTypeDefinition(sol::state &state, std::shared_ptr<TypeWrapper<DataPrimitive::object>> typing);
-    template <>
-    sol::table makeTypingObjectFromTypeDefinition(sol::state &state, std::shared_ptr<TypeWrapper<DataPrimitive::classType>> typing);
+    std::map<std::shared_ptr<TypeWrapper<D>>, json> existingTypeMappings;
 
     template <DataPrimitive D>
-    sol::table makeTypingObjectFromDataWrapper(sol::state &state, std::shared_ptr<DataWrapperSub<D>> data);
+    json makeTypingObjectFromTypeDefinition(sol::state &state, std::shared_ptr<TypeWrapper<D>> typing);
     template <>
-    sol::table makeTypingObjectFromDataWrapper(sol::state &state, std::shared_ptr<DataWrapperSub<DataPrimitive::object>> data);
+    json makeTypingObjectFromTypeDefinition(sol::state &state, std::shared_ptr<TypeWrapper<DataPrimitive::function>> typing);
     template <>
-    sol::table makeTypingObjectFromDataWrapper(sol::state &state, std::shared_ptr<DataWrapperSub<DataPrimitive::classType>> data);
+    json makeTypingObjectFromTypeDefinition(sol::state &state, std::shared_ptr<TypeWrapper<DataPrimitive::object>> typing);
+    template <>
+    json makeTypingObjectFromTypeDefinition(sol::state &state, std::shared_ptr<TypeWrapper<DataPrimitive::array>> typing);
+    template <>
+    json makeTypingObjectFromTypeDefinition(sol::state &state, std::shared_ptr<TypeWrapper<DataPrimitive::classType>> typing);
+    // template <>
+    // json makeTypingObjectFromTypeDefinition(sol::state &state, std::shared_ptr<TypeWrapper<DataPrimitive::classInstance>> typing);
 
     template <DataPrimitive D>
-    sol::table makeTypingObject(sol::state &state, std::shared_ptr<DataWrapperSub<D>> data)
+    json makeTypingObjectFromDataWrapper(sol::state &state, std::shared_ptr<DataWrapperSub<D>> data);
+    template <>
+    json makeTypingObjectFromDataWrapper(sol::state &state, std::shared_ptr<DataWrapperSub<DataPrimitive::object>> data);
+    template <>
+    json makeTypingObjectFromDataWrapper(sol::state &state, std::shared_ptr<DataWrapperSub<DataPrimitive::classType>> data);
+
+    template <DataPrimitive D>
+    json makeTypingObject(sol::state &state, std::shared_ptr<DataWrapperSub<D>> data)
     {
         auto typingPtr = data->getType();
         if (typingPtr == nullptr)
@@ -39,29 +48,32 @@ namespace APILua
         else
         {
             auto castPtr = CastSharedPtr(TypeWrapper<D>, typingPtr);
-            return makeTypingObjectFromTypeDefinition<D>(state, castPtr);
+            auto result = makeTypingObjectFromTypeDefinition<D>(state, castPtr);
+            return result;
         }
     }
 
     template <DataPrimitive D>
-    sol::table makeTypingObjectFromTypeDefinition(sol::state &state, std::shared_ptr<TypeWrapper<D>> typing)
+    json makeTypingObjectFromTypeDefinition(sol::state &state, std::shared_ptr<TypeWrapper<D>> typing)
     {
-        auto typeDefinitionTable = sol::table(state, sol::new_table());
+        json typeDefinitionTable;
         DataPrimitive prim = typing->getPrimitiveType();
         typeDefinitionTable["dataPrimitive"] = dataPrimitiveNameMap.at(prim);
+        typeDefinitionTable["name"] = typing->getTypeName();
 
         return typeDefinitionTable;
     }
 
     template <>
-    sol::table makeTypingObjectFromTypeDefinition<DataPrimitive::unknown>(sol::state &state, std::shared_ptr<TypeWrapper<DataPrimitive::unknown>> typing)
+    json makeTypingObjectFromTypeDefinition<DataPrimitive::unknown>(sol::state &state, std::shared_ptr<TypeWrapper<DataPrimitive::unknown>> typing)
     {
         DataPrimitive prim = typing == nullptr ? DataPrimitive::unknown : typing->getPrimitiveType();
 
         if (prim == DataPrimitive::unknown)
         {
-            auto typeDefinitionTable = sol::table(state, sol::new_table());
+            auto typeDefinitionTable = json();
             typeDefinitionTable["dataPrimitive"] = dataPrimitiveNameMap.at(prim);
+            typeDefinitionTable["name"] = typing->getTypeName();
 
             return typeDefinitionTable;
         }
@@ -84,32 +96,31 @@ namespace APILua
     }
 
     template <>
-    sol::table makeTypingObjectFromTypeDefinition(sol::state &state, std::shared_ptr<TypeWrapper<DataPrimitive::function>> typing)
+    json makeTypingObjectFromTypeDefinition(sol::state &state, std::shared_ptr<TypeWrapper<DataPrimitive::function>> typing)
     {
         auto asUnknown = std::shared_ptr<TypeWrapper<DataPrimitive::unknown>>(new TypeWrapper<DataPrimitive::unknown>(typing));
-        sol::table typeDefinitionTable = makeTypingObjectFromTypeDefinition<DataPrimitive::unknown>(state, asUnknown);
+        json typeDefinitionTable = makeTypingObjectFromTypeDefinition<DataPrimitive::unknown>(state, asUnknown);
         typeDefinitionTable["dataPrimitive"] = dataPrimitiveNameMap.at(DataPrimitive::function);
+        typeDefinitionTable["name"] = typing->getTypeName();
 
-        sol::table functionDefinition = sol::table(state, sol::new_table());
-        sol::table parameters = sol::table(state, sol::new_table());
-        sol::table returnType = makeTypingObjectFromTypeDefinition<DataPrimitive::unknown>(state, typing->getReturnType());
+        json functionDefinition = json();
+        std::vector<json> parameters;
+        json returnType = makeTypingObjectFromTypeDefinition<DataPrimitive::unknown>(state, typing->getReturnType());
 
-        size_t parameterIndex = 1;
         for (auto param : typing->getParams())
         {
-            sol::table paramElement = sol::table(state, sol::new_table());
-            sol::table paramTyping = makeTypingObjectFromTypeDefinition<DataPrimitive::unknown>(state, param);
+            json paramElement = json();
+            json paramTyping = makeTypingObjectFromTypeDefinition<DataPrimitive::unknown>(state, param);
 
             paramElement["type"] = paramTyping;
 
             paramElement["parameterName"] = param->getTypeName();
-            parameters[parameterIndex] = paramElement;
-
-            parameterIndex++;
+            parameters.push_back(paramElement);
         }
 
         functionDefinition["parameters"] = parameters;
         functionDefinition["returnType"] = returnType;
+        functionDefinition["name"] = typing->getTypeName();
 
         typeDefinitionTable["functionDefinition"] = functionDefinition;
 
@@ -117,41 +128,87 @@ namespace APILua
     }
 
     template <>
-    sol::table makeTypingObjectFromTypeDefinition(sol::state &state, std::shared_ptr<TypeWrapper<DataPrimitive::object>> typing)
+    json makeTypingObjectFromTypeDefinition(sol::state &state, std::shared_ptr<TypeWrapper<DataPrimitive::object>> typing)
     {
+        if (existingTypeMappings<DataPrimitive::object>.count(typing) > 0)
+        {
+            return existingTypeMappings<DataPrimitive::object>.at(typing);
+        }
+
         auto asUnknown = std::shared_ptr<TypeWrapper<DataPrimitive::unknown>>(new TypeWrapper<DataPrimitive::unknown>(typing));
-        sol::table typeDefinitionTable = makeTypingObjectFromTypeDefinition<DataPrimitive::unknown>(state, asUnknown);
+        json typeDefinitionTable = makeTypingObjectFromTypeDefinition<DataPrimitive::unknown>(state, asUnknown);
+        typeDefinitionTable["name"] = typing->getTypeName();
+        existingTypeMappings<DataPrimitive::object>.insert_or_assign(typing, typeDefinitionTable);
+
         typeDefinitionTable["dataPrimitive"] = dataPrimitiveNameMap.at(DataPrimitive::object);
 
-        sol::table objectFields = sol::table(state, sol::new_table());
+        json objectDefinition = json();
+        json objectFields = json();
 
         for (std::pair<std::string, std::shared_ptr<APICore::TypeWrapper<APICore::unknown>>> param : typing->getFields())
         {
-            sol::table fieldTyping = makeTypingObjectFromTypeDefinition<DataPrimitive::unknown>(state, param.second);
+            json fieldTyping = makeTypingObjectFromTypeDefinition<DataPrimitive::unknown>(state, param.second);
+            fieldTyping["name"] = param.first;
             objectFields[param.first] = fieldTyping;
         }
 
-        typeDefinitionTable["objectFields"] = objectFields;
+        auto instanceOf = typing->getInstanceOf();
+
+        objectDefinition["objectFields"] = objectFields;
+        if (instanceOf != nullptr)
+        {
+            objectDefinition["instanceOf"] = makeTypingObjectFromTypeDefinition<DataPrimitive::classType>(state, instanceOf);
+        }
+        typeDefinitionTable["objectDefinition"] = objectDefinition;
 
         return typeDefinitionTable;
     }
 
     template <>
-    sol::table makeTypingObjectFromTypeDefinition(sol::state &state, std::shared_ptr<ClassTypeWrapper> typing)
+    json makeTypingObjectFromTypeDefinition(sol::state &state, std::shared_ptr<TypeWrapper<DataPrimitive::array>> typing)
     {
+        if (existingTypeMappings<DataPrimitive::array>.count(typing) > 0)
+        {
+            return existingTypeMappings<DataPrimitive::array>.at(typing);
+        }
+
         auto asUnknown = std::shared_ptr<TypeWrapper<DataPrimitive::unknown>>(new TypeWrapper<DataPrimitive::unknown>(typing));
-        sol::table typeDefinitionTable = makeTypingObjectFromTypeDefinition<DataPrimitive::unknown>(state, asUnknown);
+        json typeDefinitionTable = makeTypingObjectFromTypeDefinition<DataPrimitive::unknown>(state, asUnknown);
+        typeDefinitionTable["name"] = typing->getTypeName();
+        existingTypeMappings<DataPrimitive::array>.insert_or_assign(typing, typeDefinitionTable);
+
+        typeDefinitionTable["dataPrimitive"] = dataPrimitiveNameMap.at(DataPrimitive::array);
+
+        // TODO: generate the "arrayOf" property
+        // typeDefinitionTable["arrayOf"] = objectDefinition;
+
+        return typeDefinitionTable;
+    }
+
+    template <>
+    json makeTypingObjectFromTypeDefinition(sol::state &state, std::shared_ptr<ClassTypeWrapper> typing)
+    {
+        if (existingTypeMappings<DataPrimitive::classType>.count(typing) > 0)
+        {
+            return existingTypeMappings<DataPrimitive::classType>.at(typing);
+        }
+
+        auto asUnknown = std::shared_ptr<TypeWrapper<DataPrimitive::unknown>>(new TypeWrapper<DataPrimitive::unknown>(typing));
+        json typeDefinitionTable = makeTypingObjectFromTypeDefinition<DataPrimitive::unknown>(state, asUnknown);
+        typeDefinitionTable["name"] = typing->getTypeName();
+        existingTypeMappings<DataPrimitive::classType>.insert_or_assign(typing, typeDefinitionTable);
+
         typeDefinitionTable["dataPrimitive"] = dataPrimitiveNameMap.at(DataPrimitive::classType);
 
-        auto classDefinition = sol::table(state, sol::new_table());
+        auto classDefinition = json();
 
         auto staticTyping = typing->getStaticType();
-        auto instanceTyping = typing->getInstanceType();
+        // auto instanceTyping = typing->getInstanceType();
         auto constructor = typing->getConstructor();
 
         classDefinition["classStaticType"] = makeTypingObjectFromTypeDefinition<DataPrimitive::object>(state, staticTyping);
         classDefinition["constructor"] = makeTypingObjectFromTypeDefinition<DataPrimitive::function>(state, constructor);
-        classDefinition["classInstanceType"] = classDefinition["constructor"]["functionDefinition"]["returnType"];
+        classDefinition["classInstanceType"] = makeTypingObjectFromTypeDefinition<DataPrimitive::object>(state, typing->getInstanceType());
         classDefinition["constructor"]["functionDefinition"]["isConstructor"] = true;
         classDefinition["className"] = typing->getTypeName();
 
@@ -161,21 +218,21 @@ namespace APILua
     }
 
     template <DataPrimitive D>
-    sol::table makeTypingObjectFromDataWrapper(sol::state &state, std::shared_ptr<DataWrapperSub<D>> data)
+    json makeTypingObjectFromDataWrapper(sol::state &state, std::shared_ptr<DataWrapperSub<D>> data)
     {
-        auto typeDefinitionTable = sol::table(state, sol::new_table());
+        json typeDefinitionTable;
         typeDefinitionTable["dataPrimitive"] = dataPrimitiveNameMap.at(data->getDataType());
 
         return typeDefinitionTable;
     };
 
     template <>
-    sol::table makeTypingObjectFromDataWrapper(sol::state &state, std::shared_ptr<DataWrapperSub<DataPrimitive::object>> data)
+    json makeTypingObjectFromDataWrapper(sol::state &state, std::shared_ptr<DataWrapperSub<DataPrimitive::object>> data)
     {
         auto unknownWrapper = CastSharedPtr(DataWrapperSub<DataPrimitive::unknown>, data);
-        sol::table typeDefinitionTable = makeTypingObject<DataPrimitive::unknown>(state, unknownWrapper);
+        json typeDefinitionTable = makeTypingObject<DataPrimitive::unknown>(state, unknownWrapper);
 
-        sol::table objectFields = sol::table(state, sol::new_table());
+        json objectFields = json();
 
         data_primitive_to_type<DataPrimitive::object> objectFieldMap = *data->get();
 
@@ -187,6 +244,7 @@ namespace APILua
     {                                                                                            \
         auto castData = CastSharedPtr(DataWrapperSub<DataPrimitive::Primitive>, field.second);   \
         objectFields[field.first] = makeTypingObject<DataPrimitive::Primitive>(state, castData); \
+        objectFields[field.first]["name"] = field.first;\
     };                                                                                           \
     break;
 
@@ -198,18 +256,20 @@ namespace APILua
 #undef D
         }
 
-        typeDefinitionTable["objectFields"] = objectFields;
+        json objectDefinition = json();
+        objectDefinition["objectFields"] = objectFields;
+        typeDefinitionTable["objectDefinition"] = objectDefinition;
 
         return typeDefinitionTable;
     };
 
     template <>
-    sol::table makeTypingObjectFromDataWrapper(sol::state &state, std::shared_ptr<DataWrapperSub<DataPrimitive::classType>> data)
+    json makeTypingObjectFromDataWrapper(sol::state &state, std::shared_ptr<DataWrapperSub<DataPrimitive::classType>> data)
     {
         auto unknownWrapper = CastSharedPtr(DataWrapperSub<DataPrimitive::unknown>, data);
-        sol::table typeDefinitionTable = makeTypingObject<DataPrimitive::unknown>(state, unknownWrapper);
+        json typeDefinitionTable = makeTypingObject<DataPrimitive::unknown>(state, unknownWrapper);
 
-        sol::table classDefinition = sol::table(state, sol::new_table());
+        json classDefinition = json();
         auto classData = data->get();
 
         classDefinition["className"] = classData->className;
@@ -219,7 +279,6 @@ namespace APILua
         classDefinition["constructor"]["functionDefinition"]["isConstructor"] = true;
 
         classDefinition["classInstanceType"] = constructorTyping["functionDefinition"]["returnType"];
-        // classDefinition["classStaticType"] = ;
 
         typeDefinitionTable["classDefinition"] = classDefinition;
         return typeDefinitionTable;
@@ -227,18 +286,6 @@ namespace APILua
 
     std::string generateTypings(std::string key, sol::state &state, std::map<std::string, std::shared_ptr<DataWrapper>> entries)
     {
-        auto typeGeneration = sol::state_view(state)["____typeGeneration"]["TypeGeneration"];
-        if (!typeGeneration.valid())
-        {
-            state.add_package_loader(LoadFile);
-            state.script("____typeGeneration = require('type-generation');");
-            typeGeneration = sol::state_view(state)["____typeGeneration"]["default"];
-        }
-
-        auto generateType = typeGeneration["generateType"];
-        sol::function declare = typeGeneration["declare"];
-        auto generateTypeFiles = typeGeneration["generateTypeFiles"];
-
         state["_handler"] = ([](sol::variadic_args e)
                              { 
             std::cout << "Error occurred. ";
@@ -248,14 +295,11 @@ namespace APILua
                 std::cout << "\n";
             return -1; });
 
-        sol::table typeList = sol::table(state, sol::new_table());
-
-        declare.set_error_handler(state["_handler"]);
-        size_t typeListLength = 1;
+        std::vector<json> typeList;
 
         for (std::pair<std::string, std::shared_ptr<APICore::DataWrapper>> entry : entries)
         {
-            sol::table typing;
+            json typing;
 
 #define D(Primitive, Type)                                                                     \
     case DataPrimitive::Primitive:                                                             \
@@ -272,15 +316,18 @@ namespace APILua
 
 #undef D
 
-            auto declared = declare(nullptr, entry.first, typing);
-            auto luaType = declared.get_type();
-            if (luaType != sol::type::lua_nil)
-            {
-                typeList[typeListLength++] = declared;
-            }
+            typing["name"] = entry.first;
+            typeList.push_back(typing);
         }
 
-        std::string result = generateTypeFiles(nullptr, key, typeList);
+        std::string result = json(typeList).dump();
+
+#define D(Primitive, Type) \
+    existingTypeMappings<DataPrimitive::Primitive>.clear();
+
+        DATA_PRIMITIVE_VALUES
+
+#undef D
 
         return result;
     }

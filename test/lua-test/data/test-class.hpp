@@ -17,22 +17,22 @@ data_primitive_to_type<DataPrimitive::function> classConstructorFunction = {
     }};
 
 auto classTyping = std::shared_ptr<ClassTypeWrapper>(new ClassTypeWrapper(
-    "TestClass", "A Test Class", std::shared_ptr<ObjectTypeWrapper>(new ObjectTypeWrapper("testClassStaticFields", "Static fields for TestClass", std::map<std::string, std::shared_ptr<APICore::TypeWrapper<APICore::unknown>>>(
-        {
-            {"s3", makeBasicType<DataPrimitive::string>()}
-        }
-    ))),
-    std::vector<std::shared_ptr<TypeWrapper<DataPrimitive::unknown>>>(),
-    nullptr));
+    "TestClass",
+    "A Test Class",
+    std::shared_ptr<ObjectTypeWrapper>(new ObjectTypeWrapper("testClassStaticFields", "Static fields for TestClass", std::map<std::string, std::shared_ptr<APICore::TypeWrapper<APICore::unknown>>>({{"s3", makeBasicType<DataPrimitive::string>()}}))),
+    std::vector<std::shared_ptr<TypeWrapper<DataPrimitive::unknown>>>()
+    ));
 
-auto classInstanceType = std::shared_ptr<TypeWrapper<APICore::classInstance>>(
-    new ClassInstanceTypeWrapper(
-        classTyping,
+auto classInstanceType = std::shared_ptr<TypeWrapper<APICore::object>>(
+    new ObjectTypeWrapper(
+        "TestClassInstance",
+        "An instance of TestClass.",
         std::map<std::string, std::shared_ptr<TypeWrapper<DataPrimitive::unknown>>>(
-            {
-                {"f1", makeBasicType<DataPrimitive::string>()}
-            }
-        )));
+        {{"f1", makeBasicType<DataPrimitive::string>()}}),
+        classTyping
+        ));
+
+auto y = classTyping->setInstanceType(classInstanceType);
 
 auto classConstructor = std::shared_ptr<FunctionWrapper>(
     new FunctionContainerWrapper(

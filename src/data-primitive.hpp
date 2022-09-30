@@ -19,8 +19,8 @@ namespace APICore
 	D(object, ObjectMap)                                \
 	D(array, std::vector<std::shared_ptr<DataWrapper>>) \
 	D(classType, ClassInternalType)                     \
-	D(classInstance, ClassInstance)                     \
 	D(unknown, void)
+	// D(classInstance, ClassInstance)                     \
 
 #define D(Primitive, Type) Primitive,
 	/**

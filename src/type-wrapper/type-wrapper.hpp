@@ -21,7 +21,9 @@ namespace APICore
     template <DataPrimitive Primitive>
     class TypeWrapper;
     template <>
-    class TypeWrapper<DataPrimitive::classInstance>;
+    class TypeWrapper<DataPrimitive::classType>;
+
+    using ClassTypeWrapper = TypeWrapper<DataPrimitive::classType>;
 
     template <>
     class TypeWrapper<DataPrimitive::unknown> : public TypeWrapperRoot
@@ -70,16 +72,29 @@ namespace APICore
     class TypeWrapper<DataPrimitive::object> : public TypeWrapper<DataPrimitive::unknown>
     {
         std::map<std::string, std::shared_ptr<TypeWrapper<DataPrimitive::unknown>>> fields;
+        std::shared_ptr<ClassTypeWrapper> instanceOf = nullptr;
 
     public:
-        TypeWrapper(std::string name, std::string description, std::map<std::string, std::shared_ptr<TypeWrapper<DataPrimitive::unknown>>> fields) : TypeWrapper<DataPrimitive::unknown>(name, description, DataPrimitive::object)
+        TypeWrapper(std::string name, std::string description, std::map<std::string, std::shared_ptr<TypeWrapper<DataPrimitive::unknown>>> fields, std::shared_ptr<ClassTypeWrapper> instanceOf = nullptr) : TypeWrapper<DataPrimitive::unknown>(name, description, DataPrimitive::object)
         {
             this->fields = fields;
+            this->instanceOf = instanceOf;
         };
 
         virtual std::map<std::string, std::shared_ptr<TypeWrapper<DataPrimitive::unknown>>> getFields()
         {
             return this->fields;
+        }
+
+        virtual std::shared_ptr<TypeWrapper<DataPrimitive::classType>> getInstanceOf(){
+            return this->instanceOf;
+        }
+
+        virtual bool isInstanceOf(ClassTypeWrapper& classDefinition){
+            return &classDefinition == this->instanceOf.get();
+        }
+        virtual bool isInstanceOf(ClassTypeWrapper* classDefinition){
+            return isInstanceOf(*classDefinition);
         }
     };
 
@@ -106,16 +121,20 @@ namespace APICore
         {
             return this->returnType;
         }
+
+        virtual void setReturnType(std::shared_ptr<TypeWrapper<DataPrimitive::unknown>> newReturnType)
+        {
+            this->returnType = newReturnType;
+        }
     };
 
-    using ClassTypeWrapper = TypeWrapper<DataPrimitive::classType>;
-    using ClassInstanceTypeWrapper = TypeWrapper<DataPrimitive::classInstance>;
+    // using ClassInstanceTypeWrapper = TypeWrapper<DataPrimitive::classInstance>;
 
     template <>
     class TypeWrapper<DataPrimitive::classType> : public TypeWrapper<DataPrimitive::unknown>
     {
         std::shared_ptr<TypeWrapper<DataPrimitive::object>> staticType;
-        std::shared_ptr<ClassInstanceTypeWrapper> instanceType = nullptr;
+        std::shared_ptr<ObjectTypeWrapper> instanceType = nullptr;
         std::shared_ptr<TypeWrapper<DataPrimitive::function>> constructor;
 
     public:
@@ -130,12 +149,18 @@ namespace APICore
                     name.append("Constructor"),
                     "",
                     constructorParameters,
-                    CastSharedPtr(TypeWrapper<DataPrimitive::unknown>, instanceType)));
+                    nullptr));
         }
 
-        virtual void setInstanceType(std::shared_ptr<ClassInstanceTypeWrapper> instanceType)
+        virtual bool setInstanceType(std::shared_ptr<ObjectTypeWrapper> instanceType)
         {
+            if (this->instanceType != nullptr)
+            {
+                throw "Class already has an instance type.";
+            }
             this->instanceType = instanceType;
+            this->constructor->setReturnType(CastSharedPtr(TypeWrapper<DataPrimitive::unknown>, instanceType));
+            return true;
         }
         virtual std::shared_ptr<TypeWrapper<DataPrimitive::object>> getStaticType()
         {
@@ -145,29 +170,29 @@ namespace APICore
             }
             return this->staticType;
         }
-        virtual std::shared_ptr<ClassInstanceTypeWrapper> getInstanceType() { return this->instanceType; }
+        virtual std::shared_ptr<ObjectTypeWrapper> getInstanceType() { return this->instanceType; }
         virtual std::shared_ptr<TypeWrapper<DataPrimitive::function>> getConstructor() { return this->constructor; }
+
     };
 
-    template <>
-    class TypeWrapper<DataPrimitive::classInstance> : public TypeWrapper<DataPrimitive::object>
-    {
-    public:
-        std::shared_ptr<ClassTypeWrapper> classType;
-        TypeWrapper(
-            std::shared_ptr<ClassTypeWrapper> classType,
-            std::map<std::string, std::shared_ptr<TypeWrapper<DataPrimitive::unknown>>> fields)
+    // template <>
+    // class TypeWrapper<DataPrimitive::classInstance> : public TypeWrapper<DataPrimitive::object>
+    // {
+    // public:
+    //     std::shared_ptr<ClassTypeWrapper> classType;
+    //     TypeWrapper(
+    //         std::shared_ptr<ClassTypeWrapper> classType,
+    //         std::map<std::string, std::shared_ptr<TypeWrapper<DataPrimitive::unknown>>> fields)
 
-            // Resume work here
-            askdskjf
-            : TypeWrapper<DataPrimitive::object>(
-                  classType->getTypeName() + "Instance",
-                  "Instance of " + classType->getTypeName(),
-                  fields)
-        {
-            this->classType = classType;
-        };
-    };
+    //         : TypeWrapper<DataPrimitive::object>(
+    //               classType->getTypeName() + "Instance",
+    //               "Instance of " + classType->getTypeName(),
+    //               fields)
+    //     {
+    //         this->classType = classType;
+            
+    //     };
+    // };
 }
 
 #endif

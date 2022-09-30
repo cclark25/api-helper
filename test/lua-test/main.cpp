@@ -38,6 +38,7 @@ int main(int argc, char **argv)
 	try
 	{
 		sol::state lua;
+		
 
 		lua.open_libraries(sol::lib::base, sol::lib::package, sol::lib::table, sol::lib::math, sol::lib::string, sol::lib::coroutine, sol::lib::debug, sol::lib::os);
 
@@ -46,14 +47,10 @@ int main(int argc, char **argv)
 		array->push(std::shared_ptr<DataWrapper>(new StringContainerWrapper("Test string 2.")));
 		array->push(std::shared_ptr<DataWrapper>(new StringContainerWrapper("Test string 3.")));
 
-		
-		
-		auto classInstanceData = std::shared_ptr<ObjectWrapper>(new ObjectContainerWrapper());
-		classInstanceData->setField(
+		auto classInstance = std::shared_ptr<ObjectWrapper>(new ObjectContainerWrapper(classInstanceType));
+		classInstance->setField(
 			"f1",
 			std::shared_ptr<StringWrapper>(new StringContainerWrapper("Field string.")));
-
-		auto classInstance = std::shared_ptr<ClassInstanceWrapper>(new ClassInstanceContainerWrapper({classDefinition, classInstanceData}));
 
 		auto objectValue = std::shared_ptr<ObjectWrapper>(new ObjectContainerWrapper());
 		objectValue->setField(
