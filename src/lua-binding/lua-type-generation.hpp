@@ -60,6 +60,8 @@ namespace APILua
         DataPrimitive prim = typing->getPrimitiveType();
         typeDefinitionTable["dataPrimitive"] = dataPrimitiveNameMap.at(prim);
         typeDefinitionTable["name"] = typing->getTypeName();
+        typeDefinitionTable["readonly"] = typing->isReadonly();
+        typeDefinitionTable["description"] = typing->getDescription();
 
         return typeDefinitionTable;
     }
@@ -74,6 +76,8 @@ namespace APILua
             auto typeDefinitionTable = json();
             typeDefinitionTable["dataPrimitive"] = dataPrimitiveNameMap.at(prim);
             typeDefinitionTable["name"] = typing->getTypeName();
+            typeDefinitionTable["readonly"] = typing->isReadonly();
+            typeDefinitionTable["description"] = typing->getDescription();
 
             return typeDefinitionTable;
         }
@@ -203,12 +207,10 @@ namespace APILua
         auto classDefinition = json();
 
         auto staticTyping = typing->getStaticType();
-        // auto instanceTyping = typing->getInstanceType();
         auto constructor = typing->getConstructor();
 
         classDefinition["classStaticType"] = makeTypingObjectFromTypeDefinition<DataPrimitive::object>(state, staticTyping);
         classDefinition["constructor"] = makeTypingObjectFromTypeDefinition<DataPrimitive::function>(state, constructor);
-        classDefinition["classInstanceType"] = makeTypingObjectFromTypeDefinition<DataPrimitive::object>(state, typing->getInstanceType());
         classDefinition["constructor"]["functionDefinition"]["isConstructor"] = true;
         classDefinition["className"] = typing->getTypeName();
 
@@ -222,6 +224,7 @@ namespace APILua
     {
         json typeDefinitionTable;
         typeDefinitionTable["dataPrimitive"] = dataPrimitiveNameMap.at(data->getDataType());
+        typeDefinitionTable["readonly"] = !data->canSet();
 
         return typeDefinitionTable;
     };

@@ -12,7 +12,7 @@ data_primitive_to_type<DataPrimitive::function> functionInternalValue = {
         return std::shared_ptr<StringContainerWrapper>(new StringContainerWrapper("functionValue return value."));
     }};
 auto parameterVector = std::vector<std::shared_ptr<APICore::TypeWrapper<APICore::unknown>>>(
-    {std::shared_ptr<TypeWrapper<APICore::unknown>>(new TypeWrapper<DataPrimitive::string>("param1", ""))});
+    {std::shared_ptr<TypeWrapper<APICore::unknown>>(new TypeWrapper<DataPrimitive::string>("param1", "Parameter 1"))});
 
 auto returnObjectType = std::shared_ptr<APICore::TypeWrapper<APICore::object>>(
     new TypeWrapper<APICore::object>(
@@ -20,7 +20,7 @@ auto returnObjectType = std::shared_ptr<APICore::TypeWrapper<APICore::object>>(
         "Return type description.",
         std::map<std::string, std::shared_ptr<TypeWrapper<DataPrimitive::unknown>>>(
             {{"f1",
-              std::shared_ptr<TypeWrapper<DataPrimitive::unknown>>(new TypeWrapper<DataPrimitive::string>("param1", ""))}})));
+              std::shared_ptr<TypeWrapper<DataPrimitive::unknown>>(new TypeWrapper<DataPrimitive::string>("param1", "Parameter 1 again"))}})));
 
 auto functionExampleDefinition = std::shared_ptr<FunctionWrapper>(
     new FunctionContainerWrapper(

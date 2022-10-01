@@ -20,7 +20,7 @@ namespace APICore
         virtual void set(Data<DataPrimitive::array> data) { throw "Not Implemented!"; };
         virtual std::shared_ptr<TypeWrapper<DataPrimitive::unknown>> getType()
         {
-            return makeBasicType<DataPrimitive::array>();
+            return makeBasicType<DataPrimitive::array>("", !this->canSet());
         }
 
         virtual std::shared_ptr<DataWrapper> getIndex(size_t index) { throw "Not Implemented!"; };
@@ -40,7 +40,9 @@ namespace APICore
 
     public:
         virtual bool canGet() { return true; }
-        virtual bool canSet() { return true; }
+        virtual bool canSet() { 
+            return true;
+        }
 
         DataContainerWrapper<DataPrimitive::array>(Data<DataPrimitive::array> data)
         {

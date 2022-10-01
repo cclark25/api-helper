@@ -9,7 +9,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/dist/engine",
-            "args": [],
+            "args": ["--generateTypes"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}/dist",
             "environment": [],

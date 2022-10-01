@@ -19,7 +19,7 @@ data_primitive_to_type<DataPrimitive::function> classConstructorFunction = {
 auto classTyping = std::shared_ptr<ClassTypeWrapper>(new ClassTypeWrapper(
     "TestClass",
     "A Test Class",
-    std::shared_ptr<ObjectTypeWrapper>(new ObjectTypeWrapper("testClassStaticFields", "Static fields for TestClass", std::map<std::string, std::shared_ptr<APICore::TypeWrapper<APICore::unknown>>>({{"s3", makeBasicType<DataPrimitive::string>()}}))),
+    std::shared_ptr<ObjectTypeWrapper>(new ObjectTypeWrapper("testClassStaticFields", "Static fields for TestClass", std::map<std::string, std::shared_ptr<APICore::TypeWrapper<APICore::unknown>>>({{"s3", makeBasicType<DataPrimitive::string>("Static class field.", true)}}))),
     std::vector<std::shared_ptr<TypeWrapper<DataPrimitive::unknown>>>()
     ));
 
@@ -28,7 +28,7 @@ auto classInstanceType = std::shared_ptr<TypeWrapper<APICore::object>>(
         "TestClassInstance",
         "An instance of TestClass.",
         std::map<std::string, std::shared_ptr<TypeWrapper<DataPrimitive::unknown>>>(
-        {{"f1", makeBasicType<DataPrimitive::string>()}}),
+        {{"f1", makeBasicType<DataPrimitive::string>("Dynamic class field.", false)}}),
         classTyping
         ));
 

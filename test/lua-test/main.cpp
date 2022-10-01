@@ -38,7 +38,6 @@ int main(int argc, char **argv)
 	try
 	{
 		sol::state lua;
-		
 
 		lua.open_libraries(sol::lib::base, sol::lib::package, sol::lib::table, sol::lib::math, sol::lib::string, sol::lib::coroutine, sol::lib::debug, sol::lib::os);
 
@@ -89,7 +88,10 @@ int main(int argc, char **argv)
 		for (auto mapping : apiMappings)
 		{
 			auto typing = mapping.second->getType();
-			printTyping(mapping.first, typing);
+			if (typing != nullptr)
+			{
+				printTyping(mapping.first, typing);
+			}
 		}
 
 		try

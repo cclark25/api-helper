@@ -47,7 +47,9 @@ namespace APICore
 
     public:
         virtual bool canGet() { return true; }
-        virtual bool canSet() { return true; }
+        virtual bool canSet() {
+            return true;
+        }
 
         DataContainerWrapper<DataPrimitive::object>(
             std::shared_ptr<ObjectMap> data,

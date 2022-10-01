@@ -16,6 +16,7 @@ namespace APICore
         virtual DataPrimitive getPrimitiveType() { return DataPrimitive::unknown; };
         virtual std::string getTypeName() { throw "Not Implemented!"; };
         virtual std::string getDescription() { throw "Not Implemented!"; };
+        virtual bool isReadonly() { return true; };
     };
 
     template <DataPrimitive Primitive>
@@ -31,18 +32,21 @@ namespace APICore
         std::string name;
         std::string description;
         DataPrimitive primitive;
+        bool readonly = true;
 
     public:
-        TypeWrapper(std::string name, std::string description, DataPrimitive primitive)
+        TypeWrapper(std::string name, std::string description, DataPrimitive primitive, bool readonly = true)
         {
             this->name = name;
             this->description = description;
             this->primitive = primitive;
+            this->readonly = readonly;
         }
         TypeWrapper(std::shared_ptr<TypeWrapperRoot> other) : TypeWrapper<DataPrimitive::unknown>(
                                                                   other->getTypeName(),
                                                                   other->getDescription(),
-                                                                  DataPrimitive::unknown) {}
+                                                                  DataPrimitive::unknown,
+                                                                  other->isReadonly()) {}
 
         virtual DataPrimitive getPrimitiveType() { return this->primitive; };
         virtual std::string getTypeName()
@@ -53,6 +57,7 @@ namespace APICore
         {
             return this->description;
         }
+        virtual bool isReadonly() { return this->readonly; };
     };
 
     template <DataPrimitive Primitive>
@@ -63,9 +68,9 @@ namespace APICore
     };
 
     template <DataPrimitive D>
-    std::shared_ptr<TypeWrapper<DataPrimitive::unknown>> makeBasicType()
+    std::shared_ptr<TypeWrapper<DataPrimitive::unknown>> makeBasicType(std::string description = "", bool readonly = true)
     {
-        return std::shared_ptr<TypeWrapper<DataPrimitive::unknown>>(new TypeWrapper<DataPrimitive::unknown>(dataPrimitiveNameMap.at(D), "", D));
+        return std::shared_ptr<TypeWrapper<DataPrimitive::unknown>>(new TypeWrapper<DataPrimitive::unknown>(dataPrimitiveNameMap.at(D), description, D, readonly));
     }
 
     template <>
@@ -86,14 +91,17 @@ namespace APICore
             return this->fields;
         }
 
-        virtual std::shared_ptr<TypeWrapper<DataPrimitive::classType>> getInstanceOf(){
+        virtual std::shared_ptr<TypeWrapper<DataPrimitive::classType>> getInstanceOf()
+        {
             return this->instanceOf;
         }
 
-        virtual bool isInstanceOf(ClassTypeWrapper& classDefinition){
+        virtual bool isInstanceOf(ClassTypeWrapper &classDefinition)
+        {
             return &classDefinition == this->instanceOf.get();
         }
-        virtual bool isInstanceOf(ClassTypeWrapper* classDefinition){
+        virtual bool isInstanceOf(ClassTypeWrapper *classDefinition)
+        {
             return isInstanceOf(*classDefinition);
         }
     };
@@ -172,7 +180,6 @@ namespace APICore
         }
         virtual std::shared_ptr<ObjectTypeWrapper> getInstanceType() { return this->instanceType; }
         virtual std::shared_ptr<TypeWrapper<DataPrimitive::function>> getConstructor() { return this->constructor; }
-
     };
 
     // template <>
@@ -190,7 +197,7 @@ namespace APICore
     //               fields)
     //     {
     //         this->classType = classType;
-            
+
     //     };
     // };
 }

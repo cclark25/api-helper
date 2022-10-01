@@ -50,7 +50,13 @@
         "iostream": "cpp",
         "limits": "cpp",
         "stdexcept": "cpp",
-        "cinttypes": "cpp"
+        "cinttypes": "cpp",
+        "any": "cpp",
+        "chrono": "cpp",
+        "codecvt": "cpp",
+        "ratio": "cpp",
+        "iomanip": "cpp",
+        "valarray": "cpp"
     },
     "files.watcherInclude": ["./include"]
 }
