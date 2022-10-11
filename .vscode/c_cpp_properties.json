@@ -13,8 +13,14 @@
             "compilerArgs": [
                 "--std=c++17",
                 "-llua",
-                "-ldl"
-            ]
+                "-ldl",
+                "-Wall",
+                "-pedantic",
+                "-ggdb ",
+                "-fPIC ",
+                "-g"
+            ],
+            "forcedInclude": []
         }
     ],
     "version": 4
