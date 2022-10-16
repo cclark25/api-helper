@@ -50,4 +50,5 @@ auto x = classStaticFields.insert_or_assign(
 
 auto classDefinition = std::shared_ptr<ClassWrapper>(new ClassContainerWrapper({"TestClass", classConstructor, classStaticFields}, classTyping));
 
+
 #endif

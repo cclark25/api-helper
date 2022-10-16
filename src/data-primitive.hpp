@@ -1,7 +1,6 @@
 #ifndef DATA_PRIMITIVE
 #define DATA_PRIMITIVE
 
-#include <memory>
 #include <functional>
 #include <type_traits>
 #include <string>

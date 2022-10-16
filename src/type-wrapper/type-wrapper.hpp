@@ -67,12 +67,6 @@ namespace APICore
         TypeWrapper(std::string name, std::string description) : TypeWrapper<DataPrimitive::unknown>(name, description, Primitive) {}
     };
 
-    template <DataPrimitive D>
-    std::shared_ptr<TypeWrapper<DataPrimitive::unknown>> makeBasicType(std::string description = "", bool readonly = true)
-    {
-        return std::shared_ptr<TypeWrapper<DataPrimitive::unknown>>(new TypeWrapper<DataPrimitive::unknown>(dataPrimitiveNameMap.at(D), description, D, readonly));
-    }
-
     template <>
     class TypeWrapper<DataPrimitive::object> : public TypeWrapper<DataPrimitive::unknown>
     {
@@ -123,6 +117,10 @@ namespace APICore
         virtual std::vector<std::shared_ptr<TypeWrapper<DataPrimitive::unknown>>> getParams()
         {
             return this->parameters;
+        }
+        virtual void setParams(std::vector<std::shared_ptr<TypeWrapper<DataPrimitive::unknown>>> params)
+        {
+            this->parameters = params;
         }
 
         virtual std::shared_ptr<TypeWrapper<DataPrimitive::unknown>> getReturnType()
@@ -200,6 +198,26 @@ namespace APICore
 
     //     };
     // };
+
+    std::shared_ptr<TypeWrapper<DataPrimitive::unknown>> makeBasicType(DataPrimitive D, std::string description = "", bool readonly = true)
+    {
+        if (D == DataPrimitive::function)
+        {
+            std::shared_ptr<TypeWrapper<DataPrimitive::unknown>>(
+                new TypeWrapper<DataPrimitive::function>(
+                    dataPrimitiveNameMap.at(D),
+                    description,
+                    std::vector<std::shared_ptr<TypeWrapper<DataPrimitive::unknown>>>(),
+                    makeBasicType(DataPrimitive::unknown)));
+        }
+        return std::shared_ptr<TypeWrapper<DataPrimitive::unknown>>(new TypeWrapper<DataPrimitive::unknown>(dataPrimitiveNameMap.at(D), description, D, readonly));
+    }
+    template <DataPrimitive D>
+    std::shared_ptr<TypeWrapper<DataPrimitive::unknown>> makeBasicType(std::string description = "", bool readonly = true)
+    {
+        return makeBasicType(D, description, readonly);
+    }
+
 }
 
 #endif
