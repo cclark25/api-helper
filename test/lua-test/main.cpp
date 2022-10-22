@@ -42,6 +42,44 @@ int handler(lua_State *s, sol::optional<const std::exception &> o, sol::string_v
 	return -1;
 };
 
+template <size_t Length>
+struct StringLiteral
+{
+	char value[Length]{};
+	static constexpr std::size_t size = Length - 1;
+
+	[[nodiscard]] std::string_view view() const
+	{
+		return {value, value + size};
+	}
+
+	consteval StringLiteral() {}
+	consteval StringLiteral(const char (&str)[Length]) : StringLiteral()
+	{
+		std::copy_n(str, Length, value);
+	}
+};
+
+template <StringLiteral Name, typename T>
+struct Named
+{
+	using type = T;
+	constexpr static const char *name = Name.value;
+	T value;
+};
+
+template <typename R, typename... P>
+std::vector<std::string> getParamNames(std::function<R(P...)> p)
+{
+	std::vector<std::string> result;
+
+	(result.push_back(P::name), ...);
+
+	return result;
+}
+
+#define Parameter( Type, Name ) Named< #Name,Type> Name
+
 int main(int argc, char **argv)
 {
 	// try
@@ -124,17 +162,32 @@ int main(int argc, char **argv)
 	APIModel x;
 	x["s1"] = "string value";
 	x["n1"] = 123;
-	x["f1"] = {std::array<std::string, 3>(), std::function([](std::string s, int i, int j)
-								 { return ""; })};
+	// x["f1"] = {std::array<std::string, 3>(), std::function([](std::string s, int i, int j)
+	// 							 { return ""; })};
 
 	printTyping("x", x.getTyping());
 
-	auto params = x.getParameterTypes<int, std::string, int, void>();
+	auto params = x.getPrimitiveTypes<int, std::string, int, void>();
 
 	for (auto p : params)
 	{
 		std::cout << "Param: " << dataPrimitiveNameMap.at(p) << std::endl;
 	}
 
+	static char pptr[] = "param1";
+
+	struct abc
+	{
+		int abc;
+	};
+
+	auto fun = std::function ([](Parameter(int, param1), Parameter(std::string, param2))
+							 { return param1.value * 2; });
+
+	auto pNames = getParamNames(fun);
+	for (auto p : pNames)
+	{
+		std::cout << "Name: " << p << std::endl;
+	}
 	return 0;
 }

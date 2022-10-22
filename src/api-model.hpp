@@ -102,30 +102,30 @@ namespace APICore
             return *this;
         }
 
-        template <typename R, typename... Params>
-        APIModel &operator=(std::tuple<std::array<std::string, n<(Params)> > , std::function<R(Params...)>> value)
-        {
-            data_primitive_to_type<DataPrimitive::function> internalValue = data_primitive_to_type<DataPrimitive::function>(
-                [value](FunctionInternalType::FunctionParams params)
-                {
-                    // int i = 0;
-                    // R result = value( (( (Params) params[i++]-> ) , ...) );
-                    return std::shared_ptr<UnknownWrapper>(new UnknownWrapper());
-                });
-            std::vector<DataPrimitive> parameterPrimitives = this->getParameterTypes<Params...>();
-            std::vector<std::shared_ptr<TypeWrapper<DataPrimitive::unknown>>> parameterTypings;
+        // template <typename R, typename... Params>
+        // APIModel &operator=(std::tuple<std::array<std::string, n<(Params)> > , std::function<R(Params...)>> value)
+        // {
+        //     data_primitive_to_type<DataPrimitive::function> internalValue = data_primitive_to_type<DataPrimitive::function>(
+        //         [value](FunctionInternalType::FunctionParams params)
+        //         {
+        //             // int i = 0;
+        //             // R result = value( (( (Params) params[i++]-> ) , ...) );
+        //             return std::shared_ptr<UnknownWrapper>(new UnknownWrapper());
+        //         });
+        //     std::vector<DataPrimitive> parameterPrimitives = this->getParameterTypes<Params...>();
+        //     std::vector<std::shared_ptr<TypeWrapper<DataPrimitive::unknown>>> parameterTypings;
 
-            for (auto p : parameterPrimitives)
-            {
-                parameterTypings.push_back(makeBasicType(p));
-            }
+        //     for (auto p : parameterPrimitives)
+        //     {
+        //         parameterTypings.push_back(makeBasicType(p));
+        //     }
 
-            this->typing = std::shared_ptr<TypeWrapper<DataPrimitive::unknown>>(new TypeWrapper<DataPrimitive::function>("", "", parameterTypings, makeBasicType<DataPrimitive::unknown>()));
+        //     this->typing = std::shared_ptr<TypeWrapper<DataPrimitive::unknown>>(new TypeWrapper<DataPrimitive::function>("", "", parameterTypings, makeBasicType<DataPrimitive::unknown>()));
 
-            this->finalize<DataPrimitive::function>(internalValue, this->typing);
+        //     this->finalize<DataPrimitive::function>(internalValue, this->typing);
 
-            return *this;
-        }
+        //     return *this;
+        // }
 
         template <typename T>
         inline DataPrimitive getPrimitiveType()
@@ -134,7 +134,7 @@ namespace APICore
         }
 
         template <typename... T>
-        inline std::vector<DataPrimitive> getParameterTypes()
+        inline std::vector<DataPrimitive> getPrimitiveTypes()
         {
             std::vector<DataPrimitive> sub;
             (sub.push_back(this->getPrimitiveType<T>()), ...);

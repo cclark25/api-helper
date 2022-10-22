@@ -56,7 +56,15 @@
         "codecvt": "cpp",
         "ratio": "cpp",
         "iomanip": "cpp",
-        "valarray": "cpp"
+        "valarray": "cpp",
+        "compare": "cpp",
+        "concepts": "cpp",
+        "ranges": "cpp"
     },
-    "files.watcherInclude": ["./include"]
+    "files.watcherInclude": [
+        "./include"
+    ],
+    "C_Cpp.default.intelliSenseMode": "linux-gcc-x64",
+    "C_Cpp.intelliSenseMemoryLimit": 16384,
+    "C_Cpp.default.cppStandard": "c++20"
 }

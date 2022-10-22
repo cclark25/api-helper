@@ -1,17 +1,14 @@
 SHELL=/bin/bash
 
-CXX= g++
-CXXFLAGS= -std=c++17 -Wall -pedantic -ggdb
+CXX= "g++-10"
 CFLAGS=  -Wall -pedantic -ggdb -fPIC 
-
-allegroFlags= -lallegro -lallegro_image -lallegro_primitives -lallegro_audio
 
 OUT_DIR=./dist
 
 testString:="abc"
 includeParameters=-I"./include" -I"./include/lua/include" -I"./include/sol" -I"./include/typescript-to-lua"
-cppVersionParameter=--std=c++17
-gppAdditionalParameter=-g
+cppVersionParameter=--std=c++2a
+gppAdditionalParameter="-g"
 
 out=dist/engine
 
@@ -20,7 +17,7 @@ test: $(out)
 
 $(out): ./src/**/* ./src/* ./test/lua-test/*
 	# make $(lualibFile)
-	g++ $(gppAdditionalParameter) ./test/lua-test/main.cpp $(cppVersionParameter) $(includeParameters) -L"./include/lua/lib" -I"./include/json" -llua -ldl -o ${out}
+	$(CXX) $(cppVersionParameter) ./test/lua-test/main.cpp $(includeParameters) -L"./include/lua/lib" -I"./include/json" -llua -ldl -o ${out}
 
 # $(lualibFile): $(luaLibSrc)
 # 	echo -e "#ifndef T2L_HEADERS \n#define T2L_HEADERS" > $(lualibFile); \
