@@ -1,0 +1,137 @@
+[
+  {
+    "classDefinition": {
+      "className": "TestClass",
+      "classStaticType": {
+        "dataPrimitive": "object",
+        "description": "Static fields for TestClass",
+        "name": "testClassStaticFields",
+        "objectDefinition": {
+          "objectFields": {
+            "s3": {
+              "dataPrimitive": "string",
+              "description": "Static class field.",
+              "name": "s3",
+              "readonly": true
+            }
+          }
+        },
+        "readonly": true
+      },
+      "constructor": {
+        "dataPrimitive": "function",
+        "description": "",
+        "functionDefinition": {
+          "isConstructor": true,
+          "name": "TestClassConstructor",
+          "parameters": [],
+          "returnType": {
+            "dataPrimitive": "object",
+            "description": "An instance of TestClass.",
+            "name": "TestClassInstance",
+            "objectDefinition": {
+              "instanceOf": {
+                "dataPrimitive": "unknown",
+                "description": "A Test Class",
+                "name": "TestClass",
+                "readonly": true
+              },
+              "objectFields": {
+                "f1": {
+                  "dataPrimitive": "string",
+                  "description": "Dynamic class field.",
+                  "name": "f1",
+                  "readonly": false
+                }
+              }
+            },
+            "readonly": true
+          }
+        },
+        "name": "TestClassConstructor",
+        "readonly": true
+      }
+    },
+    "dataPrimitive": "classType",
+    "description": "A Test Class",
+    "name": "TestClass",
+    "readonly": true
+  },
+  {
+    "dataPrimitive": "function",
+    "description": "A Test Function",
+    "functionDefinition": {
+      "name": "testFunctionName",
+      "parameters": [
+        {
+          "parameterName": "param1",
+          "type": {
+            "dataPrimitive": "string",
+            "description": "Parameter 1",
+            "name": "param1",
+            "readonly": true
+          }
+        }
+      ],
+      "returnType": {
+        "dataPrimitive": "object",
+        "description": "Return type description.",
+        "name": "functionInternalValueReturnValueType",
+        "objectDefinition": {
+          "objectFields": {
+            "f1": {
+              "dataPrimitive": "string",
+              "description": "Parameter 1 again",
+              "name": "f1",
+              "readonly": true
+            }
+          }
+        },
+        "readonly": true
+      }
+    },
+    "name": "functionValue",
+    "readonly": true
+  },
+  {
+    "dataPrimitive": "int32",
+    "description": "",
+    "name": "intValue",
+    "readonly": false
+  },
+  {
+    "dataPrimitive": "object",
+    "description": "A custom object type.",
+    "name": "newObjectTest",
+    "objectDefinition": {
+      "objectFields": {
+        "i1": {
+          "dataPrimitive": "int32",
+          "description": "An integer value",
+          "name": "i1",
+          "readonly": true
+        },
+        "o1": {
+          "dataPrimitive": "object",
+          "description": "An object value.",
+          "name": "o1",
+          "objectDefinition": { "objectFields": null },
+          "readonly": true
+        },
+        "s1": {
+          "dataPrimitive": "string",
+          "description": "A string value",
+          "name": "s1",
+          "readonly": true
+        }
+      }
+    },
+    "readonly": true
+  },
+  {
+    "dataPrimitive": "string",
+    "description": "",
+    "name": "stringValue",
+    "readonly": false
+  }
+]

@@ -13,7 +13,6 @@
 
 namespace APICore
 {
-
     template <typename... T>
     const std::size_t n = sizeof...(T);
 

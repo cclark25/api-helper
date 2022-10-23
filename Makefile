@@ -17,7 +17,7 @@ test: $(out)
 
 $(out): ./src/**/* ./src/* ./test/lua-test/*
 	# make $(lualibFile)
-	$(CXX) $(cppVersionParameter) ./test/lua-test/main.cpp $(includeParameters) -L"./include/lua/lib" -I"./include/json" -llua -ldl -o ${out}
+	$(CXX) $(gppAdditionalParameter) $(cppVersionParameter) ./test/lua-test/main.cpp $(includeParameters) -L"./include/lua/lib" -I"./include/json" -llua -ldl -o ${out}
 
 # $(lualibFile): $(luaLibSrc)
 # 	echo -e "#ifndef T2L_HEADERS \n#define T2L_HEADERS" > $(lualibFile); \

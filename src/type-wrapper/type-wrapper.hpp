@@ -29,12 +29,12 @@ namespace APICore
     template <>
     class TypeWrapper<DataPrimitive::unknown> : public TypeWrapperRoot
     {
+
+    public:
         std::string name;
         std::string description;
         DataPrimitive primitive;
         bool readonly = true;
-
-    public:
         TypeWrapper(std::string name, std::string description, DataPrimitive primitive, bool readonly = true)
         {
             this->name = name;
@@ -70,10 +70,10 @@ namespace APICore
     template <>
     class TypeWrapper<DataPrimitive::object> : public TypeWrapper<DataPrimitive::unknown>
     {
-        std::map<std::string, std::shared_ptr<TypeWrapper<DataPrimitive::unknown>>> fields;
         std::shared_ptr<ClassTypeWrapper> instanceOf = nullptr;
 
     public:
+        std::map<std::string, std::shared_ptr<TypeWrapper<DataPrimitive::unknown>>> fields;
         TypeWrapper(std::string name, std::string description, std::map<std::string, std::shared_ptr<TypeWrapper<DataPrimitive::unknown>>> fields, std::shared_ptr<ClassTypeWrapper> instanceOf = nullptr) : TypeWrapper<DataPrimitive::unknown>(name, description, DataPrimitive::object)
         {
             this->fields = fields;
@@ -203,12 +203,20 @@ namespace APICore
     {
         if (D == DataPrimitive::function)
         {
-            std::shared_ptr<TypeWrapper<DataPrimitive::unknown>>(
+            return std::shared_ptr<TypeWrapper<DataPrimitive::unknown>>(
                 new TypeWrapper<DataPrimitive::function>(
                     dataPrimitiveNameMap.at(D),
                     description,
                     std::vector<std::shared_ptr<TypeWrapper<DataPrimitive::unknown>>>(),
                     makeBasicType(DataPrimitive::unknown)));
+        }
+        else if (D == DataPrimitive::object)
+        {
+            return std::shared_ptr<TypeWrapper<DataPrimitive::unknown>>(
+                new ObjectTypeWrapper(
+                    dataPrimitiveNameMap.at(D),
+                    description,
+                    std::map<std::string, std::shared_ptr<APICore::TypeWrapper<APICore::unknown>>>()));
         }
         return std::shared_ptr<TypeWrapper<DataPrimitive::unknown>>(new TypeWrapper<DataPrimitive::unknown>(dataPrimitiveNameMap.at(D), description, D, readonly));
     }

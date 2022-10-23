@@ -10,6 +10,7 @@
 #include <cassert>
 #include <sol.hpp>
 #include "../../../src/api-model.hpp"
+#include "../../../src/type-model.hpp"
 
 using namespace APICore;
 using namespace std;
@@ -41,44 +42,6 @@ int handler(lua_State *s, sol::optional<const std::exception &> o, sol::string_v
 {
 	return -1;
 };
-
-template <size_t Length>
-struct StringLiteral
-{
-	char value[Length]{};
-	static constexpr std::size_t size = Length - 1;
-
-	[[nodiscard]] std::string_view view() const
-	{
-		return {value, value + size};
-	}
-
-	consteval StringLiteral() {}
-	consteval StringLiteral(const char (&str)[Length]) : StringLiteral()
-	{
-		std::copy_n(str, Length, value);
-	}
-};
-
-template <StringLiteral Name, typename T>
-struct Named
-{
-	using type = T;
-	constexpr static const char *name = Name.value;
-	T value;
-};
-
-template <typename R, typename... P>
-std::vector<std::string> getParamNames(std::function<R(P...)> p)
-{
-	std::vector<std::string> result;
-
-	(result.push_back(P::name), ...);
-
-	return result;
-}
-
-#define Parameter( Type, Name ) Named< #Name,Type> Name
 
 int main(int argc, char **argv)
 {
@@ -181,13 +144,34 @@ int main(int argc, char **argv)
 		int abc;
 	};
 
-	auto fun = std::function ([](Parameter(int, param1), Parameter(std::string, param2))
+	auto fun = std::function([](Parameter(int, param1), Parameter(std::string, param2))
 							 { return param1.value * 2; });
 
-	auto pNames = getParamNames(fun);
+	auto pNames = getVariableNames(fun);
 	for (auto p : pNames)
 	{
-		std::cout << "Name: " << p << std::endl;
+		// std::cout << "Name: " << p << std::endl;
 	}
+
+	using CustomObject = TypeModel<
+		Named<int, "i1", "An integer value">,
+		Named<std::string, "s1", "A string value">,
+		Named<
+			TypeModel<Named<int, "i2", "Another integer value">, Named<std::string, "s2">>,
+			"o1", "An object value.">>;
+	
+	CustomObject::description = "A custom object type.";
+
+	CustomObject obj;
+
+	// printTyping("", CustomObject::generateTyping());
+
+	sol::state lua;
+	auto objectValue = std::shared_ptr<ObjectWrapper>(new ObjectContainerWrapper());
+	objectValue->setType(CustomObject::generateTyping());
+	auto apiMappings = std::map<std::string, std::shared_ptr<DataWrapper>>({{"TestClass", classDefinition}, {"stringValue", std::shared_ptr<StringContainerWrapper>(new StringContainerWrapper("Test string."))}, {"intValue", std::shared_ptr<Int32ContainerWrapper>(new Int32ContainerWrapper(0))}, {"functionValue", functionExampleDefinition}, {"newObjectTest", objectValue}});
+	std::string typeFile = APILua::generateTypings("API", lua, apiMappings);
+	std::cout << typeFile << std::endl;
+
 	return 0;
 }

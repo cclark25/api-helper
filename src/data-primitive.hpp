@@ -91,6 +91,5 @@ namespace APICore {
 	template <DataPrimitive D>
 	using data_primitive_to_type = typename _data_primitive_to_type<D>::type;
 
-
 } // namespace APICore
 #endif
