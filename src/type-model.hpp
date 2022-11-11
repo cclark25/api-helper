@@ -5,6 +5,7 @@
 #include <string>
 #include <memory>
 #include <map>
+#include <type_traits>
 #include "./data-primitive.hpp"
 #include "./lua-binding/binding-types/all.hpp"
 
@@ -29,13 +30,71 @@ namespace APICore
         }
     };
 
+    template <typename T>
+    DataPrimitive getPrimitiveType();
+
+    template <typename T>
+    struct NamedBasicType
+    {
+        T value;
+        template <typename... Params>
+        requires std::constructible_from<T, Params...>
+        NamedBasicType(Params... params) : value(params...)
+        {
+        }
+    };
+    template <typename T>
+    struct NamedClassType : public T
+    {
+        NamedClassType(const T &other) : T(other)
+        {
+        }
+        template <typename... Params>
+        requires std::constructible_from<T, Params...>
+        NamedClassType(Params... params) : T(params...)
+        {
+        }
+    };
+
     template <typename T, StringLiteral Name, StringLiteral Description = "">
-    struct Named
+    struct Named : public std::conditional<std::is_class<T>::value, NamedClassType<T>, NamedBasicType<T>>::type
     {
         using varType = T;
         constexpr static const char *name = Name.value;
         constexpr static const char *description = Description.value;
-        T value;
+        static DataPrimitive getPrimitiveType()
+        {
+            return APICore::getPrimitiveType<T>();
+        }
+
+        // Data
+
+        template <typename... Params>
+        requires std::constructible_from<T, Params...>
+        Named(Params... params) : std::conditional<std::is_class<T>::value, NamedClassType<T>, NamedBasicType<T>>::type(params...)
+        {
+        }
+
+        operator T &()
+        {
+            return *((T *)this);
+        }
+
+        T &operator=(const T &other)
+        {
+            T &ref = *static_cast<T *>(this);
+            ref = other;
+            return ref;
+        }
+    };
+
+    template <typename C, typename T>
+    using MemberVariablePointer = T C::*;
+
+    template <typename T, StringLiteral Name, typename ClassType, MemberVariablePointer<ClassType, T> MemberPointer, StringLiteral Description = "">
+    struct Member : public Named<T, Name, Description>
+    {
+        constexpr static MemberVariablePointer<ClassType, T> memberPointer = MemberPointer;
     };
 
     template <typename R, typename... P>
@@ -48,11 +107,6 @@ namespace APICore
         return result;
     }
 
-#define Parameter(Type, Name) Named<Type, #Name> Name
-
-    template <typename... Fields>
-    class TypeModel;
-
     template <class T, template <class...> class Template>
     struct is_specialization : std::false_type
     {
@@ -63,10 +117,13 @@ namespace APICore
     {
     };
 
+    template <typename Base, typename... Fields>
+    class ObjectTypeModel;
+
     template <typename T>
     DataPrimitive getPrimitiveType()
     {
-        if (is_specialization<T, TypeModel>{})
+        if (is_specialization<T, ObjectTypeModel>{})
         {
             return DataPrimitive::object;
         }
@@ -89,8 +146,8 @@ namespace APICore
         return DataPrimitive::null;
     }
 
-    template <typename... Fields>
-    class TypeModel
+    template <typename Base, typename... Fields>
+    class ObjectTypeModel : Base
     {
     public:
         static std::string description;
@@ -110,23 +167,25 @@ namespace APICore
         {
             std::map<std::string, std::shared_ptr<TypeWrapper<DataPrimitive::unknown>>> result;
 
-            (result.insert_or_assign(Fields::name, TypeModel::getBasicTyping<typename Fields::varType>(Fields::description)), ...);
+            (result.insert_or_assign(Fields::name, ObjectTypeModel::getBasicTyping<typename Fields::varType>(Fields::description)), ...);
 
             return result;
         }
 
         static std::shared_ptr<TypeWrapper<DataPrimitive::unknown>> generateTyping()
         {
-            std::map<std::string, std::shared_ptr<TypeWrapper<unknown>>> fields = TypeModel::getFields();
-            auto result = makeBasicType(DataPrimitive::object, TypeModel::description);
+            std::map<std::string, std::shared_ptr<TypeWrapper<unknown>>> fields = ObjectTypeModel::getFields();
+            auto result = makeBasicType(DataPrimitive::object, ObjectTypeModel::description);
             auto objectWrapperCast = CastSharedPtr(ObjectTypeWrapper, result);
             objectWrapperCast->fields.merge(fields);
 
             return result;
         }
+
+        
     };
-    template<typename... T>
-    std::string TypeModel<T...>::description;
+    template <typename Base, typename... T>
+    std::string ObjectTypeModel<Base, T...>::description;
 }
 
 #endif

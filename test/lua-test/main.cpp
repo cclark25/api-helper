@@ -43,6 +43,22 @@ int handler(lua_State *s, sol::optional<const std::exception &> o, sol::string_v
 	return -1;
 };
 
+template <typename C, typename T>
+using X = T C::*;
+template <typename C, typename T, typename... P>
+struct Y
+{
+	using TT = T (C::*)(P...);
+	using ReturnType = T;
+	// using Parameters = P...;
+	using ClassType = C;
+	TT v;
+	Y(const TT &o)
+	{
+		this->v = o;
+	}
+};
+
 int main(int argc, char **argv)
 {
 	// try
@@ -144,22 +160,55 @@ int main(int argc, char **argv)
 		int abc;
 	};
 
-	auto fun = std::function([](Parameter(int, param1), Parameter(std::string, param2))
-							 { return param1.value * 2; });
+	auto fun = std::function([](Named<int, "param1"> param1, Named<std::string, "param2"> param2)
+							 { 
+								param1 += 7;
+								param2 = param2.append(": ");
+								std::string result = param2;
+								for(int i = param1 * 2; i > 0; i--){
+									result = result
+										.append("(")
+										.append(dataPrimitiveNameMap.at(Named<int, "param1">::getPrimitiveType()))
+										.append(") ")
+										.append (std::to_string(i))
+										.append("\n");
+								}
+								return result; });
+	std::cout << fun(12, "Function result with string parameter") << std::endl;
 
 	auto pNames = getVariableNames(fun);
 	for (auto p : pNames)
 	{
-		// std::cout << "Name: " << p << std::endl;
+		std::cout << "Parameter name: " << p << std::endl;
 	}
 
-	using CustomObject = TypeModel<
-		Named<int, "i1", "An integer value">,
-		Named<std::string, "s1", "A string value">,
-		Named<
-			TypeModel<Named<int, "i2", "Another integer value">, Named<std::string, "s2">>,
-			"o1", "An object value.">>;
-	
+	struct CustomObjectData
+	{
+		int i1 = 15;
+		std::string s1 = "ABC123";
+		struct CustomObjectSubData
+		{
+			int i2 = 30;
+			std::string s2 = "DEF456";
+		} o1;
+	};
+
+	class CustomObject : public ObjectTypeModel<
+							 CustomObjectData,
+							 Member<int, "i1", CustomObjectData, &CustomObjectData::i1, "An integer value">,
+							 Member<std::string, "s1", CustomObjectData, &CustomObjectData::s1, "A string value">,
+							 Member<
+								 ObjectTypeModel<
+								 	 CustomObjectData::CustomObjectSubData,
+									 Member<int, "i2", CustomObjectData::CustomObjectSubData, &CustomObjectData::CustomObjectSubData::i2, "Another integer value">,
+									 Member<std::string, "s2", CustomObjectData::CustomObjectSubData, &CustomObjectData::CustomObjectSubData::s2>>,
+								 "o1",
+								 CustomObjectData,
+								 &CustomObjectData::o1,
+								 "An object value.">>
+	{
+	};
+
 	CustomObject::description = "A custom object type.";
 
 	CustomObject obj;
@@ -172,6 +221,42 @@ int main(int argc, char **argv)
 	auto apiMappings = std::map<std::string, std::shared_ptr<DataWrapper>>({{"TestClass", classDefinition}, {"stringValue", std::shared_ptr<StringContainerWrapper>(new StringContainerWrapper("Test string."))}, {"intValue", std::shared_ptr<Int32ContainerWrapper>(new Int32ContainerWrapper(0))}, {"functionValue", functionExampleDefinition}, {"newObjectTest", objectValue}});
 	std::string typeFile = APILua::generateTypings("API", lua, apiMappings);
 	std::cout << typeFile << std::endl;
+
+	lua.open_libraries(sol::lib::base, sol::lib::package, sol::lib::table, sol::lib::math, sol::lib::string, sol::lib::coroutine, sol::lib::debug, sol::lib::os);
+
+	struct TestUserType
+	{
+		int intVal = 12;
+		int getInt(int val)
+		{
+			return val;
+		}
+		virtual ~TestUserType()
+		{
+			std::cout << "TestUserType is destroyed." << std::endl;
+		}
+	};
+
+	sol::usertype<TestUserType> TestSolType = lua.new_usertype<TestUserType>("TestUserType", sol::constructors<TestUserType()>());
+	TestSolType["intVal"] = &TestUserType::intVal;
+
+	X<TestUserType, int> mptr = &TestUserType::intVal;
+	Y<TestUserType, int, int> fmptr = &TestUserType::getInt;
+
+	auto ptr = new TestUserType();
+	{
+		auto testValue = std::shared_ptr<TestUserType>(ptr);
+		lua["value"] = testValue;
+	}
+	std::cout << "Before lua: " << ptr->intVal << std::endl;
+	lua.script(R"(
+		print("class's intValue: " .. tostring(value.intVal ));
+		value.intVal = 99;
+		local value2 = value;
+		value = nil;
+	)");
+	lua.collect_garbage();
+	std::cout << "After lua: " << ptr->intVal << std::endl;
 
 	return 0;
 }

@@ -66,5 +66,6 @@
     ],
     "C_Cpp.default.intelliSenseMode": "linux-gcc-x64",
     "C_Cpp.intelliSenseMemoryLimit": 16384,
-    "C_Cpp.default.cppStandard": "c++20"
+    "C_Cpp.default.cppStandard": "c++20",
+    "C_Cpp.errorSquiggles": "Enabled"
 }
