@@ -192,35 +192,20 @@ int main(int argc, char **argv)
 			std::string s2 = "DEF456";
 		} o1;
 	};
+	using CustomObject = TypeDefinition<CustomObjectData>;
+	CustomObject::type["i1"] = &CustomObjectData::i1;
+	CustomObject::type["s1"] = &CustomObjectData::s1;
 
-	class CustomObject : public ObjectTypeModel<
-							 CustomObjectData,
-							 Member<int, "i1", CustomObjectData, &CustomObjectData::i1, "An integer value">,
-							 Member<std::string, "s1", CustomObjectData, &CustomObjectData::s1, "A string value">,
-							 Member<
-								 ObjectTypeModel<
-								 	 CustomObjectData::CustomObjectSubData,
-									 Member<int, "i2", CustomObjectData::CustomObjectSubData, &CustomObjectData::CustomObjectSubData::i2, "Another integer value">,
-									 Member<std::string, "s2", CustomObjectData::CustomObjectSubData, &CustomObjectData::CustomObjectSubData::s2>>,
-								 "o1",
-								 CustomObjectData,
-								 &CustomObjectData::o1,
-								 "An object value.">>
-	{
-	};
 
-	CustomObject::description = "A custom object type.";
+	printTyping("x", CustomObject::type.generateTyping());
 
-	CustomObject obj;
-
-	// printTyping("", CustomObject::generateTyping());
 
 	sol::state lua;
 	auto objectValue = std::shared_ptr<ObjectWrapper>(new ObjectContainerWrapper());
-	objectValue->setType(CustomObject::generateTyping());
+	// objectValue->setType(CustomObject::generateTyping());
 	auto apiMappings = std::map<std::string, std::shared_ptr<DataWrapper>>({{"TestClass", classDefinition}, {"stringValue", std::shared_ptr<StringContainerWrapper>(new StringContainerWrapper("Test string."))}, {"intValue", std::shared_ptr<Int32ContainerWrapper>(new Int32ContainerWrapper(0))}, {"functionValue", functionExampleDefinition}, {"newObjectTest", objectValue}});
 	std::string typeFile = APILua::generateTypings("API", lua, apiMappings);
-	std::cout << typeFile << std::endl;
+	// std::cout << typeFile << std::endl;
 
 	lua.open_libraries(sol::lib::base, sol::lib::package, sol::lib::table, sol::lib::math, sol::lib::string, sol::lib::coroutine, sol::lib::debug, sol::lib::os);
 
@@ -233,7 +218,7 @@ int main(int argc, char **argv)
 		}
 		virtual ~TestUserType()
 		{
-			std::cout << "TestUserType is destroyed." << std::endl;
+			// std::cout << "TestUserType is destroyed." << std::endl;
 		}
 	};
 
@@ -248,7 +233,7 @@ int main(int argc, char **argv)
 		auto testValue = std::shared_ptr<TestUserType>(ptr);
 		lua["value"] = testValue;
 	}
-	std::cout << "Before lua: " << ptr->intVal << std::endl;
+	// std::cout << "Before lua: " << ptr->intVal << std::endl;
 	lua.script(R"(
 		print("class's intValue: " .. tostring(value.intVal ));
 		value.intVal = 99;
@@ -256,7 +241,7 @@ int main(int argc, char **argv)
 		value = nil;
 	)");
 	lua.collect_garbage();
-	std::cout << "After lua: " << ptr->intVal << std::endl;
+	// std::cout << "After lua: " << ptr->intVal << std::endl;
 
 	return 0;
 }

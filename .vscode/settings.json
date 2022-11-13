@@ -59,7 +59,16 @@
         "valarray": "cpp",
         "compare": "cpp",
         "concepts": "cpp",
-        "ranges": "cpp"
+        "ranges": "cpp",
+        "cassert": "cpp",
+        "cerrno": "cpp",
+        "cfloat": "cpp",
+        "climits": "cpp",
+        "filesystem": "cpp",
+        "ios": "cpp",
+        "locale": "cpp",
+        "queue": "cpp",
+        "version": "cpp"
     },
     "files.watcherInclude": [
         "./include"

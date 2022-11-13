@@ -2,6 +2,7 @@
 #define TYPE_MODEL
 
 #include <vector>
+#include <array>
 #include <string>
 #include <memory>
 #include <map>
@@ -88,8 +89,24 @@ namespace APICore
         }
     };
 
+    template <typename T, typename Arg>
+    using ReplaceType = T;
+
     template <typename C, typename T>
     using MemberVariablePointer = T C::*;
+    template <typename C, typename T, typename... P>
+    struct MemberFunctionPointer
+    {
+        using Pointer = T (C::*)(P...);
+        using ReturnType = T;
+        // using Parameters = P...;
+        using ClassType = C;
+        Pointer v;
+        std::array<std::string, sizeof...(P)> parameterNames;
+        MemberFunctionPointer(const Pointer &o, std::array<std::string, sizeof...(P)> &parameterNames) : parameterNames(parameterNames), v(o)
+        {
+        }
+    };
 
     template <typename T, StringLiteral Name, typename ClassType, MemberVariablePointer<ClassType, T> MemberPointer, StringLiteral Description = "">
     struct Member : public Named<T, Name, Description>
@@ -181,11 +198,112 @@ namespace APICore
 
             return result;
         }
-
-        
     };
     template <typename Base, typename... T>
     std::string ObjectTypeModel<Base, T...>::description;
+
+    template <typename T>
+    struct TypeDefinition;
+
+    template <typename ParentType>
+    struct TypeFieldSetter
+    {
+        TypeDefinition<ParentType>::Type *typeParent;
+        std::string key;
+        TypeFieldSetter(TypeDefinition<ParentType>::Type *typeParent, const std::string &key) : typeParent(typeParent), key(key) {}
+
+        template <typename FieldType>
+        TypeFieldSetter &operator=(MemberVariablePointer<ParentType, FieldType> dataAccessor)
+        {
+            typeParent->setField(this->key, dataAccessor);
+            return *this;
+        }
+    };
+
+    class empty_type
+    {
+    };
+
+    template <typename ClassType, typename FieldType>
+    struct MemberFields : public std::map<
+        std::string,
+        MemberVariablePointer<ClassType, FieldType>>{};
+    template <typename FieldType>
+    struct MemberFields<int, FieldType> : public std::map<
+        std::string,
+        void*>{};
+
+    template <typename ClassType>
+    struct TypeDefinition
+    {
+        template <typename FieldType>
+        using MemberFields = std::conditional<
+            !(std::is_class<ClassType>::value),
+            MemberFields<ClassType, empty_type>,
+            MemberFields<ClassType, FieldType>>::type;
+
+        template <typename FieldType>
+        static TypeDefinition::MemberFields<FieldType> memberFields;
+
+        // template <typename FieldType, typename... Parameters>
+        // static std::map<std::string, MemberFunctionPointer<ClassType, FieldType, Parameters...>> memberFunctions;
+
+        struct Type
+        {
+            TypeFieldSetter<ClassType> operator[](const std::string &key)
+            {
+                return TypeFieldSetter<ClassType>(this, key);
+            }
+
+            template <typename FieldType>
+            void setField(std::string &key, MemberVariablePointer<ClassType, FieldType> dataAccessor)
+            {
+                TypeDefinition::memberFields<FieldType>.insert_or_assign(key, dataAccessor);
+            }
+
+            template <typename... TT>
+            static std::map<std::string, std::shared_ptr<TypeWrapper<DataPrimitive::unknown>>> getFieldTypings()
+            {
+                std::map<std::string, std::shared_ptr<TypeWrapper<DataPrimitive::unknown>>> fields;
+
+                (fields.merge(Type::getFieldTypingsForType<TT>()), ...);
+
+                return fields;
+            }
+
+            template <typename T>
+            static std::map<std::string, std::shared_ptr<TypeWrapper<DataPrimitive::unknown>>> getFieldTypingsForType()
+            {
+                std::map<std::string, std::shared_ptr<TypeWrapper<DataPrimitive::unknown>>> fields;
+
+                for (auto f : TypeDefinition::memberFields<T>)
+                {
+                    auto fieldType = TypeDefinition<T>::type::generateTyping();
+                    fields.insert_or_assign(fieldType);
+                }
+
+                return fields;
+            }
+
+            static std::shared_ptr<TypeWrapper<DataPrimitive::unknown>> generateTyping()
+            {
+                std::map<std::string, std::shared_ptr<TypeWrapper<unknown>>> fields = Type::getFieldTypings<int, std::string>();
+                auto result = makeBasicType(DataPrimitive::object, "");
+                auto objectWrapperCast = CastSharedPtr(ObjectTypeWrapper, result);
+                objectWrapperCast->fields.merge(fields);
+
+                return result;
+            }
+        };
+
+        static Type type;
+    };
+
+    template <typename ClassType>
+    TypeDefinition<ClassType>::Type TypeDefinition<ClassType>::type = TypeDefinition<ClassType>::Type();
+    template <typename ClassType>
+    template <typename FieldType>
+    TypeDefinition<ClassType>::MemberFields<FieldType> TypeDefinition<ClassType>::memberFields;
 }
 
 #endif
