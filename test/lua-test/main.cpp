@@ -10,7 +10,10 @@
 #include <cassert>
 #include <sol.hpp>
 #include "../../../src/api-model.hpp"
-#include "../../../src/type-model.hpp"
+#include "../../../src/type-model/type-model.hpp"
+#include "../../../src/type-model/member-pointer.hpp"
+#include "../../../src/type-model/static-pointer.hpp"
+#include "../../../src/type-model/class-typing.hpp"
 
 using namespace APICore;
 using namespace std;
@@ -58,6 +61,23 @@ struct Y
 		this->v = o;
 	}
 };
+
+struct CustomObjectData
+{
+	static double d1;
+	int i1 = 15;
+	std::string s1 = "ABC123";
+	struct CustomObjectSubData
+	{
+		int i2 = 30;
+		std::string s2 = "DEF456";
+	} o1;
+
+	int doStuff(double d, std::string s){
+		return 15;
+	}
+};
+double CustomObjectData::d1 = 12.678;
 
 int main(int argc, char **argv)
 {
@@ -182,23 +202,31 @@ int main(int argc, char **argv)
 		std::cout << "Parameter name: " << p << std::endl;
 	}
 
-	struct CustomObjectData
-	{
-		int i1 = 15;
-		std::string s1 = "ABC123";
-		struct CustomObjectSubData
-		{
-			int i2 = 30;
-			std::string s2 = "DEF456";
-		} o1;
-	};
-	using CustomObject = TypeDefinition<CustomObjectData>;
-	CustomObject::type["i1"] = &CustomObjectData::i1;
-	CustomObject::type["s1"] = &CustomObjectData::s1;
+	using CustomObjectSubDataSpec = ClassTyping<
+		CustomObjectData::CustomObjectSubData,
+		Member<"i1", &CustomObjectData::CustomObjectSubData::i2>,
+		Member<"s1", &CustomObjectData::CustomObjectSubData::s2>>;
+	using CustomObjectDataSpec = ClassTyping<
+		CustomObjectData,
+		Static<"d1", &CustomObjectData::d1>,
+		Member<"i1", &CustomObjectData::i1>,
+		Member<"s1", &CustomObjectData::s1>,
+		Member<"o1", &CustomObjectData::o1>,
+		// TODO: add templating to extract function return type and function parameters
+		Member<"doStuff", &CustomObjectData::doStuff>>;
 
+	using i1Ptr = Member<"i1", &CustomObjectData::i1>;
+	CustomObjectData cObj;
+	cObj.i1 = 12;
+	std::cout << i1Ptr::key << ": " << cObj.*(i1Ptr::ptr) << std::endl;
 
-	printTyping("x", CustomObject::type.generateTyping());
+	// using CustomObject = TypeDefinition<CustomObjectData, FieldIndex<int, "i1">, FieldIndex<std::string, "s1">>;
+	// auto xx = CustomObject::field<"i1">();
 
+	// CustomObject::field<"i1">() = &CustomObjectData::i1;
+	// CustomObject::field<"s1">() = &CustomObjectData::s1;
+
+	// printTyping("x", CustomObject::type.generateTyping());
 
 	sol::state lua;
 	auto objectValue = std::shared_ptr<ObjectWrapper>(new ObjectContainerWrapper());
