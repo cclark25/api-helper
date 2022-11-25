@@ -13,13 +13,31 @@ namespace APICore
         requires std::is_same<typename T::classType, ClassType>::value;
     };
 
-    template<typename T, class ClassType>
-    concept ClassField = StaticPtrSpec<T> || ClassMember<T,ClassType>;
+    template <typename T, class ClassType>
+    concept ClassField = StaticPtrSpec<T> || ClassMember<T, ClassType>;
 
-    template <class ClassType, ClassField<ClassType>... Members>
+    template <class ClassType, ClassField<ClassType>... Fields>
     struct ClassTyping
     {
         using type = ClassType;
+
+        template <template <ClassField<ClassType>> class Callback>
+        static void memberCallback()
+        {
+            ((ClassMember<Fields, ClassType> ? []()
+                  { Callback<Fields>::processMemberField(); return true; }()
+                                             : false),
+             ...);
+        }
+
+        template <template <ClassField<ClassType>> class Callback>
+        static void staticFieldCallback()
+        {
+            ((StaticPtrSpec<Fields> ? []()
+                  { Callback<Fields>::processStaticField(); return true; }()
+                                             : false),
+             ...);
+        }
     };
 };
 

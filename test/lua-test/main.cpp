@@ -73,11 +73,42 @@ struct CustomObjectData
 		std::string s2 = "DEF456";
 	} o1;
 
-	int doStuff(double d, std::string s){
+	int doStuff(double d, std::string s)
+	{
 		return 15;
 	}
 };
 double CustomObjectData::d1 = 12.678;
+
+using CustomObjectSubDataSpec = ClassTyping<
+	CustomObjectData::CustomObjectSubData,
+	Member<"i1", &CustomObjectData::CustomObjectSubData::i2>,
+	Member<"s1", &CustomObjectData::CustomObjectSubData::s2>>;
+using CustomObjectDataSpec = ClassTyping<
+	CustomObjectData,
+	Static<"d1", &CustomObjectData::d1>,
+	Member<"i1", &CustomObjectData::i1>,
+	Member<"s1", &CustomObjectData::s1>,
+	Member<"o1", &CustomObjectData::o1>,
+	// TODO: add templating to extract function return type and function parameters
+	Member<"doStuff", &CustomObjectData::doStuff>>;
+
+using i1Ptr = Member<"i1", &CustomObjectData::i1>;
+
+std::vector<std::function<void(sol::state)>> handlerCallbacks;
+
+template <class Field>
+struct FieldHandler
+{
+	static void processMemberField()
+	{
+		std::cout << "Member Field Listed: " << Field::key << " => " << Field::ptr << std::endl;
+	};
+	static void processStaticField()
+	{
+		std::cout << "Static Field Listed: " << Field::key << " => " << Field::ptr << std::endl;
+	};
+};
 
 int main(int argc, char **argv)
 {
@@ -202,20 +233,9 @@ int main(int argc, char **argv)
 		std::cout << "Parameter name: " << p << std::endl;
 	}
 
-	using CustomObjectSubDataSpec = ClassTyping<
-		CustomObjectData::CustomObjectSubData,
-		Member<"i1", &CustomObjectData::CustomObjectSubData::i2>,
-		Member<"s1", &CustomObjectData::CustomObjectSubData::s2>>;
-	using CustomObjectDataSpec = ClassTyping<
-		CustomObjectData,
-		Static<"d1", &CustomObjectData::d1>,
-		Member<"i1", &CustomObjectData::i1>,
-		Member<"s1", &CustomObjectData::s1>,
-		Member<"o1", &CustomObjectData::o1>,
-		// TODO: add templating to extract function return type and function parameters
-		Member<"doStuff", &CustomObjectData::doStuff>>;
+	CustomObjectDataSpec::memberCallback<FieldHandler>();
+	CustomObjectDataSpec::staticFieldCallback<FieldHandler>();
 
-	using i1Ptr = Member<"i1", &CustomObjectData::i1>;
 	CustomObjectData cObj;
 	cObj.i1 = 12;
 	std::cout << i1Ptr::key << ": " << cObj.*(i1Ptr::ptr) << std::endl;
