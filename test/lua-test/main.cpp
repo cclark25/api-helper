@@ -14,6 +14,8 @@
 #include "../../../src/type-model/member-pointer.hpp"
 #include "../../../src/type-model/static-pointer.hpp"
 #include "../../../src/type-model/class-typing.hpp"
+#include "../../../src/type-model/type-lookup.hpp"
+#include "../../../src/type-model/type-generators/type-generator.hpp"
 
 using namespace APICore;
 using namespace std;
@@ -30,6 +32,12 @@ void printTyping(std::string fieldName, std::shared_ptr<APICore::TypeWrapperRoot
 		{
 			printTyping(field.first, field.second, padding + "\t");
 		}
+	}
+	else if (typing->getPrimitiveType() == DataPrimitive::classType)
+	{
+		auto classTyping = CastSharedPtr(TypeWrapper<DataPrimitive::classType>, typing);
+		std::cout << padding << "\t" << "Instance Typing: " << std::endl;
+		printTyping(classTyping->getInstanceType()->name, classTyping->getInstanceType(), padding + "\t\t");
 	}
 	else if (typing->getPrimitiveType() == DataPrimitive::function)
 	{
@@ -81,10 +89,14 @@ struct CustomObjectData
 double CustomObjectData::d1 = 12.678;
 
 using CustomObjectSubDataSpec = ClassTyping<
+	"CustomObjectSubData",
+	"A custom class to test typing a class's sub class.",
 	CustomObjectData::CustomObjectSubData,
 	Member<"i1", &CustomObjectData::CustomObjectSubData::i2>,
 	Member<"s1", &CustomObjectData::CustomObjectSubData::s2>>;
 using CustomObjectDataSpec = ClassTyping<
+	"CustomObjectData",
+	"A custom class to test typing.",
 	CustomObjectData,
 	Static<"d1", &CustomObjectData::d1>,
 	Member<"i1", &CustomObjectData::i1>,
@@ -94,6 +106,9 @@ using CustomObjectDataSpec = ClassTyping<
 	Member<"doStuff", &CustomObjectData::doStuff>>;
 
 using i1Ptr = Member<"i1", &CustomObjectData::i1>;
+
+RegisterType(CustomObjectData, CustomObjectDataSpec);
+RegisterType(CustomObjectData::CustomObjectSubData, CustomObjectSubDataSpec);
 
 std::vector<std::function<void(sol::state)>> handlerCallbacks;
 
@@ -233,12 +248,10 @@ int main(int argc, char **argv)
 		std::cout << "Parameter name: " << p << std::endl;
 	}
 
-	CustomObjectDataSpec::memberCallback<FieldHandler>();
-	CustomObjectDataSpec::staticFieldCallback<FieldHandler>();
+	// TypeLookup<CustomObjectData>::registeredType::memberCallback<FieldHandler>();
+	// TypeLookup<CustomObjectData>::registeredType::staticFieldCallback<FieldHandler>();
 
-	CustomObjectData cObj;
-	cObj.i1 = 12;
-	std::cout << i1Ptr::key << ": " << cObj.*(i1Ptr::ptr) << std::endl;
+	printTyping(CustomObjectDataSpec::name, TypeGenerator<CustomObjectData>::generateTyping());
 
 	// using CustomObject = TypeDefinition<CustomObjectData, FieldIndex<int, "i1">, FieldIndex<std::string, "s1">>;
 	// auto xx = CustomObject::field<"i1">();

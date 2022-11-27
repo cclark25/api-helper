@@ -3,6 +3,7 @@
 
 #include "./member-pointer.hpp"
 #include "./static-pointer.hpp"
+#include <string>
 
 namespace APICore
 {
@@ -16,10 +17,12 @@ namespace APICore
     template <typename T, class ClassType>
     concept ClassField = StaticPtrSpec<T> || ClassMember<T, ClassType>;
 
-    template <class ClassType, ClassField<ClassType>... Fields>
+    template <StringLiteral ClassName, StringLiteral ClassDescription, class ClassType, ClassField<ClassType>... Fields>
     struct ClassTyping
     {
         using type = ClassType;
+        static std::string name;
+        static std::string description;
 
         template <template <ClassField<ClassType>> class Callback>
         static void memberCallback()
@@ -39,6 +42,10 @@ namespace APICore
              ...);
         }
     };
+    template <StringLiteral ClassName, StringLiteral ClassDescription, class ClassType, ClassField<ClassType>... Fields>
+    std::string ClassTyping<ClassName, ClassDescription, ClassType, Fields...>::name = ClassName.value;
+    template <StringLiteral ClassName, StringLiteral ClassDescription, class ClassType, ClassField<ClassType>... Fields>
+    std::string ClassTyping<ClassName, ClassDescription, ClassType, Fields...>::description = ClassDescription.value;
 };
 
 #endif
