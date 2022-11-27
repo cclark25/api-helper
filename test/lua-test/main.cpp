@@ -36,9 +36,11 @@ void printTyping(std::string fieldName, std::shared_ptr<APICore::TypeWrapperRoot
 	else if (typing->getPrimitiveType() == DataPrimitive::classType)
 	{
 		auto classTyping = CastSharedPtr(TypeWrapper<DataPrimitive::classType>, typing);
-		std::cout << padding << "\t" << "Static Typing: " << std::endl;
+		std::cout << padding << "\t"
+				  << "Static Typing: " << std::endl;
 		printTyping(classTyping->getStaticType()->name, classTyping->getStaticType(), padding + "\t\t");
-		std::cout << padding << "\t" << "Instance Typing: " << std::endl;
+		std::cout << padding << "\t"
+				  << "Instance Typing: " << std::endl;
 		printTyping(classTyping->getInstanceType()->name, classTyping->getInstanceType(), padding + "\t\t");
 	}
 	else if (typing->getPrimitiveType() == DataPrimitive::function)
@@ -105,7 +107,12 @@ using CustomObjectDataSpec = ClassTyping<
 	Member<"s1", &CustomObjectData::s1, "An instance string field.">,
 	Member<"o1", &CustomObjectData::o1, "An instance object field.">,
 	// TODO: add templating to extract function return type and function parameters
-	Member<"doStuff", &CustomObjectData::doStuff>>;
+	MemberFunction<
+		"doStuff",
+		&CustomObjectData::doStuff,
+		"",
+		Parameter<"d", "double parameter">,
+		Parameter<"s", "string parameter">>>;
 
 using i1Ptr = Member<"i1", &CustomObjectData::i1>;
 
