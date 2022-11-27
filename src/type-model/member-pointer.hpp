@@ -26,12 +26,15 @@ namespace APICore {
     template<class ClassType, typename T, T ClassType::* Pointer>
     MemberPtr<Pointer>::ptrType MemberPtr<Pointer>::ptr = Pointer; 
 
-    template<StringLiteral Key, auto Pointer>
+    template<StringLiteral Key, auto Pointer, StringLiteral Description = "">
     struct Member : public MemberPtr<Pointer> {
         static std::string key;
+        static std::string description;
     };
-    template<StringLiteral Key, auto Pointer>
-    std::string Member<Key, Pointer>::key = Key.value;
+    template<StringLiteral Key, auto Pointer, StringLiteral Description>
+    std::string Member<Key, Pointer, Description>::key = Key.value;
+    template<StringLiteral Key, auto Pointer, StringLiteral Description>
+    std::string Member<Key, Pointer, Description>::description = Description.value;
 
 
     template<typename T>
