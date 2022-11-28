@@ -50,6 +50,9 @@ void printTyping(std::string fieldName, std::shared_ptr<APICore::TypeWrapperRoot
 		{
 			printTyping("", field, padding + "\t");
 		}
+		std::cout << padding << "\t"
+				  << "Return Typing: " << std::endl;
+		printTyping("", functionTyping->getReturnType(), padding + "\t");
 	}
 }
 
@@ -110,11 +113,12 @@ using CustomObjectDataSpec = ClassTyping<
 	MemberFunction<
 		"doStuff",
 		&CustomObjectData::doStuff,
-		"",
+		"An instance function that does stuff.",
 		Parameter<"d", "double parameter">,
 		Parameter<"s", "string parameter">>>;
 
 using i1Ptr = Member<"i1", &CustomObjectData::i1>;
+
 
 RegisterType(CustomObjectData, CustomObjectDataSpec);
 RegisterType(CustomObjectData::CustomObjectSubData, CustomObjectSubDataSpec);
@@ -136,6 +140,7 @@ struct FieldHandler
 
 int main(int argc, char **argv)
 {
+	auto xxx = &CustomObjectData::doStuff;
 	// try
 	// {
 	// 	sol::state lua;

@@ -2,6 +2,7 @@
 #define CLASS_TYPING
 
 #include "./member-pointer.hpp"
+#include "./member-function-pointer.hpp"
 #include "./static-pointer.hpp"
 #include <string>
 
@@ -10,7 +11,7 @@ namespace APICore
     template <typename T, class ClassType>
     concept ClassMember = requires
     {
-        requires MemberPtrSpec<T>;
+        requires MemberPtrSpec<T> || MemberFunctionPtrSpec<T>;
         requires std::is_same<typename T::classType, ClassType>::value;
     };
 

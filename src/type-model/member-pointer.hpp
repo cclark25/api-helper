@@ -40,37 +40,6 @@ namespace APICore
     template <StringLiteral Key, auto Pointer, StringLiteral Description>
     std::string Member<Key, Pointer, Description>::description = Description.value;
 
-    template <StringLiteral Name, StringLiteral Description>
-    struct Parameter
-    {
-        static std::string name;
-        static std::string description;
-    };
-    template <StringLiteral Name, StringLiteral Description>
-    std::string Parameter<Name, Description>::name = Name;
-    template <StringLiteral Name, StringLiteral Description>
-    std::string Parameter<Name, Description>::description = Description;
-
-    template <typename T>
-    concept ParameterDescription = requires
-    {
-        {
-            T::name
-            } -> std::convertible_to<std::string>;
-        {
-            T::description
-            } -> std::convertible_to<std::string>;
-    };
-
-    // template <StringLiteral Key, auto Pointer, StringLiteral Description, ParameterDescription... Parameters>
-    struct MemberFunction : public Member<Key, Pointer, Description>
-    {
-        static std::vector<std::pair<std::string, std::string>> parameters;
-    };
-    template <StringLiteral Key, auto Pointer, StringLiteral Description, ParameterDescription... Parameters>
-    std::vector<std::pair<std::string, std::string>>
-        MemberFunction<Key, Pointer, Description, Parameters...>::parameters = std::vector<std::pair<std::string, std::string>>((std::pair<std::string, std::string>(Parameters::name, Parameters::description), ...));
-
     template <typename T>
     concept MemberPtrSpec = requires(T::type typeVal, T::classType classVal, T::ptrType ptrVal)
     {
@@ -85,11 +54,6 @@ namespace APICore
             } -> std::convertible_to<typename T::type T::classType::*>;
     };
 
-    template <typename T>
-    concept MemberFunctionPtrSpec = requires()
-    {
-        requires MemberPtrSpec<T>;
-    };
 };
 
 #endif

@@ -39,5 +39,6 @@ namespace APICore {
 }
 
 #include "./class-generator.hpp"
+#include "./function-generator.hpp"
 
 #endif
