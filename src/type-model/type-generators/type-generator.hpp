@@ -6,34 +6,34 @@
 #include "../../type-wrapper/type-wrapper.hpp"
 
 namespace APICore {
-    template<class T>
+    template<class T, StringLiteral TypeGeneratorTag = "ANY", class... ExtraData>
     struct TypeGenerator;
 
-    template<>
-    struct TypeGenerator<std::string> {
+    template<class... ExtraData>
+    struct TypeGenerator<std::string, "ANY", ExtraData...> {
         static std::shared_ptr<TypeWrapper<DataPrimitive::unknown>> generateTyping(){
             return makeBasicType<DataPrimitive::string>();
         }
     };
-
-    template<>
-    struct TypeGenerator<int> {
+    
+    template<class... ExtraData>
+    struct TypeGenerator<int, "ANY", ExtraData...> {
         static std::shared_ptr<TypeWrapper<DataPrimitive::unknown>> generateTyping(){
             return makeBasicType<DataPrimitive::int32>();
         }
     };
 
-    template<>
-    struct TypeGenerator<void> {
+    template<class... ExtraData>
+    struct TypeGenerator<void, "ANY", ExtraData...> {
         static std::shared_ptr<TypeWrapper<DataPrimitive::unknown>> generateTyping(){
             return makeBasicType<DataPrimitive::null>();
         }
     };
 
-    template<>
-    struct TypeGenerator<double> {
+    template<class... ExtraData>
+    struct TypeGenerator<double, "ANY", ExtraData...> {
         static std::shared_ptr<TypeWrapper<DataPrimitive::unknown>> generateTyping(){
-            return makeBasicType<DataPrimitive::unknown>();
+            return makeBasicType<DataPrimitive::doubleType>();
         }
     };
 }

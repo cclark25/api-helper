@@ -105,10 +105,9 @@ namespace APICore
     template <>
     class TypeWrapper<DataPrimitive::function> : public TypeWrapper<DataPrimitive::unknown>
     {
+    public:
         std::vector<std::shared_ptr<TypeWrapper<DataPrimitive::unknown>>> parameters;
         std::shared_ptr<TypeWrapper<DataPrimitive::unknown>> returnType;
-
-    public:
         TypeWrapper<DataPrimitive::function>(std::string name, std::string description, std::vector<std::shared_ptr<TypeWrapper<DataPrimitive::unknown>>> parameters, std::shared_ptr<TypeWrapper<DataPrimitive::unknown>> returnType) : TypeWrapper<DataPrimitive::unknown>(name, description, DataPrimitive::function)
         {
             this->parameters = parameters;

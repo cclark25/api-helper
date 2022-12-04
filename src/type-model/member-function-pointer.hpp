@@ -17,9 +17,9 @@ namespace APICore
         static std::string description;
     };
     template <StringLiteral Name, StringLiteral Description>
-    std::string Parameter<Name, Description>::name = Name;
+    std::string Parameter<Name, Description>::name = std::string(Name.value);
     template <StringLiteral Name, StringLiteral Description>
-    std::string Parameter<Name, Description>::description = Description;
+    std::string Parameter<Name, Description>::description = std::string(Description.value);
 
     template <typename T>
     concept ParameterDescription = requires
@@ -32,21 +32,39 @@ namespace APICore
             } -> std::convertible_to<std::string>;
     };
 
-    template <StringLiteral Key, auto Pointer, StringLiteral Description, ParameterDescription... Parameters>
+    template <ParameterDescription... Parameters>
+    struct ParameterPack
+    {
+        static std::vector<std::pair<std::string, std::string>> parameters;
+    };
+    template <ParameterDescription... Parameters>
+    std::vector<std::pair<std::string, std::string>>
+        ParameterPack<Parameters...>::parameters = ([]()
+                                                    {
+            std::vector<std::pair<std::string, std::string>> parameterList;
+            (parameterList.push_back(std::pair<std::string, std::string>(Parameters::name, Parameters::description)), ...);
+            return parameterList; })();
+
+    template <typename T>
+    concept ParameterPackDefinition = requires
+    {
+        {
+            T::parameters
+            } -> std::convertible_to<std::vector<std::pair<std::string, std::string>>>;
+    };
+
+    template <StringLiteral Key, auto Pointer, StringLiteral Description, ParameterPackDefinition Parameters>
     struct MemberFunction : public MemberPtr<Pointer>
     {
         using pointerTypeLookup = void;
-        static std::vector<std::pair<std::string, std::string>> parameters;
+        using parameterPack = Parameters;
         static std::string key;
         static std::string description;
     };
-    template <StringLiteral Key, auto Pointer, StringLiteral Description, ParameterDescription... Parameters>
-    std::vector<std::pair<std::string, std::string>>
-        MemberFunction<Key, Pointer, Description, Parameters...>::parameters = std::vector<std::pair<std::string, std::string>>((std::pair<std::string, std::string>(Parameters::name, Parameters::description), ...));
-    template <StringLiteral Key, auto Pointer, StringLiteral Description, ParameterDescription... Parameters>
-    std::string MemberFunction<Key, Pointer, Description, Parameters...>::key = Key.value;
-    template <StringLiteral Key, auto Pointer, StringLiteral Description, ParameterDescription... Parameters>
-    std::string MemberFunction<Key, Pointer, Description, Parameters...>::description = Description.value;
+    template <StringLiteral Key, auto Pointer, StringLiteral Description, ParameterPackDefinition Parameters>
+    std::string MemberFunction<Key, Pointer, Description, Parameters>::key = Key.value;
+    template <StringLiteral Key, auto Pointer, StringLiteral Description, ParameterPackDefinition Parameters>
+    std::string MemberFunction<Key, Pointer, Description, Parameters>::description = Description.value;
 
     template <typename PointerType>
     struct MemberFunctionTyping
@@ -54,37 +72,36 @@ namespace APICore
         using classType = void;
         using returnType = void;
     };
+
     template <class ClassType, typename ReturnType, typename... Parameters>
     struct MemberFunctionTyping<ReturnType ClassType::*(Parameters...)>
     {
         using classType = ClassType;
         using returnType = ReturnType;
+
+      
     };
 
-    template <typename PointerType, StringLiteral Key, PointerType Pointer, StringLiteral Description, ParameterDescription... Parameters>
-    struct MemberFunction<Key, Pointer, Description, Parameters...> : public MemberPtr<Pointer>
+    template <typename PointerType, StringLiteral Key, PointerType Pointer, StringLiteral Description, ParameterPackDefinition Parameters>
+    struct MemberFunction<Key, Pointer, Description, Parameters> : public MemberPtr<Pointer>
     {
         using functionTyping = MemberFunctionTyping<PointerType>;
-        using pointerTypeLookup = ValueTypeLookup<PointerType, Pointer>;
+        using parameterPack = Parameters;
         static std::vector<std::pair<std::string, std::string>> parameters;
         static std::string key;
         static std::string description;
+        static bool lookupCreated;
     };
-    template <typename PointerType, StringLiteral Key, PointerType Pointer, StringLiteral Description, ParameterDescription... Parameters>
-    std::vector<std::pair<std::string, std::string>>
-        MemberFunction<Key, Pointer, Description, Parameters...>::parameters = std::vector<std::pair<std::string, std::string>>((std::pair<std::string, std::string>(Parameters::name, Parameters::description), ...));
-    template <typename PointerType, StringLiteral Key, PointerType Pointer, StringLiteral Description, ParameterDescription... Parameters>
-    std::string MemberFunction<Key, Pointer, Description, Parameters...>::key = Key.value;
-    template <typename PointerType, StringLiteral Key, PointerType Pointer, StringLiteral Description, ParameterDescription... Parameters>
-    std::string MemberFunction<Key, Pointer, Description, Parameters...>::description = Description.value;
+
+    template <typename PointerType, StringLiteral Key, PointerType Pointer, StringLiteral Description, ParameterPackDefinition Parameters>
+    std::string MemberFunction<Key, Pointer, Description, Parameters>::key = Key.value;
+    template <typename PointerType, StringLiteral Key, PointerType Pointer, StringLiteral Description, ParameterPackDefinition Parameters>
+    std::string MemberFunction<Key, Pointer, Description, Parameters>::description = Description.value;
 
     template <typename T>
     concept MemberFunctionPtrSpec = requires()
     {
         requires MemberPtrSpec<T>;
-        {
-            T::parameters
-            } -> std::convertible_to<std::vector<std::pair<std::string, std::string>>>;
         {T::functionTyping::classType};
         {T::functionTyping::returnType};
     };

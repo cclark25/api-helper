@@ -20,17 +20,17 @@
 using namespace APICore;
 using namespace std;
 
-void printTyping(std::string fieldName, std::shared_ptr<APICore::TypeWrapperRoot> typing, std::string padding = "")
+void printTyping(std::shared_ptr<APICore::TypeWrapperRoot> typing, std::string padding = "")
 {
-	std::cout << padding << "API Field Name: " << fieldName << std::endl;
-	std::cout << padding << "\tType: " << typing->getTypeName() << std::endl;
+	std::cout << padding << "\tType: " << APICore::dataPrimitiveNameMap.at(typing->getPrimitiveType()) << std::endl;
+	std::cout << padding << "\tName: " << typing->getTypeName() << std::endl;
 	std::cout << padding << "\tDescription: " << typing->getDescription() << std::endl;
 	if (typing->getPrimitiveType() == DataPrimitive::object)
 	{
 		auto objectTyping = CastSharedPtr(TypeWrapper<DataPrimitive::object>, typing);
 		for (auto field : objectTyping->getFields())
 		{
-			printTyping(field.first, field.second, padding + "\t");
+			printTyping(field.second, padding + "\t");
 		}
 	}
 	else if (typing->getPrimitiveType() == DataPrimitive::classType)
@@ -38,21 +38,23 @@ void printTyping(std::string fieldName, std::shared_ptr<APICore::TypeWrapperRoot
 		auto classTyping = CastSharedPtr(TypeWrapper<DataPrimitive::classType>, typing);
 		std::cout << padding << "\t"
 				  << "Static Typing: " << std::endl;
-		printTyping(classTyping->getStaticType()->name, classTyping->getStaticType(), padding + "\t\t");
+		printTyping(classTyping->getStaticType(), padding + "\t\t");
 		std::cout << padding << "\t"
 				  << "Instance Typing: " << std::endl;
-		printTyping(classTyping->getInstanceType()->name, classTyping->getInstanceType(), padding + "\t\t");
+		printTyping(classTyping->getInstanceType(), padding + "\t\t");
 	}
 	else if (typing->getPrimitiveType() == DataPrimitive::function)
 	{
 		auto functionTyping = CastSharedPtr(TypeWrapper<DataPrimitive::function>, typing);
+		size_t index = 0;
 		for (auto field : functionTyping->getParams())
 		{
-			printTyping("", field, padding + "\t");
+			std::cout << padding << "\tParameter " << index++ << ":" << std::endl;
+			printTyping(field, padding + "\t");
 		}
 		std::cout << padding << "\t"
 				  << "Return Typing: " << std::endl;
-		printTyping("", functionTyping->getReturnType(), padding + "\t");
+		printTyping(functionTyping->getReturnType(), padding + "\t");
 	}
 }
 
@@ -114,11 +116,11 @@ using CustomObjectDataSpec = ClassTyping<
 		"doStuff",
 		&CustomObjectData::doStuff,
 		"An instance function that does stuff.",
-		Parameter<"d", "double parameter">,
-		Parameter<"s", "string parameter">>>;
+		APICore::ParameterPack<
+			Parameter<"d", "double parameter">,
+			Parameter<"s", "string parameter">>>>;
 
 using i1Ptr = Member<"i1", &CustomObjectData::i1>;
-
 
 RegisterType(CustomObjectData, CustomObjectDataSpec);
 RegisterType(CustomObjectData::CustomObjectSubData, CustomObjectSubDataSpec);
@@ -224,7 +226,7 @@ int main(int argc, char **argv)
 	// x["f1"] = {std::array<std::string, 3>(), std::function([](std::string s, int i, int j)
 	// 							 { return ""; })};
 
-	printTyping("x", x.getTyping());
+	printTyping(x.getTyping());
 
 	auto params = x.getPrimitiveTypes<int, std::string, int, void>();
 
@@ -265,7 +267,7 @@ int main(int argc, char **argv)
 	// TypeLookup<CustomObjectData>::registeredType::memberCallback<FieldHandler>();
 	// TypeLookup<CustomObjectData>::registeredType::staticFieldCallback<FieldHandler>();
 
-	printTyping(CustomObjectDataSpec::name, TypeGenerator<CustomObjectData>::generateTyping());
+	printTyping(TypeGenerator<CustomObjectData>::generateTyping());
 
 	// using CustomObject = TypeDefinition<CustomObjectData, FieldIndex<int, "i1">, FieldIndex<std::string, "s1">>;
 	// auto xx = CustomObject::field<"i1">();

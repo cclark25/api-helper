@@ -30,7 +30,7 @@ namespace APICore
 
             ((
                  MemberPtrSpec<Fields> ? [&results]()
-                     {results.insert_or_assign(Fields::key, TypeGenerator<typename Fields::type>::generateTyping()); return true; }()
+                     {results.insert_or_assign(Fields::key, TypeGenerator<typename Fields::type, "MEMBER", Fields>::generateTyping()); return true; }()
                                        : false),
              ...);
 
@@ -74,8 +74,8 @@ namespace APICore
         }
     };
 
-    template <class ClassType>
-    struct TypeGenerator
+    template <class ClassType, class... ExtraData>
+    struct TypeGenerator<ClassType, "ANY", ExtraData...>
     {
         using type_definition = TypeLookup<ClassType>;
 

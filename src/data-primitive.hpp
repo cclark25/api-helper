@@ -14,6 +14,7 @@ namespace APICore
 	D(null, void)                                       \
 	D(string, std::string)                              \
 	D(int32, int32_t)                                   \
+	D(doubleType, double)                                   \
 	D(function, FunctionInternalType)                   \
 	D(object, ObjectMap)                                \
 	D(array, std::vector<std::shared_ptr<DataWrapper>>) \
