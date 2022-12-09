@@ -54,7 +54,7 @@ namespace APICore
 
             ((
                  StaticPtrSpec<Fields> ? [&results]()
-                     {results.insert_or_assign(Fields::key, TypeGenerator<typename Fields::type>::generateTyping()); return true; }()
+                     {results.insert_or_assign(Fields::key, TypeGenerator<typename Fields::type, "STATIC", Fields>::generateTyping()); return true; }()
                                        : false),
              ...);
 

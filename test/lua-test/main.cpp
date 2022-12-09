@@ -12,7 +12,9 @@
 #include "../../../src/api-model.hpp"
 #include "../../../src/type-model/type-model.hpp"
 #include "../../../src/type-model/member-pointer.hpp"
+#include "../../../src/type-model/member-function-pointer.hpp"
 #include "../../../src/type-model/static-pointer.hpp"
+#include "../../../src/type-model/static-function-pointer.hpp"
 #include "../../../src/type-model/class-typing.hpp"
 #include "../../../src/type-model/type-lookup.hpp"
 #include "../../../src/type-model/type-generators/type-generator.hpp"
@@ -90,6 +92,10 @@ struct CustomObjectData
 		std::string s2 = "DEF456";
 	} o1;
 
+	static std::string staticFunction(int num){
+		return to_string(num);
+	}
+
 	int doStuff(double d, std::string s)
 	{
 		return 15;
@@ -118,7 +124,15 @@ using CustomObjectDataSpec = ClassTyping<
 		"An instance function that does stuff.",
 		APICore::ParameterPack<
 			Parameter<"d", "double parameter">,
-			Parameter<"s", "string parameter">>>>;
+			Parameter<"s", "string parameter">
+		>
+	>,
+	StaticFunction<
+		"staticFunction",
+		&CustomObjectData::staticFunction,
+		"An static function that does stuff.",
+		APICore::ParameterPack<
+			Parameter<"num", "int parameter">>>>;
 
 using i1Ptr = Member<"i1", &CustomObjectData::i1>;
 
@@ -220,69 +234,11 @@ int main(int argc, char **argv)
 	// 	std::cerr << "Caught string error: " << e << std::endl;
 	// }
 
-	APIModel x;
-	x["s1"] = "string value";
-	x["n1"] = 123;
-	// x["f1"] = {std::array<std::string, 3>(), std::function([](std::string s, int i, int j)
-	// 							 { return ""; })};
-
-	printTyping(x.getTyping());
-
-	auto params = x.getPrimitiveTypes<int, std::string, int, void>();
-
-	for (auto p : params)
-	{
-		std::cout << "Param: " << dataPrimitiveNameMap.at(p) << std::endl;
-	}
-
-	static char pptr[] = "param1";
-
-	struct abc
-	{
-		int abc;
-	};
-
-	auto fun = std::function([](Named<int, "param1"> param1, Named<std::string, "param2"> param2)
-							 { 
-								param1 += 7;
-								param2 = param2.append(": ");
-								std::string result = param2;
-								for(int i = param1 * 2; i > 0; i--){
-									result = result
-										.append("(")
-										.append(dataPrimitiveNameMap.at(Named<int, "param1">::getPrimitiveType()))
-										.append(") ")
-										.append (std::to_string(i))
-										.append("\n");
-								}
-								return result; });
-	std::cout << fun(12, "Function result with string parameter") << std::endl;
-
-	auto pNames = getVariableNames(fun);
-	for (auto p : pNames)
-	{
-		std::cout << "Parameter name: " << p << std::endl;
-	}
-
-	// TypeLookup<CustomObjectData>::registeredType::memberCallback<FieldHandler>();
-	// TypeLookup<CustomObjectData>::registeredType::staticFieldCallback<FieldHandler>();
-
 	printTyping(TypeGenerator<CustomObjectData>::generateTyping());
 
-	// using CustomObject = TypeDefinition<CustomObjectData, FieldIndex<int, "i1">, FieldIndex<std::string, "s1">>;
-	// auto xx = CustomObject::field<"i1">();
-
-	// CustomObject::field<"i1">() = &CustomObjectData::i1;
-	// CustomObject::field<"s1">() = &CustomObjectData::s1;
-
-	// printTyping("x", CustomObject::type.generateTyping());
-
 	sol::state lua;
-	auto objectValue = std::shared_ptr<ObjectWrapper>(new ObjectContainerWrapper());
-	// objectValue->setType(CustomObject::generateTyping());
-	auto apiMappings = std::map<std::string, std::shared_ptr<DataWrapper>>({{"TestClass", classDefinition}, {"stringValue", std::shared_ptr<StringContainerWrapper>(new StringContainerWrapper("Test string."))}, {"intValue", std::shared_ptr<Int32ContainerWrapper>(new Int32ContainerWrapper(0))}, {"functionValue", functionExampleDefinition}, {"newObjectTest", objectValue}});
-	std::string typeFile = APILua::generateTypings("API", lua, apiMappings);
-	// std::cout << typeFile << std::endl;
+	// auto apiMappings = std::map<std::string, std::shared_ptr<DataWrapper>>({{"TestClass", classDefinition}, {"stringValue", std::shared_ptr<StringContainerWrapper>(new StringContainerWrapper("Test string."))}, {"intValue", std::shared_ptr<Int32ContainerWrapper>(new Int32ContainerWrapper(0))}, {"functionValue", functionExampleDefinition}, {"newObjectTest", objectValue}});
+	// std::string typeFile = APILua::generateTypings("API", lua, {});
 
 	lua.open_libraries(sol::lib::base, sol::lib::package, sol::lib::table, sol::lib::math, sol::lib::string, sol::lib::coroutine, sol::lib::debug, sol::lib::os);
 
