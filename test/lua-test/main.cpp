@@ -18,6 +18,7 @@
 #include "../../../src/type-model/class-typing.hpp"
 #include "../../../src/type-model/type-lookup.hpp"
 #include "../../../src/type-model/type-generators/type-generator.hpp"
+#include "../../../src/type-model/lua-binders/type-binder.hpp"
 
 using namespace APICore;
 using namespace std;
@@ -237,6 +238,8 @@ int main(int argc, char **argv)
 	printTyping(TypeGenerator<CustomObjectData>::generateTyping());
 
 	sol::state lua;
+	LuaBinder<CustomObjectData>::bind(lua);
+	lua["testObject"] = CustomObjectData();
 	// auto apiMappings = std::map<std::string, std::shared_ptr<DataWrapper>>({{"TestClass", classDefinition}, {"stringValue", std::shared_ptr<StringContainerWrapper>(new StringContainerWrapper("Test string."))}, {"intValue", std::shared_ptr<Int32ContainerWrapper>(new Int32ContainerWrapper(0))}, {"functionValue", functionExampleDefinition}, {"newObjectTest", objectValue}});
 	// std::string typeFile = APILua::generateTypings("API", lua, {});
 
@@ -272,6 +275,11 @@ int main(int argc, char **argv)
 		value.intVal = 99;
 		local value2 = value;
 		value = nil;
+
+		print("Type of testObject: " .. type(testObject));
+		print("Type of testObject: " .. type(testObject.testField));
+		print("Type of testObject return value: " .. type(testObject.testField()));
+		print("Value of testObject return value: " .. testObject.testField());
 	)");
 	lua.collect_garbage();
 	// std::cout << "After lua: " << ptr->intVal << std::endl;
