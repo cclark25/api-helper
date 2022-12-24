@@ -22,6 +22,7 @@ namespace APICore
     struct ClassTyping
     {
         using type = ClassType;
+        using isClass = void;
         static std::string name;
         static std::string description;
 
@@ -47,6 +48,14 @@ namespace APICore
     std::string ClassTyping<ClassName, ClassDescription, ClassType, Fields...>::name = ClassName.value;
     template <StringLiteral ClassName, StringLiteral ClassDescription, class ClassType, ClassField<ClassType>... Fields>
     std::string ClassTyping<ClassName, ClassDescription, ClassType, Fields...>::description = ClassDescription.value;
+
+    template <typename T>
+    concept ClassTypingDef = requires {
+        { T::type };
+        { T::isClass };
+        { T::name } -> std::convertible_to<std::string>;
+        { T::description } -> std::convertible_to<std::string>;
+    };
 };
 
 #endif

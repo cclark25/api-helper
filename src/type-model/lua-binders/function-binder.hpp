@@ -9,10 +9,10 @@
 
 namespace APICore
 {
-    template <class MemberFunctionDef, typename ReturnType, typename... Parameters>
-    struct LuaBinder<ReturnType(Parameters...), "MEMBER", MemberFunctionDef>
+    template <class ParentClassType, class MemberFunctionDef, typename ReturnType, typename... Parameters>
+    struct LuaBinder<ParentClassType, ReturnType(Parameters...), "MEMBER", MemberFunctionDef>
     {
-        static void bind(sol::state &state)
+        static void bind(sol::state &state, sol::usertype<ParentClassType> * userType, MemberFunctionDef* memberPtr = nullptr)
         {
             // auto functionTyping = std::shared_ptr<
             //     TypeWrapper<
@@ -36,14 +36,14 @@ namespace APICore
             //     index++;
             // }
 
-            // return functionTyping;
+            return;
         }
     };
 
-    template <class StaticFunctionDef, typename ReturnType, typename... Parameters>
-    struct LuaBinder<ReturnType(Parameters...), "STATIC", StaticFunctionDef>
+    template <class ParentClassType, class StaticFunctionDef, typename ReturnType, typename... Parameters>
+    struct LuaBinder<ParentClassType, ReturnType(Parameters...), "STATIC", StaticFunctionDef>
     {
-        static void bind(sol::state &state)
+        static void bind(sol::state &state, sol::usertype<ParentClassType> * userType)
         {
             // auto functionTyping = std::shared_ptr<
             //     TypeWrapper<
@@ -67,19 +67,19 @@ namespace APICore
             //     index++;
             // }
 
-            // return functionTyping;
+            return ;
         }
     };
 
-    template <typename T, typename... ExtraData>
-    struct LuaBinder<T, "MEMBER", ExtraData...> : public LuaBinder<T, "ANY", ExtraData...>
+    template <class ParentClassType, typename T, typename... ExtraData>
+    struct LuaBinder<ParentClassType, T, "MEMBER", ExtraData...> : public LuaBinder<ParentClassType, T, "ANY", ExtraData...>
     {
     };
-    template <typename T, typename... ExtraData>
-    struct LuaBinder<T, "STATIC", ExtraData...> : public LuaBinder<T, "ANY", ExtraData...>
+    template <class ParentClassType, typename T, typename... ExtraData>
+    struct LuaBinder<ParentClassType, T, "STATIC", ExtraData...> : public LuaBinder<ParentClassType, T, "ANY", ExtraData...>
     {
     };
-    
+
 }
 
 #endif

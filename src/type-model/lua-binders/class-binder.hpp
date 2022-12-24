@@ -5,89 +5,73 @@
 #include "./type-binder.hpp"
 #include "../class-typing.hpp"
 #include <sol.hpp>
+#include <string>
 
 namespace APICore
 {
-    // template <typename T>
-    // struct FieldTypings
-    // {
-    //     static std::map<std::string, std::shared_ptr<APICore::TypeWrapper<APICore::unknown>>> generateMemberTypings()
-    //     {
-    //         return std::map<std::string, std::shared_ptr<APICore::TypeWrapper<APICore::unknown>>>();
-    //     }
-    //     static std::map<std::string, std::shared_ptr<APICore::TypeWrapper<APICore::unknown>>> generateStaticFieldTypings()
-    //     {
-    //         return std::map<std::string, std::shared_ptr<APICore::TypeWrapper<APICore::unknown>>>();
-    //     }
-    // };
 
-    // template <StringLiteral Name, StringLiteral Description, class ClassType, ClassField<ClassType>... Fields>
-    // struct FieldTypings<ClassTyping<Name, Description, ClassType, Fields...>>
-    // {
-    //     static std::map<std::string, std::shared_ptr<APICore::TypeWrapper<APICore::unknown>>> generateMemberTypings()
-    //     {
-    //         std::map<std::string, std::shared_ptr<APICore::TypeWrapper<APICore::unknown>>> results;
-
-    //         ((
-    //              MemberPtrSpec<Fields> ? [&results]()
-    //                  {results.insert_or_assign(Fields::key, LuaBinder<typename Fields::type, "MEMBER", Fields>::generateTyping()); return true; }()
-    //                                    : false),
-    //          ...);
-
-    //         ((
-    //              MemberPtrSpec<Fields> ? [&results]()
-    //                  { results.at(Fields::key)->name = (Fields::key); return true; }()
-    //                                    : false),
-    //          ...);
-
-    //         ((
-    //              MemberPtrSpec<Fields> ? [&results]()
-    //                  {results.at(Fields::key)->description = (Fields::description); return true; }()
-    //                                    : false),
-    //          ...);
-
-    //         return results;
-    //     }
-    //     static std::map<std::string, std::shared_ptr<APICore::TypeWrapper<APICore::unknown>>> generateStaticFieldTypings()
-    //     {
-    //         std::map<std::string, std::shared_ptr<APICore::TypeWrapper<APICore::unknown>>> results;
-
-    //         ((
-    //              StaticPtrSpec<Fields> ? [&results]()
-    //                  {results.insert_or_assign(Fields::key, LuaBinder<typename Fields::type, "STATIC", Fields>::generateTyping()); return true; }()
-    //                                    : false),
-    //          ...);
-
-    //         ((
-    //              StaticPtrSpec<Fields> ? [&results]()
-    //                  { results.at(Fields::key)->name = (Fields::key); return true; }()
-    //                                    : false),
-    //          ...);
-
-    //         ((
-    //              StaticPtrSpec<Fields> ? [&results]()
-    //                  {results.at(Fields::key)->description = (Fields::description); return true; }()
-    //                                    : false),
-    //          ...);
-
-    //         return results;
-    //     }
-    // };
-
-    template <class ClassType, class... ExtraData>
-    struct LuaBinder<ClassType, "ANY", ExtraData...>
+    template <class ParentClassType, class ClassType, class... ExtraData>
+    requires std::is_class<ClassType>::value
+    struct LuaBinder<ParentClassType, ClassType, "ANY", ExtraData...>
     {
+        template <typename T>
+        struct FieldBinders
+        {
+            static void bindMembers(sol::state &state, sol::usertype<auto> *userType)
+            {
+            }
+            static void bindStaticFields(sol::state &state, sol::usertype<auto> *userType)
+            {
+            }
+        };
+        
+        template <StringLiteral Name, StringLiteral Description, ClassField<ClassType>... Fields>
+        struct FieldBinders<ClassTyping<Name, Description, ClassType, Fields...>>
+        {
+            static void bindMembers(sol::state &state, sol::usertype<ClassType> *userType)
+            {
+                ((
+                     MemberPtrSpec<Fields> ? [&state, &userType]()
+                         { 
+                        LuaBinder<ClassType, typename Fields::type, "MEMBER", Fields>::bind(state, userType, Fields::ptr, std::string(Fields::key)); 
+                        return true; }()
+                                           : false),
+                 ...);
+
+                return;
+            }
+            static void bindStaticFields(sol::state &state, sol::usertype<ClassType> *userType)
+            {
+                 ((
+                     StaticPtrSpec<Fields> ? [&state, &userType]()
+                         { 
+                        LuaBinder<ClassType, typename Fields::type, "MEMBER", Fields>::bind(state, userType, Fields::ptr, std::string(Fields::key)); 
+                        return true; }()
+                                           : false),
+                 ...);
+
+                return;
+            }
+        };
+
         using type_definition = TypeLookup<ClassType>;
 
-        static void bind(sol::state &state)
+
+        static void bind(sol::state &state, sol::usertype<ParentClassType> *userType, auto* ptr){
+            bind(state, userType);
+        }
+
+        static void bind(sol::state &state, sol::usertype<ParentClassType> *userType)
         {
             sol::usertype<ClassType> newClassType = state.new_usertype<ClassType>(
                 type_definition::registeredType::name,
                 sol::constructors<ClassType()>());
-            
-            newClassType["testField"] = [](){ return 12; };
-            
+
+            FieldBinders<typename type_definition::registeredType>::bindMembers(state, &newClassType);            
+            FieldBinders<typename type_definition::registeredType>::bindStaticFields(state, &newClassType);
+
             // TODO: add support for defining constructors
+            // TODO: setup binders for static and dynamic class members.
 
             // auto instanceType = std::shared_ptr<ObjectTypeWrapper>(
             //     new ObjectTypeWrapper(

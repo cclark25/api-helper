@@ -91,7 +91,9 @@ struct CustomObjectData
 	{
 		int i2 = 30;
 		std::string s2 = "DEF456";
-	} o1;
+	};
+
+	CustomObjectSubData o1;
 
 	static std::string staticFunction(int num){
 		return to_string(num);
@@ -116,24 +118,25 @@ using CustomObjectDataSpec = ClassTyping<
 	CustomObjectData,
 	Static<"d1", &CustomObjectData::d1, "A static double field.">,
 	Member<"i1", &CustomObjectData::i1, "An instance int field.">,
-	Member<"s1", &CustomObjectData::s1, "An instance string field.">,
-	Member<"o1", &CustomObjectData::o1, "An instance object field.">,
+	Member<"s1", &CustomObjectData::s1, "An instance string field.">
+	// Member<"o1", &CustomObjectData::o1, "An instance object field.">
 	// TODO: add templating to extract function return type and function parameters
-	MemberFunction<
-		"doStuff",
-		&CustomObjectData::doStuff,
-		"An instance function that does stuff.",
-		APICore::ParameterPack<
-			Parameter<"d", "double parameter">,
-			Parameter<"s", "string parameter">
-		>
-	>,
-	StaticFunction<
-		"staticFunction",
-		&CustomObjectData::staticFunction,
-		"An static function that does stuff.",
-		APICore::ParameterPack<
-			Parameter<"num", "int parameter">>>>;
+	// MemberFunction<
+	// 	"doStuff",
+	// 	&CustomObjectData::doStuff,
+	// 	"An instance function that does stuff.",
+	// 	APICore::ParameterPack<
+	// 		Parameter<"d", "double parameter">,
+	// 		Parameter<"s", "string parameter">
+	// 	>
+	// >,
+	// StaticFunction<
+	// 	"staticFunction",
+	// 	&CustomObjectData::staticFunction,
+	// 	"An static function that does stuff.",
+	// 	APICore::ParameterPack<
+	// 		Parameter<"num", "int parameter">>>
+	>;
 
 using i1Ptr = Member<"i1", &CustomObjectData::i1>;
 
@@ -238,7 +241,7 @@ int main(int argc, char **argv)
 	printTyping(TypeGenerator<CustomObjectData>::generateTyping());
 
 	sol::state lua;
-	LuaBinder<CustomObjectData>::bind(lua);
+	LuaBinder<void, CustomObjectData, "ANY">::bind(lua, nullptr);
 	lua["testObject"] = CustomObjectData();
 	// auto apiMappings = std::map<std::string, std::shared_ptr<DataWrapper>>({{"TestClass", classDefinition}, {"stringValue", std::shared_ptr<StringContainerWrapper>(new StringContainerWrapper("Test string."))}, {"intValue", std::shared_ptr<Int32ContainerWrapper>(new Int32ContainerWrapper(0))}, {"functionValue", functionExampleDefinition}, {"newObjectTest", objectValue}});
 	// std::string typeFile = APILua::generateTypings("API", lua, {});
@@ -258,31 +261,48 @@ int main(int argc, char **argv)
 		}
 	};
 
-	sol::usertype<TestUserType> TestSolType = lua.new_usertype<TestUserType>("TestUserType", sol::constructors<TestUserType()>());
-	TestSolType["intVal"] = &TestUserType::intVal;
+	// sol::usertype<TestUserType> TestSolType = lua.new_usertype<TestUserType>("TestUserType", sol::constructors<TestUserType()>());
+	// TestSolType["intVal"] = &TestUserType::intVal;
 
 	X<TestUserType, int> mptr = &TestUserType::intVal;
 	Y<TestUserType, int, int> fmptr = &TestUserType::getInt;
 
+	int refInt = 14;
 	auto ptr = new TestUserType();
 	{
 		auto testValue = std::shared_ptr<TestUserType>(ptr);
 		lua["value"] = testValue;
+		--- TODO: figure out why reference fields are not updated from the setters.
+		lua["refTest"] = (sol::property([&refInt](){
+                std::cout << "Here 1\n";
+                return refInt;
+                }, 
+                [&refInt](int newVal){
+                std::cout << "Here 2\n";
+                refInt = newVal;
+            }));
 	}
-	// std::cout << "Before lua: " << ptr->intVal << std::endl;
-	lua.script(R"(
-		print("class's intValue: " .. tostring(value.intVal ));
-		value.intVal = 99;
-		local value2 = value;
-		value = nil;
-
-		print("Type of testObject: " .. type(testObject));
-		print("Type of testObject: " .. type(testObject.testField));
-		print("Type of testObject return value: " .. type(testObject.testField()));
-		print("Value of testObject return value: " .. testObject.testField());
+	std::cout << "Before lua: " << refInt << std::endl;
+	auto scriptResult = lua.script(R"(
+		print("testObject's type: " .. type(testObject));
+		print("CustomObjectData type: " .. type(CustomObjectData));	
+		print("testObject.i1 type: " .. type(testObject.i1));	
+		print("testObject.i1: " .. tostring(testObject.i1));	
+		print("testObject.s1 type: " .. type(testObject.s1));	
+		print("testObject.s1: " .. (testObject.s1));	
+		print("testObject.o1 type: " .. type(testObject.o1));		
+		print("CustomObjectData.d1 type: " .. type(CustomObjectData.d1));	
+		print("CustomObjectData.d1: " .. tostring(CustomObjectData.d1));
+		CustomObjectData.d1 = 11.111;	
+		print("CustomObjectData.d1: " .. tostring(CustomObjectData.d1));
+		print("refTest: " .. tostring(refTest()));
+		refTest = 122;
+		print("refTest: " .. tostring(refTest));
 	)");
+	
 	lua.collect_garbage();
-	// std::cout << "After lua: " << ptr->intVal << std::endl;
+	
+	std::cout << "After lua: " << refInt << std::endl;
 
 	return 0;
 }

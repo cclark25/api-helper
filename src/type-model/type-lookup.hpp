@@ -10,6 +10,7 @@ namespace APICore
         {
             static std::string name;
             static std::string description;
+            static void* ptr;
         };
         static bool isDefined;
     };
@@ -19,6 +20,8 @@ namespace APICore
     std::string TypeLookup<T>::registeredType::name = "STANDIN_NAME";
     template <typename T>
     std::string TypeLookup<T>::registeredType::description = "STANDIN_DESCRIPTION";
+    template <typename T>
+    void* TypeLookup<T>::registeredType::ptr = nullptr;
 
 #define RegisterType(type, ...)             \
     template <>                             \
