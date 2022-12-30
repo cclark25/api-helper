@@ -9,7 +9,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/dist/engine",
-            "args": ["--generateTypes"],
+            "args": ["--luaInput", "../test/lua-test/test-lua.lua"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}/dist",
             "environment": [],

@@ -1,54 +1,81 @@
 #ifndef __TEST_CLASS_DEFINITION
 #define __TEST_CLASS_DEFINITION
 #include <memory>
-#include "../../../src/lua-binding/binding-types/all.hpp"
-#include "../../../src/data-wrappers/data-wrapper.hpp"
+#include "../../../src/type-model/type-lookup.hpp"
+#include <string>
+
+#include "../../../src/type-model/type-model.hpp"
+#include "../../../src/type-model/member-pointer.hpp"
+#include "../../../src/type-model/member-function-pointer.hpp"
+#include "../../../src/type-model/static-pointer.hpp"
+#include "../../../src/type-model/static-function-pointer.hpp"
+#include "../../../src/type-model/class-typing.hpp"
+#include "../../../src/type-model/type-lookup.hpp"
+#include "../../../src/type-model/type-generators/type-generator.hpp"
+#include "../../../src/type-model/lua-binders/type-binder.hpp"
 
 using namespace APICore;
+using namespace std;
 
-data_primitive_to_type<DataPrimitive::function> classConstructorFunction = {
-    [](FunctionInternalType::FunctionParams params)
-    {
-        auto obj = std::shared_ptr<ObjectWrapper>(new ObjectContainerWrapper());
-        obj->setField(
-            "f1",
-            std::shared_ptr<StringWrapper>(new StringContainerWrapper("Member string.")));
-        return obj;
-    }};
+struct CustomObjectData
+{
+	static double d1;
+	int i1 = 15;
+	std::string s1 = "ABC123";
+	struct CustomObjectSubData
+	{
+		int i2 = 30;
+		std::string s2 = "DEF456";
+	};
 
-auto classTyping = std::shared_ptr<ClassTypeWrapper>(new ClassTypeWrapper(
-    "TestClass",
-    "A Test Class",
-    std::shared_ptr<ObjectTypeWrapper>(new ObjectTypeWrapper("testClassStaticFields", "Static fields for TestClass", std::map<std::string, std::shared_ptr<APICore::TypeWrapper<APICore::unknown>>>({{"s3", makeBasicType<DataPrimitive::string>("Static class field.", true)}}))),
-    std::vector<std::shared_ptr<TypeWrapper<DataPrimitive::unknown>>>()
-    ));
+	CustomObjectSubData *o1 = new CustomObjectSubData();
 
-auto classInstanceType = std::shared_ptr<TypeWrapper<APICore::object>>(
-    new ObjectTypeWrapper(
-        "TestClassInstance",
-        "An instance of TestClass.",
-        std::map<std::string, std::shared_ptr<TypeWrapper<DataPrimitive::unknown>>>(
-        {{"f1", makeBasicType<DataPrimitive::string>("Dynamic class field.", false)}}),
-        classTyping
-        ));
+	static std::string staticFunction(int num)
+	{
+		return to_string(num * 2);
+	}
 
-auto y = classTyping->setInstanceType(classInstanceType);
+	std::string doStuff(int i, std::string s)
+	{
+		std::string r = s;
+		for (int j = i; j > 0; j--)
+		{
+			r.append("\n").append(s);
+		}
+		return r;
+	}
+};
+double CustomObjectData::d1 = 12.678;
 
-auto classConstructor = std::shared_ptr<FunctionWrapper>(
-    new FunctionContainerWrapper(
-        classConstructorFunction, std::shared_ptr<TypeWrapper<DataPrimitive::function>>(
-                                      new TypeWrapper<DataPrimitive::function>(
-                                          "testFunctionName",
-                                          "A Test Function",
-                                          std::vector<std::shared_ptr<APICore::TypeWrapper<APICore::unknown>>>(),
-                                          classInstanceType))));
+using CustomObjectSubDataSpec = ClassTyping<
+	"CustomObjectSubData",
+	"A custom class to test typing a class's sub class.",
+	CustomObjectData::CustomObjectSubData,
+	Member<"i2", &CustomObjectData::CustomObjectSubData::i2, "Sub data's instance int field.">,
+	Member<"s2", &CustomObjectData::CustomObjectSubData::s2, "Sub data's instance string field.">>;
+using CustomObjectDataSpec = ClassTyping<
+	"CustomObjectData",
+	"A custom class to test typing.",
+	CustomObjectData,
+	Static<"d1", &CustomObjectData::d1, "A static double field.">,
+	Member<"i1", &CustomObjectData::i1, "An instance int field.">,
+	Member<"s1", &CustomObjectData::s1, "An instance string field.">,
+	Member<"o1", &CustomObjectData::o1, "Sub class data.">,
+	MemberFunction<
+		"doStuff",
+		&CustomObjectData::doStuff,
+		"An instance function that does stuff.",
+		APICore::ParameterPack<
+			Parameter<"i", "int parameter">,
+			Parameter<"s", "string parameter">>>,
+	StaticFunction<
+		"staticFunction",
+		&CustomObjectData::staticFunction,
+		"An static function that does stuff.",
+		APICore::ParameterPack<
+			Parameter<"num", "int parameter">>>>;
 
-auto classStaticFields = std::map<std::string, std::shared_ptr<DataWrapper>>();
-auto x = classStaticFields.insert_or_assign(
-    "s1",
-    std::shared_ptr<StringWrapper>(new StringContainerWrapper("Static field string.")));
-
-auto classDefinition = std::shared_ptr<ClassWrapper>(new ClassContainerWrapper({"TestClass", classConstructor, classStaticFields}, classTyping));
-
+RegisterType(CustomObjectData, CustomObjectDataSpec);
+RegisterType(CustomObjectData::CustomObjectSubData, CustomObjectSubDataSpec);
 
 #endif

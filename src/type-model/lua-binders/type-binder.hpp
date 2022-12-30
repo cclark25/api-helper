@@ -4,6 +4,7 @@
 #include <memory>
 #include <string>
 #include <sol.hpp>
+#include "./macros.hpp"
 
 namespace APICore
 {
@@ -11,73 +12,41 @@ namespace APICore
     struct LuaBinder
     {
         using type_definition = TypeLookup<T>;
-        static void bind(sol::state &state, void *userType = nullptr, T *memberPtr = nullptr)
+        static void bind(sol::state &state, void *userType, void *memberPtr, std::string key)
         {
-            return;
+            int i = 0;
         }
     };
 
     template <class ParentClassType, class T, class... ExtraData>
         requires requires {
-                     std::is_class<ParentClassType>::value;
-                     {
-                         TypeLookup<T>::registeredType::ptr
-                     };
+                     requires std::is_class<ParentClassType>::value;
+                     requires !std::is_pointer<T>::value;
                  }
     struct LuaBinder<ParentClassType, T, "MEMBER", ExtraData...>
     {
         using type_definition = TypeLookup<T>;
+
+
+
         static void bind(sol::state &state, sol::usertype<ParentClassType> *userType, T ParentClassType::*memberPtr, std::string key)
         {
+            DependOnType(state,T);
             sol::usertype<ParentClassType> &parentType = *userType;
             parentType[key] = memberPtr;
-
-            return;
         }
         static void bind(sol::state &state, sol::usertype<ParentClassType> *userType, T *ptr, std::string key)
         {
+            DependOnType(state,T);
             sol::usertype<ParentClassType> &parentType = *userType;
             T &value = *ptr;
-            // parentType[key] = sol::var(std::ref(value));
-            // parentType[key] = sol::property([ptr](){
-            //     std::cout << "Here 1\n";
-            //     return *ptr;
-            //     }, 
-            //     [ptr](double newVal){
-            //     std::cout << "Here 2\n";
-            //     (*ptr) = newVal;
-            // });            
-
-            return;
+            parentType[key] = sol::var(std::ref(value));
         }
     };
 
-    // template<class... ExtraData>
-    // struct LuaBinder<std::string, "ANY", ExtraData...> {
-    //     static void bind(sol::state & state, std::shared_ptr<sol::usertype<ClassType>> userType){
-    //     }
-    // };
-
-    // template<class... ExtraData>
-    // struct LuaBinder<int, "ANY", ExtraData...> {
-    //     static void bind(sol::state & state){
-    //     }
-    // };
-
-    // template<class... ExtraData>
-    // struct LuaBinder<void, "ANY", ExtraData...> {
-    //     static void bind(sol::state & state){
-    //     }
-    // };
-
-    // template<class... ExtraData>
-    // struct LuaBinder<double, "ANY", ExtraData...> {
-    //     static void bind(sol::state & state){
-    //     }
-    // };
 }
 
 #include "./class-binder.hpp"
-#include "./function-binder.hpp"
+#include "./reference-binder.hpp"
 
 #endif

@@ -1,9 +1,7 @@
 // #include "./api-object.cpp"
 #define SOL_ALL_SAFETIES_ON 1
-// #include "../../src/lua-binding/lua-wrappers-binding.hpp"
 #include "../../src/lua-binding/binding-types/all.hpp"
 #include "../../src/data-wrappers/data-wrapper.hpp"
-#include "./data/test-function.hpp"
 #include "./data/test-class.hpp"
 #include <lualib.h>
 #include <iostream>
@@ -61,228 +59,58 @@ void printTyping(std::shared_ptr<APICore::TypeWrapperRoot> typing, std::string p
 	}
 }
 
-int handler(lua_State *s, sol::optional<const std::exception &> o, sol::string_view v)
-{
-	return -1;
-};
-
-template <typename C, typename T>
-using X = T C::*;
-template <typename C, typename T, typename... P>
-struct Y
-{
-	using TT = T (C::*)(P...);
-	using ReturnType = T;
-	// using Parameters = P...;
-	using ClassType = C;
-	TT v;
-	Y(const TT &o)
-	{
-		this->v = o;
-	}
-};
-
-struct CustomObjectData
-{
-	static double d1;
-	int i1 = 15;
-	std::string s1 = "ABC123";
-	struct CustomObjectSubData
-	{
-		int i2 = 30;
-		std::string s2 = "DEF456";
-	};
-
-	CustomObjectSubData o1;
-
-	static std::string staticFunction(int num){
-		return to_string(num);
-	}
-
-	int doStuff(double d, std::string s)
-	{
-		return 15;
-	}
-};
-double CustomObjectData::d1 = 12.678;
-
-using CustomObjectSubDataSpec = ClassTyping<
-	"CustomObjectSubData",
-	"A custom class to test typing a class's sub class.",
-	CustomObjectData::CustomObjectSubData,
-	Member<"i2", &CustomObjectData::CustomObjectSubData::i2, "Sub data's instance int field.">,
-	Member<"s2", &CustomObjectData::CustomObjectSubData::s2, "Sub data's instance string field.">>;
-using CustomObjectDataSpec = ClassTyping<
-	"CustomObjectData",
-	"A custom class to test typing.",
-	CustomObjectData,
-	Static<"d1", &CustomObjectData::d1, "A static double field.">,
-	Member<"i1", &CustomObjectData::i1, "An instance int field.">,
-	Member<"s1", &CustomObjectData::s1, "An instance string field.">
-	// Member<"o1", &CustomObjectData::o1, "An instance object field.">
-	// TODO: add templating to extract function return type and function parameters
-	// MemberFunction<
-	// 	"doStuff",
-	// 	&CustomObjectData::doStuff,
-	// 	"An instance function that does stuff.",
-	// 	APICore::ParameterPack<
-	// 		Parameter<"d", "double parameter">,
-	// 		Parameter<"s", "string parameter">
-	// 	>
-	// >,
-	// StaticFunction<
-	// 	"staticFunction",
-	// 	&CustomObjectData::staticFunction,
-	// 	"An static function that does stuff.",
-	// 	APICore::ParameterPack<
-	// 		Parameter<"num", "int parameter">>>
-	>;
-
-using i1Ptr = Member<"i1", &CustomObjectData::i1>;
-
-RegisterType(CustomObjectData, CustomObjectDataSpec);
-RegisterType(CustomObjectData::CustomObjectSubData, CustomObjectSubDataSpec);
-
-std::vector<std::function<void(sol::state)>> handlerCallbacks;
-
-template <class Field>
-struct FieldHandler
-{
-	static void processMemberField()
-	{
-		std::cout << "Member Field Listed: " << Field::key << " => " << Field::ptr << std::endl;
-	};
-	static void processStaticField()
-	{
-		std::cout << "Static Field Listed: " << Field::key << " => " << Field::ptr << std::endl;
-	};
-};
-
 int main(int argc, char **argv)
 {
-	auto xxx = &CustomObjectData::doStuff;
-	// try
-	// {
-	// 	sol::state lua;
+	bool generateTypes = false;
+	bool isInputFile = false;
+	std::string inputFile;
+	for (int i = 1; i < argc; i++)
+	{
+		std::string param = std::string(argv[i]);
 
-	// 	lua.open_libraries(sol::lib::base, sol::lib::package, sol::lib::table, sol::lib::math, sol::lib::string, sol::lib::coroutine, sol::lib::debug, sol::lib::os);
+		if (param == "--generateTypes")
+		{
+			generateTypes = true;
+		}
+		else if(param == "--luaInput"){
+			isInputFile = true;
+		}
+		else if(isInputFile){
+			inputFile = param;
+			isInputFile = false;
+		};
+	}
 
-	// 	auto array = std::shared_ptr<ArrayWrapper>(new ArrayContainerWrapper());
-	// 	array->push(std::shared_ptr<DataWrapper>(new StringContainerWrapper("Test string 1.")));
-	// 	array->push(std::shared_ptr<DataWrapper>(new StringContainerWrapper("Test string 2.")));
-	// 	array->push(std::shared_ptr<DataWrapper>(new StringContainerWrapper("Test string 3.")));
+	sol::state lua;
+	if (generateTypes)
+	{
+		std::string typingJson = APILua::makeTypingObjectFromTypeDefinition(lua, TypeGenerator<CustomObjectData>::generateTyping()).dump();
 
-	// 	auto classInstance = std::shared_ptr<ObjectWrapper>(new ObjectContainerWrapper(classInstanceType));
-	// 	classInstance->setField(
-	// 		"f1",
-	// 		std::shared_ptr<StringWrapper>(new StringContainerWrapper("Field string.")));
+		std::cout << typingJson << "\n";
 
-	// 	auto objectValue = std::shared_ptr<ObjectWrapper>(new ObjectContainerWrapper());
-	// 	objectValue->setField(
-	// 		"field1",
-	// 		std::shared_ptr<StringWrapper>(new StringContainerWrapper("Field string.")));
-	// 	objectValue->setField(
-	// 		"field2",
-	// 		std::shared_ptr<Int32Wrapper>(new Int32ContainerWrapper(15)));
+		return 0;
+	}
 
-	// 	auto apiMappings = std::map<std::string, std::shared_ptr<DataWrapper>>({{"TestClass", classDefinition}, {"testClassInstance", classInstance}, {"stringValue", std::shared_ptr<StringContainerWrapper>(new StringContainerWrapper("Test string."))}, {"intValue", std::shared_ptr<Int32ContainerWrapper>(new Int32ContainerWrapper(0))}, {"objectValue", objectValue}, {"arrayValue", array}, {"functionValue", functionExampleDefinition}});
 
-	// 	bool generateTypes = false;
-	// 	for (int i = 1; i < argc; i++)
-	// 	{
-	// 		std::string param = std::string(argv[i]);
+	LuaBinder<void, CustomObjectData, "ANY">::bind(lua, nullptr);
+	auto customInstance = std::shared_ptr<CustomObjectData>(new CustomObjectData());
+	lua["testObject"] = customInstance;
 
-	// 		if (param == "--generateTypes")
-	// 		{
-	// 			generateTypes = true;
-	// 		}
-	// 	}
+	sol::state lua2;
+	lua2["testObject"] = customInstance;
 
-	// 	if (generateTypes)
-	// 	{
+	lua.open_libraries(sol::lib::base, sol::lib::package, sol::lib::table, sol::lib::math, sol::lib::string, sol::lib::coroutine, sol::lib::debug, sol::lib::os);
+	lua2.open_libraries(sol::lib::base, sol::lib::package, sol::lib::table, sol::lib::math, sol::lib::string, sol::lib::coroutine, sol::lib::debug, sol::lib::os);
 
-	// 		lua.set_exception_handler(handler);
-
-	// 		std::string typeFile = APILua::generateTypings("API", lua, apiMappings);
-
-	// 		std::cout << typeFile << "\n";
-
-	// 		return 0;
-	// 	}
-
-	// 	APILua::bind<std::string>("API", lua, apiMappings);
-	// 	for (auto mapping : apiMappings)
-	// 	{
-	// 		auto typing = mapping.second->getType();
-	// 		if (typing != nullptr)
-	// 		{
-	// 			printTyping(mapping.first, typing);
-	// 		}
-	// 	}
-
-	// 	try
-	// 	{
-	// 		// lua.script_file("../test/lua-test/test-lua.lua");
-	// 	}
-	// 	catch (sol::error e)
-	// 	{
-	// 		cerr << "Sol error caught\n";
-	// 	}
-	// }
-	// catch (char const *e)
-	// {
-	// 	std::cerr << "Caught string error: " << e << std::endl;
-	// }
-	// catch (std::string e)
-	// {
-	// 	std::cerr << "Caught string error: " << e << std::endl;
-	// }
+	if(inputFile != ""){
+		lua.safe_script_file(inputFile);
+		lua2.safe_script_file(inputFile);
+		return 0;
+	}
 
 	printTyping(TypeGenerator<CustomObjectData>::generateTyping());
 
-	sol::state lua;
-	LuaBinder<void, CustomObjectData, "ANY">::bind(lua, nullptr);
-	lua["testObject"] = CustomObjectData();
-	// auto apiMappings = std::map<std::string, std::shared_ptr<DataWrapper>>({{"TestClass", classDefinition}, {"stringValue", std::shared_ptr<StringContainerWrapper>(new StringContainerWrapper("Test string."))}, {"intValue", std::shared_ptr<Int32ContainerWrapper>(new Int32ContainerWrapper(0))}, {"functionValue", functionExampleDefinition}, {"newObjectTest", objectValue}});
-	// std::string typeFile = APILua::generateTypings("API", lua, {});
-
-	lua.open_libraries(sol::lib::base, sol::lib::package, sol::lib::table, sol::lib::math, sol::lib::string, sol::lib::coroutine, sol::lib::debug, sol::lib::os);
-
-	struct TestUserType
-	{
-		int intVal = 12;
-		int getInt(int val)
-		{
-			return val;
-		}
-		virtual ~TestUserType()
-		{
-			// std::cout << "TestUserType is destroyed." << std::endl;
-		}
-	};
-
-	// sol::usertype<TestUserType> TestSolType = lua.new_usertype<TestUserType>("TestUserType", sol::constructors<TestUserType()>());
-	// TestSolType["intVal"] = &TestUserType::intVal;
-
-	X<TestUserType, int> mptr = &TestUserType::intVal;
-	Y<TestUserType, int, int> fmptr = &TestUserType::getInt;
-
-	int refInt = 14;
-	auto ptr = new TestUserType();
-	{
-		auto testValue = std::shared_ptr<TestUserType>(ptr);
-		lua["value"] = testValue;
-		--- TODO: figure out why reference fields are not updated from the setters.
-		lua["refTest"] = (sol::property([&refInt](){
-                std::cout << "Here 1\n";
-                return refInt;
-                }, 
-                [&refInt](int newVal){
-                std::cout << "Here 2\n";
-                refInt = newVal;
-            }));
-	}
-	std::cout << "Before lua: " << refInt << std::endl;
+	std::cout << "Before lua: " << CustomObjectData::d1 << std::endl;
 	auto scriptResult = lua.script(R"(
 		print("testObject's type: " .. type(testObject));
 		print("CustomObjectData type: " .. type(CustomObjectData));	
@@ -295,14 +123,15 @@ int main(int argc, char **argv)
 		print("CustomObjectData.d1: " .. tostring(CustomObjectData.d1));
 		CustomObjectData.d1 = 11.111;	
 		print("CustomObjectData.d1: " .. tostring(CustomObjectData.d1));
-		print("refTest: " .. tostring(refTest()));
-		refTest = 122;
-		print("refTest: " .. tostring(refTest));
+		print("testObject.doStuff type: " .. type(testObject.doStuff));	
+		print("testObject.doStuff function result: " .. (testObject:doStuff(12, "stringParam")));	
+		print("CustomObjectData.staticFunction type: " .. type(CustomObjectData.staticFunction));	
+		print("CustomObjectData.staticFunction function result: " .. (CustomObjectData.staticFunction(12)));	
 	)");
-	
+
 	lua.collect_garbage();
-	
-	std::cout << "After lua: " << refInt << std::endl;
+
+	std::cout << "After lua: " << CustomObjectData::d1 << std::endl;
 
 	return 0;
 }

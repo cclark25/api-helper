@@ -1,131 +1,29 @@
-print("API type: " .. type(API))
-print("stringValue type: " .. type(API.stringValue))
-print("stringValue: " .. (API.stringValue))
-API.stringValue = "New String Value"
-print("stringValue: " .. (API.stringValue))
+print("testObject's type: " .. type(testObject));
+print("CustomObjectData type: " .. type(CustomObjectData));	
+print("testObject.i1 type: " .. type(testObject.i1));	
+print("testObject.i1: " .. tostring(testObject.i1));	
+print("testObject.s1 type: " .. type(testObject.s1));	
+print("testObject.s1: " .. (testObject.s1));		
+print("CustomObjectData.d1 type: " .. type(CustomObjectData.d1));	
+print("CustomObjectData.d1: " .. tostring(CustomObjectData.d1));
+CustomObjectData.d1 = 11.111;	
+print("CustomObjectData.d1: " .. tostring(CustomObjectData.d1));
+print("testObject.doStuff type: " .. type(testObject.doStuff));	
+print("testObject.doStuff function result: " .. (testObject:doStuff(12, "stringParam")));	
+print("CustomObjectData.staticFunction type: " .. type(CustomObjectData.staticFunction));	
+print("CustomObjectData.staticFunction function result: " .. (CustomObjectData.staticFunction(12)));	
 
--- do
---     while true do
---         -- print(API.stringValue)
---         API.stringValue = "String Value"
---     end
--- end
+print("testObject.o1 type: " .. type(testObject.o1));	
+print("testObject.o1.i2 type: " .. type(testObject.o1.i2));	
+print("testObject.o1.i2: " .. tostring(testObject.o1.i2));	
+print("testObject.o1.s2 type: " .. type(testObject.o1.s2));
+print("testObject.o1.s2: " .. tostring(testObject.o1.s2));
 
-print("intValue type: " .. type(API.intValue))
-print("intValue: " .. (API.intValue))
-API.intValue = 1
-print("intValue: " .. (API.intValue))
+testObject.o1.i2 = 76;
+testObject.o1.s2 = "abcd";
 
--- do
---     while true do
---         -- print(API.stringValue)
---         API.intValue = API.intValue + 1
---     end
--- end
-
-print("objectValue type: " .. type(API.objectValue))
-print("objectValue field1: " .. (API.objectValue.field1))
-API.objectValue.field1 = "New field string"
-print("objectValue field1: " .. (API.objectValue.field1))
-API.objectValue = {
-    field1 = "field1 value",
-    field2 = "field2 value"
-}
-print("objectValue field1: " .. (API.objectValue.field1))
-print("objectValue field2: " .. (API.objectValue.field2))
-
-local ____lualib = require('lualib_bundle');
-print("arrayValue type: " .. type(API.arrayValue))
-print("arrayValue length type: " .. type(API.arrayValue.length))
-print("arrayValue length: " .. (API.arrayValue.length))
-print("arrayValue at 0: " .. (API.arrayValue.getIndex(0)))
-print("arrayValue at 1: " .. (API.arrayValue.getIndex(1)))
-print("arrayValue at 2: " .. (API.arrayValue.getIndex(2)))
-do
-    local function ____catch()
-        print("Successfully got null when out of range.")
-    end
-    local ____try = pcall(function()
-        print("arrayValue at 3: " .. (API.arrayValue.getIndex(3)))
-
-    end)
-    if not ____try then
-        ____catch()
-    end
-end
-print("arrayValue length after push: " .. tostring(API.arrayValue.push(6)));
-print("arrayValue at 3: " .. (API.arrayValue.getIndex(3)))
-API.arrayValue.setIndex(3, "New test string");
-print("arrayValue length after setIndex: " .. tostring(API.arrayValue.length));
-print("arrayValue at 3: " .. (API.arrayValue.getIndex(3)))
-print("arrayValue popped value: " .. tostring(API.arrayValue.pop()));
-print("arrayValue length after pop: " .. tostring(API.arrayValue.length));
-print("arrayValue length after insert: " .. (API.arrayValue.insert(2, "New inserted string at index 2")))
-print("arrayValue at 2: " .. (API.arrayValue.getIndex(2)))
-
-do
-    i = 0
-    while i < API.arrayValue.length do
-        print((tostring(i) .. ": ") .. tostring(API.arrayValue.getIndex(i)))
-        i = i + 1
-    end
-end
-
-print("functionValue type: " .. type(API.functionValue))
-print("functionValue result: " .. (API.functionValue(1, 2, "abc")))
-API.functionValue = function(a, b, c)
-    return "Params: " .. tostring(a) .. ", " .. tostring(b) .. ", " .. tostring(c) .. "\tintValue" .. API.intValue;
-end
-print("functionValue result: " .. (API.functionValue(1, 2, "abc")))
-
--- i = 1
--- totalTime = 0;
--- while i <= 1000000 do
---     start = os.time()
---     API.functionValue(i, i + 1, "abc")
---     API.functionValue = function(a, b, c)
---         return "Params v" .. i .. ": " .. tostring(a) .. ", " .. tostring(b) .. ", " .. tostring(c) .. "\tintValue" .. API.intValue;
---     end
---     API.functionValue(i, i + 1, "abc");
---     duration = os.time() - start
---     totalTime = totalTime + duration;
---     i = i + 1;
-
---     if i % 100000 == 0 then
---         print("Calls per second: " .. (i / totalTime));
---     end
--- end
-
-classInstance = ____lualib.__TS__New(API.TestClass)
-classInstance = ____lualib.__TS__New(API.TestClass)
-
-
-print("TestClass type: " .. type(API.TestClass))
-print("TestClass s1 field: " .. API.TestClass.s1)
-print("TestClass instance type: " .. type(classInstance))
-print("TestClass instance f1 field: " .. classInstance.f1)
-
-API.TestClass.s1 = "New s1 field";
-classInstance.f1 = "New f1 field";
-
-print("TestClass s1 field: " .. API.TestClass.s1)
-print("TestClass instance f1 field: " .. classInstance.f1)
-
-print("classInstance is instance of TestClass: " .. tostring(____lualib.__TS__InstanceOf(classInstance, API.TestClass)))
-
-print("testClassInstance type: " .. type(API.testClassInstance))
-print("testClassInstance f1 field: " .. API.testClassInstance.f1)
-print("testClassInstance is instance of TestClass: " .. tostring(____lualib.__TS__InstanceOf(API.testClassInstance, API.TestClass)))
-
--- totalTime = 0;
--- while i <= 1000000 do
---     start = os.time()
---     newClassInstance = ____lualib.__TS__New(API.TestClass)
---     duration = os.time() - start
---     totalTime = totalTime + duration;
---     i = i + 1;
-
---     if i % 100000 == 0 then
---         print("TestClass instances per second: " .. (i / totalTime));
---     end
--- end
+print("testObject.o1 type: " .. type(testObject.o1));	
+print("testObject.o1.i2 type: " .. type(testObject.o1.i2));	
+print("testObject.o1.i2: " .. tostring(testObject.o1.i2));	
+print("testObject.o1.s2 type: " .. type(testObject.o1.s2));
+print("testObject.o1.s2: " .. tostring(testObject.o1.s2));
