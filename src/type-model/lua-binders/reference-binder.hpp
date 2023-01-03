@@ -4,43 +4,66 @@
 #include <memory>
 #include <string>
 #include <sol.hpp>
+#include "./concepts.hpp"
 
 namespace APICore
 {
-    template <class ParentClassType, class T, StringLiteral BinderTag, class... ExtraData>
-        requires requires {
-                     requires std::is_pointer<T>::value;
-                 }
-    struct LuaBinder<ParentClassType, T, BinderTag, ExtraData...>
+
+    template <ReferenceForLua T>
+    struct LuaBinderGenerator<T>
     {
-        using F = std::remove_pointer_t<T>;
-
-        static void bind(sol::state &state, sol::usertype<ParentClassType> *userType, T ParentClassType::*memberPtr, std::string key)
+        static sol::usertype<T> generateType(sol::state &state)
         {
-            DependOnType(state, F);
-            sol::usertype<ParentClassType> &parentType = *userType;
-
-            parentType[key] = sol::property(
-                [memberPtr](ParentClassType & parent) -> auto & {
-                    auto &val = (*(parent.*memberPtr));
-                    return val;
-                },
-                [memberPtr](ParentClassType & parent, F& val) -> void {
-                    (*(parent.*memberPtr)) = val;
-                })
-                ;
-        }
-        static void bind(sol::state &state, sol::usertype<ParentClassType> *userType, T *ptr, std::string key)
-        {
-            DependOnType(state, F);
-            sol::usertype<ParentClassType> &parentType = *userType;
-            T &value = *ptr;
-            // parentType[key] = sol::var(std::ref(value));
-        }
+            sol::usertype<T> newClassType = state.new_usertype<void>(
+                TypeLookup<T>::registeredType::name);
+            return newClassType;
+        };
     };
 
-}
+    // template <class T>
+    //     requires requires(T tval) {
+    //                  {
+    //                      *tval
+    //                  };
+    //              }
+    // struct LuaBinder<T>
+    // {
+    //     using F = std::remove_pointer_t<T>;
 
-#include "./class-binder.hpp"
+    //     template<class ParentClassType>
+    //     static void bind(sol::state &state, sol::usertype<ParentClassType> *userType, T ParentClassType::*memberPtr, std::string key)
+    //     {
+    //         DependOnType(state, F);
+
+    //         // if constexpr (requires(F val) { {*val} ; }){
+    //         //     F __val = nullptr;
+    //         //     LuaBinder<void, std::remove_reference_t<decltype(*(__val))>, "ANY">::bind(state, nullptr);
+
+    //         // }
+    //         sol::usertype<ParentClassType> &parentType = *userType;
+
+    //         parentType[key] = sol::property(
+    //             [memberPtr](ParentClassType & parent) -> auto & {
+    //                 auto &val = (*(parent.*memberPtr));
+    //                 return val;
+    //             },
+    //             [memberPtr](ParentClassType *parent, F &val) -> void
+    //             {
+    //                 (*(parent->*memberPtr)) = val;
+    //                 return;
+    //             });
+    //     }
+
+    //     template<class ParentClassType>
+    //     static void bind(sol::state &state, sol::usertype<ParentClassType> *userType, T *ptr, std::string key)
+    //     {
+    //         DependOnType(state, F);
+    //         sol::usertype<ParentClassType> &parentType = *userType;
+    //         T &value = *ptr;
+    //         // parentType[key] = sol::var(std::ref(value));
+    //     }
+    // };
+
+}
 
 #endif

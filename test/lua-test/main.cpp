@@ -1,22 +1,13 @@
 // #include "./api-object.cpp"
 #define SOL_ALL_SAFETIES_ON 1
-#include "../../src/lua-binding/binding-types/all.hpp"
+// #include "../../src/lua-binding/binding-types/all.hpp"
 #include "../../src/data-wrappers/data-wrapper.hpp"
 #include "./data/test-class.hpp"
+#include "../../src/type-model/lua-binders/type-binder.hpp"
 #include <lualib.h>
 #include <iostream>
 #include <cassert>
 #include <sol.hpp>
-#include "../../../src/api-model.hpp"
-#include "../../../src/type-model/type-model.hpp"
-#include "../../../src/type-model/member-pointer.hpp"
-#include "../../../src/type-model/member-function-pointer.hpp"
-#include "../../../src/type-model/static-pointer.hpp"
-#include "../../../src/type-model/static-function-pointer.hpp"
-#include "../../../src/type-model/class-typing.hpp"
-#include "../../../src/type-model/type-lookup.hpp"
-#include "../../../src/type-model/type-generators/type-generator.hpp"
-#include "../../../src/type-model/lua-binders/type-binder.hpp"
 
 using namespace APICore;
 using namespace std;
@@ -72,10 +63,12 @@ int main(int argc, char **argv)
 		{
 			generateTypes = true;
 		}
-		else if(param == "--luaInput"){
+		else if (param == "--luaInput")
+		{
 			isInputFile = true;
 		}
-		else if(isInputFile){
+		else if (isInputFile)
+		{
 			inputFile = param;
 			isInputFile = false;
 		};
@@ -84,54 +77,41 @@ int main(int argc, char **argv)
 	sol::state lua;
 	if (generateTypes)
 	{
-		std::string typingJson = APILua::makeTypingObjectFromTypeDefinition(lua, TypeGenerator<CustomObjectData>::generateTyping()).dump();
+		// std::string typingJson = APILua::makeTypingObjectFromTypeDefinition(lua, TypeGenerator<CustomObjectData>::generateTyping()).dump();
 
-		std::cout << typingJson << "\n";
+		// std::cout << typingJson << "\n";
 
 		return 0;
 	}
 
-
-	LuaBinder<void, CustomObjectData, "ANY">::bind(lua, nullptr);
+	sol::state lua2;
+	LuaBinder<CustomObjectData>::declareType(lua);
+	LuaBinder<CustomObjectData>::declareType(lua2);
 	auto customInstance = std::shared_ptr<CustomObjectData>(new CustomObjectData());
 	lua["testObject"] = customInstance;
-
-	sol::state lua2;
 	lua2["testObject"] = customInstance;
+	lua["runNum"] = 1;
+	lua2["runNum"] = 2;
 
 	lua.open_libraries(sol::lib::base, sol::lib::package, sol::lib::table, sol::lib::math, sol::lib::string, sol::lib::coroutine, sol::lib::debug, sol::lib::os);
 	lua2.open_libraries(sol::lib::base, sol::lib::package, sol::lib::table, sol::lib::math, sol::lib::string, sol::lib::coroutine, sol::lib::debug, sol::lib::os);
 
-	if(inputFile != ""){
+	if (inputFile != "")
+	{
 		lua.safe_script_file(inputFile);
+		-- TODO: Functions result in seg fault upon garbage collection as it would seem.
+		lua.collect_garbage();
 		lua2.safe_script_file(inputFile);
+		lua2.collect_garbage();
+		lua.safe_script_file(inputFile);
+		lua.collect_garbage();
+		lua2.safe_script_file(inputFile);
+		lua2.collect_garbage();
 		return 0;
 	}
 
+
 	printTyping(TypeGenerator<CustomObjectData>::generateTyping());
-
-	std::cout << "Before lua: " << CustomObjectData::d1 << std::endl;
-	auto scriptResult = lua.script(R"(
-		print("testObject's type: " .. type(testObject));
-		print("CustomObjectData type: " .. type(CustomObjectData));	
-		print("testObject.i1 type: " .. type(testObject.i1));	
-		print("testObject.i1: " .. tostring(testObject.i1));	
-		print("testObject.s1 type: " .. type(testObject.s1));	
-		print("testObject.s1: " .. (testObject.s1));	
-		print("testObject.o1 type: " .. type(testObject.o1));		
-		print("CustomObjectData.d1 type: " .. type(CustomObjectData.d1));	
-		print("CustomObjectData.d1: " .. tostring(CustomObjectData.d1));
-		CustomObjectData.d1 = 11.111;	
-		print("CustomObjectData.d1: " .. tostring(CustomObjectData.d1));
-		print("testObject.doStuff type: " .. type(testObject.doStuff));	
-		print("testObject.doStuff function result: " .. (testObject:doStuff(12, "stringParam")));	
-		print("CustomObjectData.staticFunction type: " .. type(CustomObjectData.staticFunction));	
-		print("CustomObjectData.staticFunction function result: " .. (CustomObjectData.staticFunction(12)));	
-	)");
-
-	lua.collect_garbage();
-
-	std::cout << "After lua: " << CustomObjectData::d1 << std::endl;
 
 	return 0;
 }

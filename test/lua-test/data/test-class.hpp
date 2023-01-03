@@ -4,7 +4,7 @@
 #include "../../../src/type-model/type-lookup.hpp"
 #include <string>
 
-#include "../../../src/type-model/type-model.hpp"
+// #include "../../../src/type-model/type-model.hpp"
 #include "../../../src/type-model/member-pointer.hpp"
 #include "../../../src/type-model/member-function-pointer.hpp"
 #include "../../../src/type-model/static-pointer.hpp"
@@ -12,7 +12,7 @@
 #include "../../../src/type-model/class-typing.hpp"
 #include "../../../src/type-model/type-lookup.hpp"
 #include "../../../src/type-model/type-generators/type-generator.hpp"
-#include "../../../src/type-model/lua-binders/type-binder.hpp"
+// #include "../../../src/type-model/lua-binders/type-binder.hpp"
 
 using namespace APICore;
 using namespace std;
@@ -29,6 +29,8 @@ struct CustomObjectData
 	};
 
 	CustomObjectSubData *o1 = new CustomObjectSubData();
+	std::shared_ptr<CustomObjectSubData> o2 = std::shared_ptr<CustomObjectSubData>(new CustomObjectSubData());
+	CustomObjectSubData o3 = CustomObjectSubData();
 
 	static std::string staticFunction(int num)
 	{
@@ -60,7 +62,9 @@ using CustomObjectDataSpec = ClassTyping<
 	Static<"d1", &CustomObjectData::d1, "A static double field.">,
 	Member<"i1", &CustomObjectData::i1, "An instance int field.">,
 	Member<"s1", &CustomObjectData::s1, "An instance string field.">,
-	Member<"o1", &CustomObjectData::o1, "Sub class data.">,
+	// Member<"o1", &CustomObjectData::o1, "Sub class data pointer.">,
+	// Member<"o2", &CustomObjectData::o2, "Sub class data shared pointer.">,
+	// Member<"o3", &CustomObjectData::o3, "Sub class data non-pointer.">,
 	MemberFunction<
 		"doStuff",
 		&CustomObjectData::doStuff,
@@ -73,7 +77,8 @@ using CustomObjectDataSpec = ClassTyping<
 		&CustomObjectData::staticFunction,
 		"An static function that does stuff.",
 		APICore::ParameterPack<
-			Parameter<"num", "int parameter">>>>;
+			Parameter<"num", "int parameter">>>
+>;
 
 RegisterType(CustomObjectData, CustomObjectDataSpec);
 RegisterType(CustomObjectData::CustomObjectSubData, CustomObjectSubDataSpec);
