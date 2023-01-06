@@ -12,6 +12,7 @@
 #include "../../../src/type-model/class-typing.hpp"
 #include "../../../src/type-model/type-lookup.hpp"
 #include "../../../src/type-model/type-generators/type-generator.hpp"
+#include "../../../src/type-model/json-typing/json-typing.hpp"
 // #include "../../../src/type-model/lua-binders/type-binder.hpp"
 
 using namespace APICore;
@@ -69,14 +70,14 @@ using CustomObjectDataSpec = ClassTyping<
 		"doStuff",
 		&CustomObjectData::doStuff,
 		"An instance function that does stuff.",
-		APICore::ParameterPack<
+		ParameterPack<
 			Parameter<"i", "int parameter">,
 			Parameter<"s", "string parameter">>>,
 	StaticFunction<
 		"staticFunction",
 		&CustomObjectData::staticFunction,
 		"An static function that does stuff.",
-		APICore::ParameterPack<
+		ParameterPack<
 			Parameter<"num", "int parameter">>>
 >;
 

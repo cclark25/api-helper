@@ -77,7 +77,9 @@ int main(int argc, char **argv)
 	sol::state lua;
 	if (generateTypes)
 	{
-		std::string typingJson = APILua::makeTypingObjectFromTypeDefinition(lua, TypeGenerator<CustomObjectData>::generateTyping()).dump();
+		APICore::JsonTyper<CustomObjectData>::declareType();
+		auto typing = APICore::generateTypeMap();
+		std::string typingJson = typing.dump();
 
 		std::cout << typingJson << "\n";
 

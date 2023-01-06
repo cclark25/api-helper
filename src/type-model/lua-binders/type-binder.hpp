@@ -30,11 +30,6 @@ namespace APICore
         using type_definition = TypeLookup<T>;
         static std::map<sol::state *, sol::usertype<T> *> usertypeDeclarations;
 
-        // template<class ParentClassType>
-        // static void bind(sol::state &state, sol::usertype<ParentClassType> *userType, void *memberPtr, std::string key)
-        // {
-        // }
-
         static sol::usertype<T> *declareType(sol::state &state);
     };
     template <class T>
@@ -54,35 +49,6 @@ namespace APICore
 
     template <ReferenceForLua T>
     struct LuaBinder<T>;
-
-    // template <class T>
-    //     requires requires {
-    //                  //  requires std::is_class<ParentClassType>::value;
-    //                  requires !std::is_pointer<T>::value;
-    //              }
-    // struct LuaBinder<T>
-    // {
-    //     using type_definition = TypeLookup<T>;
-
-    //     template <class ParentClassType>
-    //         requires std::is_class<ParentClassType>::value
-    //     static void bind(sol::state &state, sol::usertype<ParentClassType> *userType, T ParentClassType::*memberPtr, std::string key)
-    //     {
-    //         DependOnType(state, T);
-    //         sol::usertype<ParentClassType> &parentType = *userType;
-    //         parentType[key] = memberPtr;
-    //     }
-
-    //     template <class ParentClassType>
-    //         requires std::is_class<ParentClassType>::value
-    //     static void bind(sol::state &state, sol::usertype<ParentClassType> *userType, T *ptr, std::string key)
-    //     {
-    //         DependOnType(state, T);
-    //         sol::usertype<ParentClassType> &parentType = *userType;
-    //         T &value = *ptr;
-    //         parentType[key] = sol::var(std::ref(value));
-    //     }
-    // };
 
 }
 
