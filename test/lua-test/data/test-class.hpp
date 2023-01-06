@@ -62,9 +62,9 @@ using CustomObjectDataSpec = ClassTyping<
 	Static<"d1", &CustomObjectData::d1, "A static double field.">,
 	Member<"i1", &CustomObjectData::i1, "An instance int field.">,
 	Member<"s1", &CustomObjectData::s1, "An instance string field.">,
-	// Member<"o1", &CustomObjectData::o1, "Sub class data pointer.">,
-	// Member<"o2", &CustomObjectData::o2, "Sub class data shared pointer.">,
-	// Member<"o3", &CustomObjectData::o3, "Sub class data non-pointer.">,
+	Member<"o1", &CustomObjectData::o1, "Sub class data pointer.">,
+	Member<"o2", &CustomObjectData::o2, "Sub class data shared pointer.">,
+	Member<"o3", &CustomObjectData::o3, "Sub class data non-pointer.">,
 	MemberFunction<
 		"doStuff",
 		&CustomObjectData::doStuff,

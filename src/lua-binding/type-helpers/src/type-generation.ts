@@ -58,7 +58,9 @@ module TypeGeneration {
 	) {
 		const module = dom.create.module(moduleName);
 
-		types.forEach((t) => createModuleMember(t, true));
+		for(const t of types) {
+			createModuleMember(t, true);
+		};
 		module.members.push(...declaredTypes);
 
 		return dom.emit(module);
@@ -71,7 +73,7 @@ const types = TypeGeneration.generateTypeFiles(
 	'API',
 	JSON.parse(
 		fs
-			.readFileSync('/home/christopher/GIT/api-helper/dist/test.json')
+			.readFileSync('/home/christopher/GIT/api-helper/test.json')
 			.toString()
 	)
 );

@@ -69,6 +69,8 @@ namespace APICore
                              {
                                  LuaBinder<typename Fields::type>::declareType(state);
                              }
+                             std::string key = Fields::key;
+                             
                              (*userType)[Fields::key] = sol::var(std::ref(*Fields::ptr));
                              return true;
                          }
@@ -83,14 +85,15 @@ namespace APICore
             }
         };
 
-        static sol::usertype<ClassType> generateType(sol::state &state)
+        static sol::usertype<ClassType>* generateType(sol::state &state)
         {
-            sol::usertype<ClassType> newClassType = state.new_usertype<ClassType>(
+            sol::usertype<ClassType> *newClassType = new sol::usertype<ClassType>;
+            (*newClassType) = state.new_usertype<ClassType>(
                 TypeLookup<ClassType>::registeredType::name,
                 sol::constructors<ClassType()>());
 
-            FieldBinders<typename TypeLookup<ClassType>::registeredType>::bindMembers(state, &newClassType);
-            FieldBinders<typename TypeLookup<ClassType>::registeredType>::bindStaticFields(state, &newClassType);
+            FieldBinders<typename TypeLookup<ClassType>::registeredType>::bindMembers(state, newClassType);
+            FieldBinders<typename TypeLookup<ClassType>::registeredType>::bindStaticFields(state, newClassType);
 
             return newClassType;
         };

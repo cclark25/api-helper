@@ -8,18 +8,32 @@
 
 namespace APICore
 {
+    template<ReferenceForLua T>
+    struct dereference {
+        using type = std::remove_reference_t<decltype(*T())>;
+    };
 
     template <ReferenceForLua T>
     struct LuaBinderGenerator<T>
     {
-        static sol::usertype<T> generateType(sol::state &state)
+        static sol::usertype<T> *generateType(sol::state &state)
         {
-            sol::usertype<T> newClassType = state.new_usertype<void>(
+            sol::usertype<T> *newClassType = new sol::usertype<T>();
+            (*newClassType) = state.new_usertype<void>(
                 TypeLookup<T>::registeredType::name);
             return newClassType;
         };
     };
 
+    template <ReferenceForLua T>
+    struct LuaBinder<T>
+    {
+        static sol::usertype<T> *declareType(sol::state &state)
+        {
+            LuaBinder<typename dereference<T>::type>::declareType(state);
+            return nullptr;
+        };
+    };
     // template <class T>
     //     requires requires(T tval) {
     //                  {

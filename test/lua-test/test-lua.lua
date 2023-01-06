@@ -83,16 +83,16 @@ function test()
     assert(CustomObjectData.staticFunction(25) == "50");
 
 
-    -- assert(runData.testObjectO1Type == type(testObject.o1));
+    assert(runData.testObjectO1Type == type(testObject.o1));
 
-    -- testField(runData.o1Sub, testObject.o1, newRunData.o1Sub, "i2");
-    -- testField(runData.o1Sub, testObject.o1, newRunData.o1Sub, "s2");
+    testField(runData.o1Sub, testObject.o1, newRunData.o1Sub, "i2");
+    testField(runData.o1Sub, testObject.o1, newRunData.o1Sub, "s2");
 
-    -- testField(runData.o2Sub, testObject.o2, newRunData.o2Sub, "i2");
-    -- testField(runData.o2Sub, testObject.o2, newRunData.o2Sub, "s2");
+    testField(runData.o2Sub, testObject.o2, newRunData.o2Sub, "i2");
+    testField(runData.o2Sub, testObject.o2, newRunData.o2Sub, "s2");
 
-    -- testField(runData.o3Sub, testObject.o3, newRunData.o3Sub, "i2");
-    -- testField(runData.o3Sub, testObject.o3, newRunData.o3Sub, "s2");
+    testField(runData.o3Sub, testObject.o3, newRunData.o3Sub, "i2");
+    testField(runData.o3Sub, testObject.o3, newRunData.o3Sub, "s2");
 
     print("Test completed successfully.");
 end

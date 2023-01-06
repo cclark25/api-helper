@@ -1,6 +1,6 @@
 // #include "./api-object.cpp"
 #define SOL_ALL_SAFETIES_ON 1
-// #include "../../src/lua-binding/binding-types/all.hpp"
+#include "../../src/lua-binding/binding-types/all.hpp"
 #include "../../src/data-wrappers/data-wrapper.hpp"
 #include "./data/test-class.hpp"
 #include "../../src/type-model/lua-binders/type-binder.hpp"
@@ -77,9 +77,9 @@ int main(int argc, char **argv)
 	sol::state lua;
 	if (generateTypes)
 	{
-		// std::string typingJson = APILua::makeTypingObjectFromTypeDefinition(lua, TypeGenerator<CustomObjectData>::generateTyping()).dump();
+		std::string typingJson = APILua::makeTypingObjectFromTypeDefinition(lua, TypeGenerator<CustomObjectData>::generateTyping()).dump();
 
-		// std::cout << typingJson << "\n";
+		std::cout << typingJson << "\n";
 
 		return 0;
 	}
@@ -99,7 +99,7 @@ int main(int argc, char **argv)
 	if (inputFile != "")
 	{
 		lua.safe_script_file(inputFile);
-		-- TODO: Functions result in seg fault upon garbage collection as it would seem.
+		// -- TODO: Functions result in seg fault upon garbage collection as it would seem.
 		lua.collect_garbage();
 		lua2.safe_script_file(inputFile);
 		lua2.collect_garbage();

@@ -1,137 +1,237 @@
-[
-  {
-    "classDefinition": {
-      "className": "TestClass",
-      "classStaticType": {
-        "dataPrimitive": "object",
-        "description": "Static fields for TestClass",
-        "name": "testClassStaticFields",
-        "objectDefinition": {
-          "objectFields": {
-            "s3": {
-              "dataPrimitive": "string",
-              "description": "Static class field.",
-              "name": "s3",
-              "readonly": true
-            }
-          }
-        },
-        "readonly": true
-      },
-      "constructor": {
-        "dataPrimitive": "function",
-        "description": "",
-        "functionDefinition": {
-          "isConstructor": true,
-          "name": "TestClassConstructor",
-          "parameters": [],
-          "returnType": {
-            "dataPrimitive": "object",
-            "description": "An instance of TestClass.",
-            "name": "TestClassInstance",
-            "objectDefinition": {
-              "instanceOf": {
-                "dataPrimitive": "unknown",
-                "description": "A Test Class",
-                "name": "TestClass",
-                "readonly": true
-              },
-              "objectFields": {
-                "f1": {
-                  "dataPrimitive": "string",
-                  "description": "Dynamic class field.",
-                  "name": "f1",
-                  "readonly": false
+[{
+  "classDefinition": {
+    "className": "CustomObjectData",
+    "classStaticType": {
+      "dataPrimitive": "object",
+      "description": "The type of the static fields of the CustomObjectData class.",
+      "name": "CustomObjectDataStaticType",
+      "objectDefinition": {
+        "objectFields": {
+          "d1": {
+            "dataPrimitive": "doubleType",
+            "description": "A static double field.",
+            "name": "d1",
+            "readonly": true
+          },
+          "staticFunction": {
+            "dataPrimitive": "function",
+            "description": "An static function that does stuff.",
+            "functionDefinition": {
+              "name": "staticFunction",
+              "parameters": [
+                {
+                  "parameterName": "num",
+                  "type": {
+                    "dataPrimitive": "int32",
+                    "description": "int parameter",
+                    "name": "num",
+                    "readonly": true
+                  }
                 }
+              ],
+              "returnType": {
+                "dataPrimitive": "string",
+                "description": "",
+                "name": "string",
+                "readonly": true
               }
             },
-            "readonly": true
-          }
-        },
-        "name": "TestClassConstructor",
-        "readonly": true
-      }
-    },
-    "dataPrimitive": "classType",
-    "description": "A Test Class",
-    "name": "TestClass",
-    "readonly": true
-  },
-  {
-    "dataPrimitive": "function",
-    "description": "A Test Function",
-    "functionDefinition": {
-      "name": "testFunctionName",
-      "parameters": [
-        {
-          "parameterName": "param1",
-          "type": {
-            "dataPrimitive": "string",
-            "description": "Parameter 1",
-            "name": "param1",
+            "name": "staticFunction",
             "readonly": true
           }
         }
-      ],
-      "returnType": {
-        "dataPrimitive": "object",
-        "description": "Return type description.",
-        "name": "functionInternalValueReturnValueType",
-        "objectDefinition": {
-          "objectFields": {
-            "f1": {
-              "dataPrimitive": "string",
-              "description": "Parameter 1 again",
-              "name": "f1",
-              "readonly": true
-            }
-          }
-        },
-        "readonly": true
-      }
+      },
+      "readonly": true
     },
-    "name": "functionValue",
-    "readonly": true
-  },
-  {
-    "dataPrimitive": "int32",
-    "description": "",
-    "name": "intValue",
-    "readonly": false
-  },
-  {
-    "dataPrimitive": "object",
-    "description": "A custom object type.",
-    "name": "newObjectTest",
-    "objectDefinition": {
-      "objectFields": {
-        "i1": {
-          "dataPrimitive": "int32",
-          "description": "An integer value",
-          "name": "i1",
-          "readonly": true
-        },
-        "o1": {
+    "constructor": {
+      "dataPrimitive": "function",
+      "description": "",
+      "functionDefinition": {
+        "isConstructor": true,
+        "name": "CustomObjectDataConstructor",
+        "parameters": [],
+        "returnType": {
           "dataPrimitive": "object",
-          "description": "An object value.",
-          "name": "o1",
-          "objectDefinition": { "objectFields": null },
-          "readonly": true
-        },
-        "s1": {
-          "dataPrimitive": "string",
-          "description": "A string value",
-          "name": "s1",
+          "description": "The type of objects that are instances of the CustomObjectData class.",
+          "name": "CustomObjectDataInstanceType",
+          "objectDefinition": {
+            "objectFields": {
+              "doStuff": {
+                "dataPrimitive": "function",
+                "description": "An instance function that does stuff.",
+                "functionDefinition": {
+                  "name": "doStuff",
+                  "parameters": [
+                    {
+                      "parameterName": "i",
+                      "type": {
+                        "dataPrimitive": "int32",
+                        "description": "int parameter",
+                        "name": "i",
+                        "readonly": true
+                      }
+                    },
+                    {
+                      "parameterName": "s",
+                      "type": {
+                        "dataPrimitive": "string",
+                        "description": "string parameter",
+                        "name": "s",
+                        "readonly": true
+                      }
+                    }
+                  ],
+                  "returnType": {
+                    "dataPrimitive": "string",
+                    "description": "",
+                    "name": "string",
+                    "readonly": true
+                  }
+                },
+                "name": "doStuff",
+                "readonly": true
+              },
+              "i1": {
+                "dataPrimitive": "int32",
+                "description": "An instance int field.",
+                "name": "i1",
+                "readonly": true
+              },
+              "o1": {
+                "classDefinition": {
+                  "className": "o1",
+                  "classStaticType": {
+                    "dataPrimitive": "object",
+                    "description": "The type of the static fields of the STANDIN_NAME class.",
+                    "name": "STANDIN_NAMEStaticType",
+                    "objectDefinition": { "objectFields": null },
+                    "readonly": true
+                  },
+                  "constructor": {
+                    "dataPrimitive": "function",
+                    "description": "",
+                    "functionDefinition": {
+                      "isConstructor": true,
+                      "name": "STANDIN_NAMEConstructor",
+                      "parameters": [],
+                      "returnType": {
+                        "dataPrimitive": "object",
+                        "description": "The type of objects that are instances of the STANDIN_NAME class.",
+                        "name": "STANDIN_NAMEInstanceType",
+                        "objectDefinition": { "objectFields": null },
+                        "readonly": true
+                      }
+                    },
+                    "name": "STANDIN_NAMEConstructor",
+                    "readonly": true
+                  }
+                },
+                "dataPrimitive": "classType",
+                "description": "Sub class data pointer.",
+                "name": "o1",
+                "readonly": true
+              },
+              "o2": {
+                "classDefinition": {
+                  "className": "o2",
+                  "classStaticType": {
+                    "dataPrimitive": "object",
+                    "description": "The type of the static fields of the STANDIN_NAME class.",
+                    "name": "STANDIN_NAMEStaticType",
+                    "objectDefinition": { "objectFields": null },
+                    "readonly": true
+                  },
+                  "constructor": {
+                    "dataPrimitive": "function",
+                    "description": "",
+                    "functionDefinition": {
+                      "isConstructor": true,
+                      "name": "STANDIN_NAMEConstructor",
+                      "parameters": [],
+                      "returnType": {
+                        "dataPrimitive": "object",
+                        "description": "The type of objects that are instances of the STANDIN_NAME class.",
+                        "name": "STANDIN_NAMEInstanceType",
+                        "objectDefinition": { "objectFields": null },
+                        "readonly": true
+                      }
+                    },
+                    "name": "STANDIN_NAMEConstructor",
+                    "readonly": true
+                  }
+                },
+                "dataPrimitive": "classType",
+                "description": "Sub class data shared pointer.",
+                "name": "o2",
+                "readonly": true
+              },
+              "o3": {
+                "classDefinition": {
+                  "className": "o3",
+                  "classStaticType": {
+                    "dataPrimitive": "object",
+                    "description": "The type of the static fields of the CustomObjectSubData class.",
+                    "name": "CustomObjectSubDataStaticType",
+                    "objectDefinition": { "objectFields": null },
+                    "readonly": true
+                  },
+                  "constructor": {
+                    "dataPrimitive": "function",
+                    "description": "",
+                    "functionDefinition": {
+                      "isConstructor": true,
+                      "name": "CustomObjectSubDataConstructor",
+                      "parameters": [],
+                      "returnType": {
+                        "dataPrimitive": "object",
+                        "description": "The type of objects that are instances of the CustomObjectSubData class.",
+                        "name": "CustomObjectSubDataInstanceType",
+                        "objectDefinition": {
+                          "objectFields": {
+                            "i2": {
+                              "dataPrimitive": "int32",
+                              "description": "Sub data's instance int field.",
+                              "name": "i2",
+                              "readonly": true
+                            },
+                            "s2": {
+                              "dataPrimitive": "string",
+                              "description": "Sub data's instance string field.",
+                              "name": "s2",
+                              "readonly": true
+                            }
+                          }
+                        },
+                        "readonly": true
+                      }
+                    },
+                    "name": "CustomObjectSubDataConstructor",
+                    "readonly": true
+                  }
+                },
+                "dataPrimitive": "classType",
+                "description": "Sub class data non-pointer.",
+                "name": "o3",
+                "readonly": true
+              },
+              "s1": {
+                "dataPrimitive": "string",
+                "description": "An instance string field.",
+                "name": "s1",
+                "readonly": true
+              }
+            }
+          },
           "readonly": true
         }
-      }
-    },
-    "readonly": true
+      },
+      "name": "CustomObjectDataConstructor",
+      "readonly": true
+    }
   },
-  {
-    "dataPrimitive": "string",
-    "description": "",
-    "name": "stringValue",
-    "readonly": false
-  }
+  "dataPrimitive": "classType",
+  "description": "A custom class to test typing.",
+  "name": "CustomObjectData",
+  "readonly": true
+}
 ]
