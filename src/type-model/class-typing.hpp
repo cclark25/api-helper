@@ -8,34 +8,34 @@
 
 namespace APICore
 {
-    template <typename T, class ClassType>
+    template <typename T, class FunctionType>
     concept ClassMember = requires
     {
         requires MemberPtrSpec<T> || MemberFunctionPtrSpec<T>;
-        requires std::is_same<typename T::classType, ClassType>::value;
+        requires std::is_same<typename T::classType, FunctionType>::value;
     };
 
-    template <typename T, class ClassType>
-    concept ClassField = StaticPtrSpec<T> || ClassMember<T, ClassType>;
+    template <typename T, class FunctionType>
+    concept ClassField = StaticPtrSpec<T> || ClassMember<T, FunctionType>;
 
-    template <StringLiteral ClassName, StringLiteral ClassDescription, class ClassType, ClassField<ClassType>... Fields>
+    template <StringLiteral ClassName, StringLiteral ClassDescription, class FunctionType, ClassField<FunctionType>... Fields>
     struct ClassTyping
     {
-        using type = ClassType;
+        using type = FunctionType;
         using isClass = void;
         static std::string name;
         static std::string description;
 
-        template <template <ClassField<ClassType>> class Callback>
+        template <template <ClassField<FunctionType>> class Callback>
         static void memberCallback()
         {
-            ((ClassMember<Fields, ClassType> ? []()
+            ((ClassMember<Fields, FunctionType> ? []()
                   { Callback<Fields>::processMemberField(); return true; }()
                                              : false),
              ...);
         }
 
-        template <template <ClassField<ClassType>> class Callback>
+        template <template <ClassField<FunctionType>> class Callback>
         static void staticFieldCallback()
         {
             ((StaticPtrSpec<Fields> ? []()
@@ -44,10 +44,10 @@ namespace APICore
              ...);
         }
     };
-    template <StringLiteral ClassName, StringLiteral ClassDescription, class ClassType, ClassField<ClassType>... Fields>
-    std::string ClassTyping<ClassName, ClassDescription, ClassType, Fields...>::name = ClassName.value;
-    template <StringLiteral ClassName, StringLiteral ClassDescription, class ClassType, ClassField<ClassType>... Fields>
-    std::string ClassTyping<ClassName, ClassDescription, ClassType, Fields...>::description = ClassDescription.value;
+    template <StringLiteral ClassName, StringLiteral ClassDescription, class FunctionType, ClassField<FunctionType>... Fields>
+    std::string ClassTyping<ClassName, ClassDescription, FunctionType, Fields...>::name = ClassName.value;
+    template <StringLiteral ClassName, StringLiteral ClassDescription, class FunctionType, ClassField<FunctionType>... Fields>
+    std::string ClassTyping<ClassName, ClassDescription, FunctionType, Fields...>::description = ClassDescription.value;
 
     template <typename T>
     concept ClassTypingDef = requires {

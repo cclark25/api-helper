@@ -1,237 +1,123 @@
-[{
-  "classDefinition": {
-    "className": "CustomObjectData",
-    "classStaticType": {
-      "dataPrimitive": "object",
-      "description": "The type of the static fields of the CustomObjectData class.",
-      "name": "CustomObjectDataStaticType",
-      "objectDefinition": {
-        "objectFields": {
-          "d1": {
-            "dataPrimitive": "doubleType",
-            "description": "A static double field.",
-            "name": "d1",
-            "readonly": true
-          },
-          "staticFunction": {
-            "dataPrimitive": "function",
-            "description": "An static function that does stuff.",
-            "functionDefinition": {
-              "name": "staticFunction",
-              "parameters": [
+{
+    "94725809059200": {
+        "description": "A custom class to test typing.",
+        "memberFields": {
+            "doStuff": {
+                "description": "An instance function that does stuff.",
+                "typeId": "94725809071136"
+            },
+            "i1": {
+                "description": "An instance int field.",
+                "typeId": "94725809061744"
+            },
+            "o1": {
+                "description": "Sub class data pointer.",
+                "typeId": "94725809063088"
+            },
+            "o2": {
+                "description": "Sub class data shared pointer.",
+                "typeId": "94725809068208"
+            },
+            "o3": {
+                "description": "Sub class data non-pointer.",
+                "typeId": "94725809065728"
+            },
+            "o4": {
+                "description": "Sub class data & reference.",
+                "typeId": "94725809065728"
+            },
+            "s1": {
+                "description": "An instance string field.",
+                "typeId": "94725809062960"
+            }
+        },
+        "name": "CustomObjectData",
+        "staticFields": {
+            "d1": {
+                "description": "A static double field.",
+                "typeId": "94725809059808"
+            },
+            "staticFunction": {
+                "description": "An static function that does stuff.",
+                "typeId": "94725809060640"
+            }
+        },
+        "typeId": "94725809059200"
+    },
+    "94725809059808": {
+        "isBasicType": true,
+        "name": "double",
+        "typeId": "94725809059808"
+    },
+    "94725809060640": {
+        "description": "An static function that does stuff.",
+        "functionDescription": {
+            "parameters": [
                 {
-                  "parameterName": "num",
-                  "type": {
-                    "dataPrimitive": "int32",
                     "description": "int parameter",
                     "name": "num",
-                    "readonly": true
-                  }
+                    "typeId": "94725809061744"
                 }
-              ],
-              "returnType": {
-                "dataPrimitive": "string",
-                "description": "",
-                "name": "string",
-                "readonly": true
-              }
-            },
-            "name": "staticFunction",
-            "readonly": true
-          }
-        }
-      },
-      "readonly": true
+            ]
+        },
+        "name": "staticFunction",
+        "typeId": "94725809060640"
     },
-    "constructor": {
-      "dataPrimitive": "function",
-      "description": "",
-      "functionDefinition": {
-        "isConstructor": true,
-        "name": "CustomObjectDataConstructor",
-        "parameters": [],
-        "returnType": {
-          "dataPrimitive": "object",
-          "description": "The type of objects that are instances of the CustomObjectData class.",
-          "name": "CustomObjectDataInstanceType",
-          "objectDefinition": {
-            "objectFields": {
-              "doStuff": {
-                "dataPrimitive": "function",
-                "description": "An instance function that does stuff.",
-                "functionDefinition": {
-                  "name": "doStuff",
-                  "parameters": [
-                    {
-                      "parameterName": "i",
-                      "type": {
-                        "dataPrimitive": "int32",
-                        "description": "int parameter",
-                        "name": "i",
-                        "readonly": true
-                      }
-                    },
-                    {
-                      "parameterName": "s",
-                      "type": {
-                        "dataPrimitive": "string",
-                        "description": "string parameter",
-                        "name": "s",
-                        "readonly": true
-                      }
-                    }
-                  ],
-                  "returnType": {
-                    "dataPrimitive": "string",
-                    "description": "",
-                    "name": "string",
-                    "readonly": true
-                  }
-                },
-                "name": "doStuff",
-                "readonly": true
-              },
-              "i1": {
-                "dataPrimitive": "int32",
-                "description": "An instance int field.",
-                "name": "i1",
-                "readonly": true
-              },
-              "o1": {
-                "classDefinition": {
-                  "className": "o1",
-                  "classStaticType": {
-                    "dataPrimitive": "object",
-                    "description": "The type of the static fields of the STANDIN_NAME class.",
-                    "name": "STANDIN_NAMEStaticType",
-                    "objectDefinition": { "objectFields": null },
-                    "readonly": true
-                  },
-                  "constructor": {
-                    "dataPrimitive": "function",
-                    "description": "",
-                    "functionDefinition": {
-                      "isConstructor": true,
-                      "name": "STANDIN_NAMEConstructor",
-                      "parameters": [],
-                      "returnType": {
-                        "dataPrimitive": "object",
-                        "description": "The type of objects that are instances of the STANDIN_NAME class.",
-                        "name": "STANDIN_NAMEInstanceType",
-                        "objectDefinition": { "objectFields": null },
-                        "readonly": true
-                      }
-                    },
-                    "name": "STANDIN_NAMEConstructor",
-                    "readonly": true
-                  }
-                },
-                "dataPrimitive": "classType",
-                "description": "Sub class data pointer.",
-                "name": "o1",
-                "readonly": true
-              },
-              "o2": {
-                "classDefinition": {
-                  "className": "o2",
-                  "classStaticType": {
-                    "dataPrimitive": "object",
-                    "description": "The type of the static fields of the STANDIN_NAME class.",
-                    "name": "STANDIN_NAMEStaticType",
-                    "objectDefinition": { "objectFields": null },
-                    "readonly": true
-                  },
-                  "constructor": {
-                    "dataPrimitive": "function",
-                    "description": "",
-                    "functionDefinition": {
-                      "isConstructor": true,
-                      "name": "STANDIN_NAMEConstructor",
-                      "parameters": [],
-                      "returnType": {
-                        "dataPrimitive": "object",
-                        "description": "The type of objects that are instances of the STANDIN_NAME class.",
-                        "name": "STANDIN_NAMEInstanceType",
-                        "objectDefinition": { "objectFields": null },
-                        "readonly": true
-                      }
-                    },
-                    "name": "STANDIN_NAMEConstructor",
-                    "readonly": true
-                  }
-                },
-                "dataPrimitive": "classType",
-                "description": "Sub class data shared pointer.",
-                "name": "o2",
-                "readonly": true
-              },
-              "o3": {
-                "classDefinition": {
-                  "className": "o3",
-                  "classStaticType": {
-                    "dataPrimitive": "object",
-                    "description": "The type of the static fields of the CustomObjectSubData class.",
-                    "name": "CustomObjectSubDataStaticType",
-                    "objectDefinition": { "objectFields": null },
-                    "readonly": true
-                  },
-                  "constructor": {
-                    "dataPrimitive": "function",
-                    "description": "",
-                    "functionDefinition": {
-                      "isConstructor": true,
-                      "name": "CustomObjectSubDataConstructor",
-                      "parameters": [],
-                      "returnType": {
-                        "dataPrimitive": "object",
-                        "description": "The type of objects that are instances of the CustomObjectSubData class.",
-                        "name": "CustomObjectSubDataInstanceType",
-                        "objectDefinition": {
-                          "objectFields": {
-                            "i2": {
-                              "dataPrimitive": "int32",
-                              "description": "Sub data's instance int field.",
-                              "name": "i2",
-                              "readonly": true
-                            },
-                            "s2": {
-                              "dataPrimitive": "string",
-                              "description": "Sub data's instance string field.",
-                              "name": "s2",
-                              "readonly": true
-                            }
-                          }
-                        },
-                        "readonly": true
-                      }
-                    },
-                    "name": "CustomObjectSubDataConstructor",
-                    "readonly": true
-                  }
-                },
-                "dataPrimitive": "classType",
-                "description": "Sub class data non-pointer.",
-                "name": "o3",
-                "readonly": true
-              },
-              "s1": {
-                "dataPrimitive": "string",
-                "description": "An instance string field.",
-                "name": "s1",
-                "readonly": true
-              }
+    "94725809061744": {
+        "isBasicType": true,
+        "name": "int",
+        "typeId": "94725809061744"
+    },
+    "94725809062960": {
+        "isBasicType": true,
+        "name": "string",
+        "typeId": "94725809062960"
+    },
+    "94725809063088": {
+        "description": "",
+        "name": "",
+        "referenceTypeId": "94725809065728",
+        "typeId": "94725809063088"
+    },
+    "94725809065728": {
+        "description": "A custom class to test typing a class's sub class.",
+        "memberFields": {
+            "i2": {
+                "description": "Sub data's instance int field.",
+                "typeId": "94725809061744"
+            },
+            "s2": {
+                "description": "Sub data's instance string field.",
+                "typeId": "94725809062960"
             }
-          },
-          "readonly": true
-        }
-      },
-      "name": "CustomObjectDataConstructor",
-      "readonly": true
+        },
+        "name": "CustomObjectSubData",
+        "staticFields": null,
+        "typeId": "94725809065728"
+    },
+    "94725809068208": {
+        "description": "",
+        "name": "",
+        "referenceTypeId": "94725809065728",
+        "typeId": "94725809068208"
+    },
+    "94725809071136": {
+        "description": "An instance function that does stuff.",
+        "functionDescription": {
+            "parameters": [
+                {
+                    "description": "int parameter",
+                    "name": "i",
+                    "typeId": "94725809061744"
+                },
+                {
+                    "description": "string parameter",
+                    "name": "s",
+                    "typeId": "94725809062960"
+                }
+            ]
+        },
+        "name": "doStuff",
+        "typeId": "94725809071136"
     }
-  },
-  "dataPrimitive": "classType",
-  "description": "A custom class to test typing.",
-  "name": "CustomObjectData",
-  "readonly": true
 }
-]

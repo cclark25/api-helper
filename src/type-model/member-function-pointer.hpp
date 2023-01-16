@@ -31,10 +31,10 @@ namespace APICore
         using returnType = void;
     };
 
-    template <class ClassType, typename ReturnType, typename... Parameters>
-    struct MemberFunctionTyping<ReturnType ClassType::*(Parameters...)>
+    template <class FunctionType, typename ReturnType, typename... Parameters>
+    struct MemberFunctionTyping<ReturnType FunctionType::*(Parameters...)>
     {
-        using classType = ClassType;
+        using classType = FunctionType;
         using returnType = ReturnType;
 
       

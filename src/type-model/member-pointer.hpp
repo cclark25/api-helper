@@ -18,15 +18,15 @@ namespace APICore
     template <auto Pointer>
     MemberPtr<Pointer>::ptrType MemberPtr<Pointer>::ptr = nullptr;
 
-    template <class ClassType, typename T, T ClassType::*Pointer>
+    template <class FunctionType, typename T, T FunctionType::*Pointer>
     struct MemberPtr<Pointer>
     {
-        using classType = ClassType;
+        using classType = FunctionType;
         using type = T;
         using ptrType = type classType::*;
         static ptrType ptr;
     };
-    template <class ClassType, typename T, T ClassType::*Pointer>
+    template <class FunctionType, typename T, T FunctionType::*Pointer>
     MemberPtr<Pointer>::ptrType MemberPtr<Pointer>::ptr = Pointer;
 
     template <StringLiteral Key, auto Pointer, StringLiteral Description = "">

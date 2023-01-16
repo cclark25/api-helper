@@ -4,16 +4,13 @@
 #include <memory>
 #include <string>
 #include <sol.hpp>
-#include "./concepts.hpp"
+#include "../concepts.hpp"
 
 namespace APICore
 {
-    template<ReferenceForLua T>
-    struct dereference {
-        using type = std::remove_reference_t<decltype(*T())>;
-    };
+    
 
-    template <ReferenceForLua T>
+    template <ReferenceTypeConcept T>
     struct LuaBinderGenerator<T>
     {
         static sol::usertype<T> *generateType(sol::state &state)
@@ -25,7 +22,7 @@ namespace APICore
         };
     };
 
-    template <ReferenceForLua T>
+    template <ReferenceTypeConcept T>
     struct LuaBinder<T>
     {
         static sol::usertype<T> *declareType(sol::state &state)

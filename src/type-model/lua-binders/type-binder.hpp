@@ -5,7 +5,7 @@
 #include <string>
 #include <sol.hpp>
 #include "./macros.hpp"
-#include "./concepts.hpp"
+#include "../concepts.hpp"
 
 namespace APICore
 {
@@ -33,7 +33,7 @@ namespace APICore
         static sol::usertype<T> *declareType(sol::state &state);
     };
     template <class T>
-        requires requires { requires !ReferenceForLua<T>; }
+        requires requires { requires !ReferenceTypeConcept<T>; }
     sol::usertype<T> *LuaBinder<T>::declareType(sol::state &state)
     {
         if (!LuaBinder<T>::usertypeDeclarations.contains(&state))
@@ -47,7 +47,7 @@ namespace APICore
     template <class T>
     std::map<sol::state *, sol::usertype<T> *> LuaBinder<T>::usertypeDeclarations;
 
-    template <ReferenceForLua T>
+    template <ReferenceTypeConcept T>
     struct LuaBinder<T>;
 
 }

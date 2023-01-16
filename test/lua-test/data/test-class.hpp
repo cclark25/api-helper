@@ -32,6 +32,7 @@ struct CustomObjectData
 	CustomObjectSubData *o1 = new CustomObjectSubData();
 	std::shared_ptr<CustomObjectSubData> o2 = std::shared_ptr<CustomObjectSubData>(new CustomObjectSubData());
 	CustomObjectSubData o3 = CustomObjectSubData();
+	CustomObjectSubData &o4 = this->o3;
 
 	static std::string staticFunction(int num)
 	{
@@ -66,6 +67,7 @@ using CustomObjectDataSpec = ClassTyping<
 	Member<"o1", &CustomObjectData::o1, "Sub class data pointer.">,
 	Member<"o2", &CustomObjectData::o2, "Sub class data shared pointer.">,
 	Member<"o3", &CustomObjectData::o3, "Sub class data non-pointer.">,
+	Member<"o4", &CustomObjectData::o3, "Sub class data & reference.">,
 	MemberFunction<
 		"doStuff",
 		&CustomObjectData::doStuff,

@@ -21,8 +21,8 @@ namespace APICore
         }
     };
 
-    template <StringLiteral Name, StringLiteral Description, class ClassType, ClassField<ClassType>... Fields>
-    struct FieldTypings<ClassTyping<Name, Description, ClassType, Fields...>>
+    template <StringLiteral Name, StringLiteral Description, class FunctionType, ClassField<FunctionType>... Fields>
+    struct FieldTypings<ClassTyping<Name, Description, FunctionType, Fields...>>
     {
         static std::map<std::string, std::shared_ptr<APICore::TypeWrapper<APICore::unknown>>> generateMemberTypings()
         {
@@ -74,10 +74,10 @@ namespace APICore
         }
     };
 
-    template <class ClassType, class... ExtraData>
-    struct TypeGenerator<ClassType, "ANY", ExtraData...>
+    template <class FunctionType, class... ExtraData>
+    struct TypeGenerator<FunctionType, "ANY", ExtraData...>
     {
-        using type_definition = TypeLookup<ClassType>;
+        using type_definition = TypeLookup<FunctionType>;
 
         static std::shared_ptr<TypeWrapper<DataPrimitive::unknown>> generateTyping()
         {

@@ -4,14 +4,14 @@
 #include "../type-lookup.hpp"
 #include "./type-binder.hpp"
 #include "../class-typing.hpp"
-#include "./concepts.hpp"
+#include "../concepts.hpp"
 #include <sol.hpp>
 #include <string>
 
 namespace APICore
 {
-    template <ClassForLua ClassType>
-    struct LuaBinderGenerator<ClassType>
+    template <ClassTypeConcept FunctionType>
+    struct LuaBinderGenerator<FunctionType>
     {
         template <typename T>
         struct FieldBinders
@@ -26,10 +26,10 @@ namespace APICore
             }
         };
 
-        template <StringLiteral Name, StringLiteral Description, ClassField<ClassType>... Fields>
-        struct FieldBinders<ClassTyping<Name, Description, ClassType, Fields...>>
+        template <StringLiteral Name, StringLiteral Description, ClassField<FunctionType>... Fields>
+        struct FieldBinders<ClassTyping<Name, Description, FunctionType, Fields...>>
         {
-            static void bindMembers(sol::state &state, sol::usertype<ClassType> *userType)
+            static void bindMembers(sol::state &state, sol::usertype<FunctionType> *userType)
             {
                 ((
                      [&state, &userType]()
@@ -58,7 +58,7 @@ namespace APICore
 
                 return;
             }
-            static void bindStaticFields(sol::state &state, sol::usertype<ClassType> *userType)
+            static void bindStaticFields(sol::state &state, sol::usertype<FunctionType> *userType)
             {
                 ((
                      [&state, &userType]()
@@ -85,15 +85,15 @@ namespace APICore
             }
         };
 
-        static sol::usertype<ClassType>* generateType(sol::state &state)
+        static sol::usertype<FunctionType>* generateType(sol::state &state)
         {
-            sol::usertype<ClassType> *newClassType = new sol::usertype<ClassType>;
-            (*newClassType) = state.new_usertype<ClassType>(
-                TypeLookup<ClassType>::registeredType::name,
-                sol::constructors<ClassType()>());
+            sol::usertype<FunctionType> *newClassType = new sol::usertype<FunctionType>;
+            (*newClassType) = state.new_usertype<FunctionType>(
+                TypeLookup<FunctionType>::registeredType::name,
+                sol::constructors<FunctionType()>());
 
-            FieldBinders<typename TypeLookup<ClassType>::registeredType>::bindMembers(state, newClassType);
-            FieldBinders<typename TypeLookup<ClassType>::registeredType>::bindStaticFields(state, newClassType);
+            FieldBinders<typename TypeLookup<FunctionType>::registeredType>::bindMembers(state, newClassType);
+            FieldBinders<typename TypeLookup<FunctionType>::registeredType>::bindStaticFields(state, newClassType);
 
             return newClassType;
         };

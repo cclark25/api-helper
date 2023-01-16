@@ -79,7 +79,7 @@ int main(int argc, char **argv)
 	{
 		APICore::JsonTyper<CustomObjectData>::declareType();
 		auto typing = APICore::generateTypeMap();
-		std::string typingJson = typing.dump();
+		std::string typingJson = typing.dump(4);
 
 		std::cout << typingJson << "\n";
 
