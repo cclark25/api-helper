@@ -1,123 +1,155 @@
 {
-    "94725809059200": {
+    "94585096197504": {
         "description": "A custom class to test typing.",
         "memberFields": {
             "doStuff": {
                 "description": "An instance function that does stuff.",
-                "typeId": "94725809071136"
+                "typeId": "94585096213040"
             },
             "i1": {
                 "description": "An instance int field.",
-                "typeId": "94725809061744"
+                "typeId": "94585096201264"
             },
             "o1": {
                 "description": "Sub class data pointer.",
-                "typeId": "94725809063088"
+                "typeId": "94585096205264"
             },
             "o2": {
                 "description": "Sub class data shared pointer.",
-                "typeId": "94725809068208"
+                "typeId": "94585096208960"
             },
             "o3": {
                 "description": "Sub class data non-pointer.",
-                "typeId": "94725809065728"
+                "typeId": "94585096210896"
             },
             "o4": {
                 "description": "Sub class data & reference.",
-                "typeId": "94725809065728"
+                "typeId": "94585096211968"
             },
             "s1": {
                 "description": "An instance string field.",
-                "typeId": "94725809062960"
+                "typeId": "94585096201392"
             }
         },
         "name": "CustomObjectData",
         "staticFields": {
             "d1": {
                 "description": "A static double field.",
-                "typeId": "94725809059808"
+                "typeId": "94585096198112"
             },
             "staticFunction": {
                 "description": "An static function that does stuff.",
-                "typeId": "94725809060640"
+                "typeId": "94585096198944"
             }
         },
-        "typeId": "94725809059200"
+        "typeId": "94585096197504"
     },
-    "94725809059808": {
+    "94585096198112": {
         "isBasicType": true,
         "name": "double",
-        "typeId": "94725809059808"
+        "typeId": "94585096198112"
     },
-    "94725809060640": {
+    "94585096198944": {
         "description": "An static function that does stuff.",
         "functionDescription": {
             "parameters": [
                 {
                     "description": "int parameter",
                     "name": "num",
-                    "typeId": "94725809061744"
+                    "typeId": "94585096200048"
                 }
-            ]
+            ],
+            "returnTypeId": "94585096201552"
         },
         "name": "staticFunction",
-        "typeId": "94725809060640"
+        "typeId": "94585096198944"
     },
-    "94725809061744": {
+    "94585096200048": {
         "isBasicType": true,
         "name": "int",
-        "typeId": "94725809061744"
+        "typeId": "94585096200048"
     },
-    "94725809062960": {
+    "94585096201264": {
+        "isBasicType": true,
+        "name": "int",
+        "typeId": "94585096201264"
+    },
+    "94585096201392": {
         "isBasicType": true,
         "name": "string",
-        "typeId": "94725809062960"
+        "typeId": "94585096201392"
     },
-    "94725809063088": {
+    "94585096201552": {
+        "isBasicType": true,
+        "name": "string",
+        "typeId": "94585096201552"
+    },
+    "94585096205264": {
         "description": "",
         "name": "",
-        "referenceTypeId": "94725809065728",
-        "typeId": "94725809063088"
+        "referenceTypeId": "94585096205328",
+        "typeId": "94585096205264"
     },
-    "94725809065728": {
+    "94585096205328": {
         "description": "A custom class to test typing a class's sub class.",
         "memberFields": {
             "i2": {
                 "description": "Sub data's instance int field.",
-                "typeId": "94725809061744"
+                "typeId": "94585096205488"
             },
             "s2": {
                 "description": "Sub data's instance string field.",
-                "typeId": "94725809062960"
+                "typeId": "94585096206976"
             }
         },
         "name": "CustomObjectSubData",
         "staticFields": null,
-        "typeId": "94725809065728"
+        "typeId": "94585096205328"
     },
-    "94725809068208": {
+    "94585096205488": {
+        "isBasicType": true,
+        "name": "int",
+        "typeId": "94585096205488"
+    },
+    "94585096206976": {
+        "isBasicType": true,
+        "name": "string",
+        "typeId": "94585096206976"
+    },
+    "94585096208960": {
         "description": "",
         "name": "",
-        "referenceTypeId": "94725809065728",
-        "typeId": "94725809068208"
+        "referenceTypeId": "94585096205328",
+        "typeId": "94585096208960"
     },
-    "94725809071136": {
+    "94585096210896": {
+        "isBasicType": true,
+        "name": "unknown",
+        "typeId": "94585096210896"
+    },
+    "94585096211968": {
+        "isBasicType": true,
+        "name": "unknown",
+        "typeId": "94585096211968"
+    },
+    "94585096213040": {
         "description": "An instance function that does stuff.",
         "functionDescription": {
             "parameters": [
                 {
                     "description": "int parameter",
                     "name": "i",
-                    "typeId": "94725809061744"
+                    "typeId": "94585096200048"
                 },
                 {
                     "description": "string parameter",
                     "name": "s",
-                    "typeId": "94725809062960"
+                    "typeId": "94585096201552"
                 }
-            ]
+            ],
+            "returnTypeId": "94585096201552"
         },
         "name": "doStuff",
-        "typeId": "94725809071136"
+        "typeId": "94585096213040"
     }
 }

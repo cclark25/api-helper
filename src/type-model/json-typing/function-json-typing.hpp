@@ -35,18 +35,9 @@ namespace APICore
                         parameters[index++] = param; })()),
              ...);
 
-            // for(auto p : StaticFunctionDef::parameterPack::parameters){
-            //     json param;
-            //     param["name"] = p.first;
-            //     param["description"] = p.second;
-            //     param["typeId"] = JsonTyper<>;
-
-            //     parameters[index] = param;
-            //     index++;
-            // }
-
             json functionDescription;
             functionDescription["parameters"] = parameters;
+            functionDescription["returnTypeId"] = (*JsonTyper<ReturnType>::declareType())["typeId"];
 
             (*type)["functionDescription"] = functionDescription;
 

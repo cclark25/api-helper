@@ -33,9 +33,8 @@ namespace APICore
     template <typename PointerType, StringLiteral Key, PointerType Pointer, StringLiteral Description, ParameterPackDefinition Parameters>
     struct StaticFunction<Key, Pointer, Description, Parameters> : public Static<Key, Pointer, Description>
     {
-        using functionTyping = MemberFunctionTyping<PointerType>;
+        using functionTyping = StaticFunctionTyping<PointerType>;
         using parameterPack = Parameters;
-        static std::vector<std::pair<std::string, std::string>> parameters;
         static bool lookupCreated;
     };
 
