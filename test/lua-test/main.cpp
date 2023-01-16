@@ -1,9 +1,6 @@
-// #include "./api-object.cpp"
 #define SOL_ALL_SAFETIES_ON 1
-#include "../../src/lua-binding/binding-types/all.hpp"
-#include "../../src/data-wrappers/data-wrapper.hpp"
 #include "./data/test-class.hpp"
-#include "../../src/type-model/lua-binders/type-binder.hpp"
+#include "../../src/lua-binders/type-binder.hpp"
 #include <lualib.h>
 #include <iostream>
 #include <cassert>
@@ -11,44 +8,6 @@
 
 using namespace APICore;
 using namespace std;
-
-void printTyping(std::shared_ptr<APICore::TypeWrapperRoot> typing, std::string padding = "")
-{
-	std::cout << padding << "\tType: " << APICore::dataPrimitiveNameMap.at(typing->getPrimitiveType()) << std::endl;
-	std::cout << padding << "\tName: " << typing->getTypeName() << std::endl;
-	std::cout << padding << "\tDescription: " << typing->getDescription() << std::endl;
-	if (typing->getPrimitiveType() == DataPrimitive::object)
-	{
-		auto objectTyping = CastSharedPtr(TypeWrapper<DataPrimitive::object>, typing);
-		for (auto field : objectTyping->getFields())
-		{
-			printTyping(field.second, padding + "\t");
-		}
-	}
-	else if (typing->getPrimitiveType() == DataPrimitive::classType)
-	{
-		auto classTyping = CastSharedPtr(TypeWrapper<DataPrimitive::classType>, typing);
-		std::cout << padding << "\t"
-				  << "Static Typing: " << std::endl;
-		printTyping(classTyping->getStaticType(), padding + "\t\t");
-		std::cout << padding << "\t"
-				  << "Instance Typing: " << std::endl;
-		printTyping(classTyping->getInstanceType(), padding + "\t\t");
-	}
-	else if (typing->getPrimitiveType() == DataPrimitive::function)
-	{
-		auto functionTyping = CastSharedPtr(TypeWrapper<DataPrimitive::function>, typing);
-		size_t index = 0;
-		for (auto field : functionTyping->getParams())
-		{
-			std::cout << padding << "\tParameter " << index++ << ":" << std::endl;
-			printTyping(field, padding + "\t");
-		}
-		std::cout << padding << "\t"
-				  << "Return Typing: " << std::endl;
-		printTyping(functionTyping->getReturnType(), padding + "\t");
-	}
-}
 
 int main(int argc, char **argv)
 {
@@ -113,7 +72,6 @@ int main(int argc, char **argv)
 	}
 
 
-	printTyping(TypeGenerator<CustomObjectData>::generateTyping());
 
 	return 0;
 }

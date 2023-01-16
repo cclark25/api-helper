@@ -1,6 +1,8 @@
 #ifndef TYPE_BINDING_LOOKUP
 #define TYPE_BINDING_LOOKUP
 
+#include <string>
+
 namespace APICore
 {
     template <typename T>

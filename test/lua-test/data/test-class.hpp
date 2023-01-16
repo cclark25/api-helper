@@ -1,19 +1,14 @@
 #ifndef __TEST_CLASS_DEFINITION
 #define __TEST_CLASS_DEFINITION
 #include <memory>
-#include "../../../src/type-model/type-lookup.hpp"
+#include "../../../src/type-lookup.hpp"
 #include <string>
-
-// #include "../../../src/type-model/type-model.hpp"
-#include "../../../src/type-model/member-pointer.hpp"
-#include "../../../src/type-model/member-function-pointer.hpp"
-#include "../../../src/type-model/static-pointer.hpp"
-#include "../../../src/type-model/static-function-pointer.hpp"
-#include "../../../src/type-model/class-typing.hpp"
-#include "../../../src/type-model/type-lookup.hpp"
-#include "../../../src/type-model/type-generators/type-generator.hpp"
-#include "../../../src/type-model/json-typing/json-typing.hpp"
-// #include "../../../src/type-model/lua-binders/type-binder.hpp"
+#include "../../../src/member-pointer.hpp"
+#include "../../../src/member-function-pointer.hpp"
+#include "../../../src/static-pointer.hpp"
+#include "../../../src/static-function-pointer.hpp"
+#include "../../../src/class-typing.hpp"
+#include "../../../src/json-typing/json-typing.hpp"
 
 using namespace APICore;
 using namespace std;
@@ -80,8 +75,7 @@ using CustomObjectDataSpec = ClassTyping<
 		&CustomObjectData::staticFunction,
 		"An static function that does stuff.",
 		ParameterPack<
-			Parameter<"num", "int parameter">>>
->;
+			Parameter<"num", "int parameter">>>>;
 
 RegisterType(CustomObjectData, CustomObjectDataSpec);
 RegisterType(CustomObjectData::CustomObjectSubData, CustomObjectSubDataSpec);

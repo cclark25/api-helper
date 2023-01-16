@@ -1,155 +1,155 @@
 {
-    "94585096197504": {
+    "94170012480112": {
         "description": "A custom class to test typing.",
         "memberFields": {
             "doStuff": {
                 "description": "An instance function that does stuff.",
-                "typeId": "94585096213040"
+                "typeId": "94170012495648"
             },
             "i1": {
                 "description": "An instance int field.",
-                "typeId": "94585096201264"
+                "typeId": "94170012483872"
             },
             "o1": {
                 "description": "Sub class data pointer.",
-                "typeId": "94585096205264"
+                "typeId": "94170012487872"
             },
             "o2": {
                 "description": "Sub class data shared pointer.",
-                "typeId": "94585096208960"
+                "typeId": "94170012491568"
             },
             "o3": {
                 "description": "Sub class data non-pointer.",
-                "typeId": "94585096210896"
+                "typeId": "94170012493504"
             },
             "o4": {
                 "description": "Sub class data & reference.",
-                "typeId": "94585096211968"
+                "typeId": "94170012494576"
             },
             "s1": {
                 "description": "An instance string field.",
-                "typeId": "94585096201392"
+                "typeId": "94170012484000"
             }
         },
         "name": "CustomObjectData",
         "staticFields": {
             "d1": {
                 "description": "A static double field.",
-                "typeId": "94585096198112"
+                "typeId": "94170012480720"
             },
             "staticFunction": {
                 "description": "An static function that does stuff.",
-                "typeId": "94585096198944"
+                "typeId": "94170012481552"
             }
         },
-        "typeId": "94585096197504"
+        "typeId": "94170012480112"
     },
-    "94585096198112": {
+    "94170012480720": {
         "isBasicType": true,
         "name": "double",
-        "typeId": "94585096198112"
+        "typeId": "94170012480720"
     },
-    "94585096198944": {
+    "94170012481552": {
         "description": "An static function that does stuff.",
         "functionDescription": {
             "parameters": [
                 {
                     "description": "int parameter",
                     "name": "num",
-                    "typeId": "94585096200048"
+                    "typeId": "94170012482656"
                 }
             ],
-            "returnTypeId": "94585096201552"
+            "returnTypeId": "94170012484160"
         },
         "name": "staticFunction",
-        "typeId": "94585096198944"
+        "typeId": "94170012481552"
     },
-    "94585096200048": {
+    "94170012482656": {
         "isBasicType": true,
         "name": "int",
-        "typeId": "94585096200048"
+        "typeId": "94170012482656"
     },
-    "94585096201264": {
+    "94170012483872": {
         "isBasicType": true,
         "name": "int",
-        "typeId": "94585096201264"
+        "typeId": "94170012483872"
     },
-    "94585096201392": {
+    "94170012484000": {
         "isBasicType": true,
         "name": "string",
-        "typeId": "94585096201392"
+        "typeId": "94170012484000"
     },
-    "94585096201552": {
+    "94170012484160": {
         "isBasicType": true,
         "name": "string",
-        "typeId": "94585096201552"
+        "typeId": "94170012484160"
     },
-    "94585096205264": {
+    "94170012487872": {
         "description": "",
         "name": "",
-        "referenceTypeId": "94585096205328",
-        "typeId": "94585096205264"
+        "referenceTypeId": "94170012487936",
+        "typeId": "94170012487872"
     },
-    "94585096205328": {
+    "94170012487936": {
         "description": "A custom class to test typing a class's sub class.",
         "memberFields": {
             "i2": {
                 "description": "Sub data's instance int field.",
-                "typeId": "94585096205488"
+                "typeId": "94170012488096"
             },
             "s2": {
                 "description": "Sub data's instance string field.",
-                "typeId": "94585096206976"
+                "typeId": "94170012489584"
             }
         },
         "name": "CustomObjectSubData",
         "staticFields": null,
-        "typeId": "94585096205328"
+        "typeId": "94170012487936"
     },
-    "94585096205488": {
+    "94170012488096": {
         "isBasicType": true,
         "name": "int",
-        "typeId": "94585096205488"
+        "typeId": "94170012488096"
     },
-    "94585096206976": {
+    "94170012489584": {
         "isBasicType": true,
         "name": "string",
-        "typeId": "94585096206976"
+        "typeId": "94170012489584"
     },
-    "94585096208960": {
+    "94170012491568": {
         "description": "",
         "name": "",
-        "referenceTypeId": "94585096205328",
-        "typeId": "94585096208960"
+        "referenceTypeId": "94170012487936",
+        "typeId": "94170012491568"
     },
-    "94585096210896": {
+    "94170012493504": {
         "isBasicType": true,
         "name": "unknown",
-        "typeId": "94585096210896"
+        "typeId": "94170012493504"
     },
-    "94585096211968": {
+    "94170012494576": {
         "isBasicType": true,
         "name": "unknown",
-        "typeId": "94585096211968"
+        "typeId": "94170012494576"
     },
-    "94585096213040": {
+    "94170012495648": {
         "description": "An instance function that does stuff.",
         "functionDescription": {
             "parameters": [
                 {
                     "description": "int parameter",
                     "name": "i",
-                    "typeId": "94585096200048"
+                    "typeId": "94170012482656"
                 },
                 {
                     "description": "string parameter",
                     "name": "s",
-                    "typeId": "94585096201552"
+                    "typeId": "94170012484160"
                 }
             ],
-            "returnTypeId": "94585096201552"
+            "returnTypeId": "94170012484160"
         },
         "name": "doStuff",
-        "typeId": "94585096213040"
+        "typeId": "94170012495648"
     }
 }
