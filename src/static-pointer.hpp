@@ -14,6 +14,8 @@ namespace APICore {
         static std::string key;
         static std::string description;
         static ptrType ptr;
+
+        static bool isConstructor;
     };
     template<StringLiteral Key, auto Pointer, StringLiteral Description>
     std::string Static<Key, Pointer, Description>::key = Key.value;
@@ -22,6 +24,9 @@ namespace APICore {
     template<StringLiteral Key, auto Pointer, StringLiteral Description>
     typename Static<Key, Pointer, Description>::ptrType Static<Key, Pointer, Description>::ptr = nullptr;
 
+    template <StringLiteral Key, auto Pointer, StringLiteral Description>
+    bool Static<Key, Pointer, Description>::isConstructor = false;
+
     template<StringLiteral Key, typename T, T* Pointer, StringLiteral Description>
     struct Static<Key, Pointer, Description> {
         using type = T;
@@ -29,6 +34,7 @@ namespace APICore {
         static std::string key;
         static std::string description;
         static ptrType ptr;
+        static bool isConstructor;
     };
     template<StringLiteral Key, typename T, T* Pointer, StringLiteral Description>
     std::string Static<Key, Pointer, Description>::key = Key.value;
@@ -36,6 +42,8 @@ namespace APICore {
     std::string Static<Key, Pointer, Description>::description = Description.value;
     template<StringLiteral Key, typename T, T* Pointer, StringLiteral Description>
     typename Static<Key, Pointer, Description>::ptrType Static<Key, Pointer, Description>::ptr = Pointer;
+    template<StringLiteral Key, typename T, T* Pointer, StringLiteral Description>
+    bool Static<Key, Pointer, Description>::isConstructor = false;
 
     template<typename T>
     concept StaticPtrSpec = requires (T::type typeVal, T::ptrType ptrVal) {

@@ -9,11 +9,10 @@
 namespace APICore
 {
     template <typename T, class FunctionType>
-    concept ClassMember = requires
-    {
-        requires MemberPtrSpec<T> || MemberFunctionPtrSpec<T>;
-        requires std::is_same<typename T::classType, FunctionType>::value;
-    };
+    concept ClassMember = requires {
+                              requires MemberPtrSpec<T> || MemberFunctionPtrSpec<T>;
+                              requires std::is_same<typename T::classType, FunctionType>::value;
+                          };
 
     template <typename T, class FunctionType>
     concept ClassField = StaticPtrSpec<T> || ClassMember<T, FunctionType>;
@@ -23,26 +22,9 @@ namespace APICore
     {
         using type = FunctionType;
         using isClass = void;
+
         static std::string name;
         static std::string description;
-
-        template <template <ClassField<FunctionType>> class Callback>
-        static void memberCallback()
-        {
-            ((ClassMember<Fields, FunctionType> ? []()
-                  { Callback<Fields>::processMemberField(); return true; }()
-                                             : false),
-             ...);
-        }
-
-        template <template <ClassField<FunctionType>> class Callback>
-        static void staticFieldCallback()
-        {
-            ((StaticPtrSpec<Fields> ? []()
-                  { Callback<Fields>::processStaticField(); return true; }()
-                                             : false),
-             ...);
-        }
     };
     template <StringLiteral ClassName, StringLiteral ClassDescription, class FunctionType, ClassField<FunctionType>... Fields>
     std::string ClassTyping<ClassName, ClassDescription, FunctionType, Fields...>::name = ClassName.value;
@@ -51,11 +33,19 @@ namespace APICore
 
     template <typename T>
     concept ClassTypingDef = requires {
-        { T::type };
-        { T::isClass };
-        { T::name } -> std::convertible_to<std::string>;
-        { T::description } -> std::convertible_to<std::string>;
-    };
+                                 {
+                                     T::type
+                                 };
+                                 {
+                                     T::isClass
+                                 };
+                                 {
+                                     T::name
+                                     } -> std::convertible_to<std::string>;
+                                 {
+                                     T::description
+                                     } -> std::convertible_to<std::string>;
+                             };
 };
 
 #endif

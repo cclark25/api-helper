@@ -70,10 +70,8 @@ namespace APICore
     struct JsonTypingGenerator<FunctionType>
     {
         using type_definition = TypeLookup<FunctionType>;
-        static std::shared_ptr<json> generateType()
+        static void generateType(std::shared_ptr<json> type)
         {
-            std::shared_ptr<json> type = std::shared_ptr<json>(new json());
-
             (*type)["name"] = type_definition::registeredType::name;
             (*type)["description"] = type_definition::registeredType::description;
 
@@ -82,8 +80,6 @@ namespace APICore
 
             (*type)["staticFields"] = staticFields;
             (*type)["memberFields"] = memberFields;
-
-            return type;
         }
     };
 }

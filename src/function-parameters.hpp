@@ -42,6 +42,9 @@ namespace APICore {
             (parameterList.push_back(std::pair<std::string, std::string>(Parameters::name, Parameters::description)), ...);
             return parameterList; })();
 
+    template<>
+    std::vector<std::pair<std::string, std::string>> ParameterPack<>::parameters = {};
+
     template <typename T>
     concept ParameterPackDefinition = requires
     {

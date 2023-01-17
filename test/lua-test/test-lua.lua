@@ -54,7 +54,22 @@ function testField(runData, parentObject, secondaryRunData, key)
     
 end
 
-function test()
+function staticTest()
+    runData = firstRun;
+    newRunData = secondRun;
+    if(runNum == 2) then
+        tmp1 = runData;
+        tmp2 = newRunData
+        runData = tmp2;
+        newRunData = tmp1;
+    end
+    assert(CustomObjectData.staticFunction(12) == "24");
+    assert(CustomObjectData.staticFunction(25) == "50");
+    testField(runData, CustomObjectData, newRunData, "d1");
+    assert(runData.CustomObjectDataType == type(CustomObjectData));
+end
+
+function test(testObject)
     runData = firstRun;
     newRunData = secondRun;
 
@@ -68,20 +83,13 @@ function test()
     end
 
     assert(runData.testObjectType == type(testObject));
-    assert(runData.CustomObjectDataType == type(CustomObjectData));
 
     testField(runData, testObject, newRunData, "i1");
     testField(runData, testObject, newRunData, "s1");
 
-    testField(runData, CustomObjectData, newRunData, "d1");
 
     assert(testObject:doStuff(0,"abc") == "abc");
     assert(testObject:doStuff(1,"abc") == "abc\nabc");
-
-
-    assert(CustomObjectData.staticFunction(12) == "24");
-    assert(CustomObjectData.staticFunction(25) == "50");
-
 
     assert(runData.testObjectO1Type == type(testObject.o1));
 
@@ -97,5 +105,12 @@ function test()
     print("Test completed successfully.");
 end
 
-test();
+staticTest();
+test(testObject);
 
+if(runNum == 1) then
+    newObj = CustomObjectData.__constructor(12);
+    test(newObj);
+    newObj2 = CustomObjectData.new('12');
+    test(newObj2);
+end

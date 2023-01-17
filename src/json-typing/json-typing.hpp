@@ -14,140 +14,131 @@ namespace APICore
 
     size_t setTypeId(std::shared_ptr<json> ptr)
     {
-        size_t id = (size_t) ptr.get();
+        size_t id = (size_t)ptr.get();
         (*ptr)["typeId"] = std::to_string(id);
         return id;
     }
 
     template <class T, class... ExtraData>
-    struct JsonTypingGenerator
+    struct JsonTypingGenerator : public JsonTypingGenerator<T>
     {
-        static std::shared_ptr<json> generateType()
-        {
-            std::shared_ptr<json> type = std::shared_ptr<json>(new json());
+    };
 
+    template <class T>
+    struct JsonTypingGenerator<T>
+    {
+        static void generateType(std::shared_ptr<json> type)
+        {
             (*type)["name"] = "unknown";
             (*type)["isBasicType"] = true;
-            
-            return type;
         }
     };
 
-    template <class... ExtraData>
-    struct JsonTypingGenerator<double, ExtraData...>
+    template <>
+    struct JsonTypingGenerator<double>
     {
-        static std::shared_ptr<json> generateType()
+        static void generateType(std::shared_ptr<json> type)
         {
-            std::shared_ptr<json> type = std::shared_ptr<json>(new json());
-
             (*type)["name"] = "double";
             (*type)["isBasicType"] = true;
-            
-            return type;
         }
     };
 
-    template <class... ExtraData>
-    struct JsonTypingGenerator<int, ExtraData...>
+    template <>
+    struct JsonTypingGenerator<int>
     {
-        static std::shared_ptr<json> generateType()
+        static void generateType(std::shared_ptr<json> type)
         {
-            std::shared_ptr<json> type = std::shared_ptr<json>(new json());
-
             (*type)["name"] = "int";
             (*type)["isBasicType"] = true;
-            
-            return type;
         }
     };
-    template <class... ExtraData>
-    struct JsonTypingGenerator<std::string, ExtraData...>
+    template <>
+    struct JsonTypingGenerator<std::string>
     {
-        static std::shared_ptr<json> generateType()
+        static void generateType(std::shared_ptr<json> type)
         {
-            std::shared_ptr<json> type = std::shared_ptr<json>(new json());
-
             (*type)["name"] = "string";
             (*type)["isBasicType"] = true;
-            
-            return type;
         }
     };
-    template <class... ExtraData>
-    struct JsonTypingGenerator<bool, ExtraData...>
+    template <>
+    struct JsonTypingGenerator<bool>
     {
-        static std::shared_ptr<json> generateType()
+        static void generateType(std::shared_ptr<json> type)
         {
-            std::shared_ptr<json> type = std::shared_ptr<json>(new json());
-
             (*type)["name"] = "bool";
             (*type)["isBasicType"] = true;
-            
-            return type;
         }
     };
 
-    template <class... ExtraData>
-    struct JsonTypingGenerator<char, ExtraData...>
+    template <>
+    struct JsonTypingGenerator<char>
     {
-        static std::shared_ptr<json> generateType()
+        static void generateType(std::shared_ptr<json> type)
         {
-            std::shared_ptr<json> type = std::shared_ptr<json>(new json());
-
             (*type)["name"] = "char";
             (*type)["isBasicType"] = true;
-            
-            return type;
         }
     };
 
-    template <class... ExtraData>
-    struct JsonTypingGenerator<void, ExtraData...>
+    template <>
+    struct JsonTypingGenerator<void>
     {
-        static std::shared_ptr<json> generateType()
+        static void generateType(std::shared_ptr<json> type)
         {
-            std::shared_ptr<json> type = std::shared_ptr<json>(new json());
-
             (*type)["name"] = "void";
             (*type)["isBasicType"] = true;
-            
-            return type;
         }
     };
 
-        
-
     template <class T, class... ExtraData>
-    struct JsonTyper
+    struct JsonTyper : public JsonTyper<T>
+    {
+        static std::shared_ptr<json> declareType()
+        {
+            if (JsonTyper::declaration == nullptr)
+            {
+                JsonTyper::declaration = std::shared_ptr<json>(new json());
+                size_t id = setTypeId(JsonTyper::declaration);
+                JsonTypingGenerator<T, ExtraData...>::generateType(JsonTyper::declaration);
+                typeMap.insert_or_assign(id, JsonTyper::declaration);
+            }
+            return JsonTyper::declaration;
+        };
+    };
+
+    template <class T>
+    struct JsonTyper<T>
     {
         static std::shared_ptr<json> declaration;
-        static std::shared_ptr<json> declareType();
-    };
 
-    template <class T, class... ExtraData>
-    std::shared_ptr<json> JsonTyper<T, ExtraData...>::declareType()
-    {
-        if (declaration == nullptr)
+        static std::shared_ptr<json> declareType()
         {
-            declaration = JsonTypingGenerator<T, ExtraData...>::generateType();
-            size_t id = setTypeId(declaration);
-            typeMap.insert_or_assign(id, declaration);
-        }
-        return declaration;
+            if (JsonTyper::declaration == nullptr)
+            {
+                JsonTyper::declaration = std::shared_ptr<json>(new json());
+                size_t id = setTypeId(JsonTyper::declaration);
+                JsonTypingGenerator<T>::generateType(JsonTyper::declaration);
+                typeMap.insert_or_assign(id, JsonTyper::declaration);
+            }
+            return JsonTyper::declaration;
+        };
     };
 
-    template <class T, class... ExtraData>
-    std::shared_ptr<json> JsonTyper<T, ExtraData...>::declaration = nullptr;
+    template <class T>
+    std::shared_ptr<json> JsonTyper<T>::declaration = nullptr;
 
-    json generateTypeMap(){
+    json generateTypeMap()
+    {
         json map;
-        for(auto mapping : typeMap){
+        for (auto mapping : typeMap)
+        {
             map[std::to_string(mapping.first)] = *mapping.second;
         }
         return map;
     }
 
-    
 }
 
 #include "./class-json-typing.hpp"

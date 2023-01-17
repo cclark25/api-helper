@@ -4,7 +4,6 @@
 #include <memory>
 #include <string>
 #include <sol.hpp>
-#include "./macros.hpp"
 #include "../concepts.hpp"
 
 namespace APICore

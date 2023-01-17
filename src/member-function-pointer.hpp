@@ -8,6 +8,7 @@
 #include <type_traits>
 #include <string>
 #include <vector>
+#include <functional>
 
 namespace APICore
 {
@@ -56,10 +57,15 @@ namespace APICore
     template <typename PointerType, StringLiteral Key, PointerType Pointer, StringLiteral Description, ParameterPackDefinition Parameters>
     std::string MemberFunction<Key, Pointer, Description, Parameters>::description = Description.value;
 
+    template <typename T, typename ClassToBind>
+    concept MemberLikeFunction = requires(T v, ClassToBind &c) {
+        { std::bind(v, c) };
+    };
+
     template <typename T>
     concept MemberFunctionPtrSpec = requires()
     {
-        requires MemberPtrSpec<T>;
+        requires MemberPtrSpec<T> ;
         {T::functionTyping::classType};
         {T::functionTyping::returnType};
     };

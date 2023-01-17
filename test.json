@@ -1,155 +1,147 @@
 {
-    "94170012480112": {
+    "94089723441856": {
         "description": "A custom class to test typing.",
         "memberFields": {
             "doStuff": {
                 "description": "An instance function that does stuff.",
-                "typeId": "94170012495648"
+                "typeId": "94089723456496"
             },
             "i1": {
                 "description": "An instance int field.",
-                "typeId": "94170012483872"
+                "typeId": "94089723444784"
             },
             "o1": {
                 "description": "Sub class data pointer.",
-                "typeId": "94170012487872"
+                "typeId": "94089723446128"
             },
             "o2": {
                 "description": "Sub class data shared pointer.",
-                "typeId": "94170012491568"
+                "typeId": "94089723453856"
             },
             "o3": {
                 "description": "Sub class data non-pointer.",
-                "typeId": "94170012493504"
+                "typeId": "94089723449024"
             },
             "o4": {
                 "description": "Sub class data & reference.",
-                "typeId": "94170012494576"
+                "typeId": "94089723449024"
             },
             "s1": {
                 "description": "An instance string field.",
-                "typeId": "94170012484000"
+                "typeId": "94089723446288"
             }
         },
         "name": "CustomObjectData",
         "staticFields": {
+            "__constructor": {
+                "description": "An inline lambda function attached as a static function.",
+                "typeId": "94089723446000"
+            },
             "d1": {
                 "description": "A static double field.",
-                "typeId": "94170012480720"
+                "typeId": "94089723442608"
             },
             "staticFunction": {
                 "description": "An static function that does stuff.",
-                "typeId": "94170012481552"
+                "typeId": "94089723443440"
             }
         },
-        "typeId": "94170012480112"
+        "typeId": "94089723441856"
     },
-    "94170012480720": {
+    "94089723442608": {
         "isBasicType": true,
         "name": "double",
-        "typeId": "94170012480720"
+        "typeId": "94089723442608"
     },
-    "94170012481552": {
+    "94089723443440": {
         "description": "An static function that does stuff.",
         "functionDescription": {
             "parameters": [
                 {
                     "description": "int parameter",
                     "name": "num",
-                    "typeId": "94170012482656"
+                    "typeId": "94089723444784"
                 }
             ],
-            "returnTypeId": "94170012484160"
+            "returnTypeId": "94089723446288"
         },
+        "isBasicType": true,
         "name": "staticFunction",
-        "typeId": "94170012481552"
+        "typeId": "94089723443440"
     },
-    "94170012482656": {
+    "94089723444784": {
         "isBasicType": true,
         "name": "int",
-        "typeId": "94170012482656"
+        "typeId": "94089723444784"
     },
-    "94170012483872": {
+    "94089723446000": {
+        "description": "An inline lambda function attached as a static function.",
+        "functionDescription": {
+            "parameters": [
+                {
+                    "description": "int parameter",
+                    "name": "num",
+                    "typeId": "94089723444784"
+                }
+            ],
+            "returnTypeId": "94089723441856"
+        },
         "isBasicType": true,
-        "name": "int",
-        "typeId": "94170012483872"
+        "name": "__constructor",
+        "typeId": "94089723446000"
     },
-    "94170012484000": {
-        "isBasicType": true,
-        "name": "string",
-        "typeId": "94170012484000"
-    },
-    "94170012484160": {
-        "isBasicType": true,
-        "name": "string",
-        "typeId": "94170012484160"
-    },
-    "94170012487872": {
+    "94089723446128": {
         "description": "",
-        "name": "",
-        "referenceTypeId": "94170012487936",
-        "typeId": "94170012487872"
+        "name": "reference",
+        "referenceTypeId": "94089723449024",
+        "typeId": "94089723446128"
     },
-    "94170012487936": {
+    "94089723446288": {
+        "isBasicType": true,
+        "name": "string",
+        "typeId": "94089723446288"
+    },
+    "94089723449024": {
         "description": "A custom class to test typing a class's sub class.",
         "memberFields": {
             "i2": {
                 "description": "Sub data's instance int field.",
-                "typeId": "94170012488096"
+                "typeId": "94089723444784"
             },
             "s2": {
                 "description": "Sub data's instance string field.",
-                "typeId": "94170012489584"
+                "typeId": "94089723446288"
             }
         },
         "name": "CustomObjectSubData",
         "staticFields": null,
-        "typeId": "94170012487936"
+        "typeId": "94089723449024"
     },
-    "94170012488096": {
-        "isBasicType": true,
-        "name": "int",
-        "typeId": "94170012488096"
-    },
-    "94170012489584": {
-        "isBasicType": true,
-        "name": "string",
-        "typeId": "94170012489584"
-    },
-    "94170012491568": {
+    "94089723453856": {
         "description": "",
-        "name": "",
-        "referenceTypeId": "94170012487936",
-        "typeId": "94170012491568"
+        "name": "reference",
+        "referenceTypeId": "94089723449024",
+        "typeId": "94089723453856"
     },
-    "94170012493504": {
-        "isBasicType": true,
-        "name": "unknown",
-        "typeId": "94170012493504"
-    },
-    "94170012494576": {
-        "isBasicType": true,
-        "name": "unknown",
-        "typeId": "94170012494576"
-    },
-    "94170012495648": {
+    "94089723456496": {
         "description": "An instance function that does stuff.",
         "functionDescription": {
             "parameters": [
                 {
                     "description": "int parameter",
                     "name": "i",
-                    "typeId": "94170012482656"
+                    "typeId": "94089723444784"
                 },
                 {
                     "description": "string parameter",
                     "name": "s",
-                    "typeId": "94170012484160"
+                    "typeId": "94089723446288"
                 }
             ],
-            "returnTypeId": "94170012484160"
+            "returnTypeId": "94089723446288"
         },
+        "isBasicType": true,
         "name": "doStuff",
-        "typeId": "94170012495648"
+        "typeId": "94089723456496"
     }
 }

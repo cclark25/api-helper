@@ -11,6 +11,8 @@ namespace APICore
                                   {
                                       *tval
                                   };
+
+                                  requires !std::is_function_v<T>;
                               };
     
     template <class FunctionType>

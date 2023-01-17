@@ -75,6 +75,15 @@ using CustomObjectDataSpec = ClassTyping<
 		&CustomObjectData::staticFunction,
 		"An static function that does stuff.",
 		ParameterPack<
+			Parameter<"num", "int parameter">>>,
+
+	Constructor<
+		+[](int num)
+		{
+			return CustomObjectData();
+		},
+		"An inline lambda function attached as a static function.",
+		ParameterPack<
 			Parameter<"num", "int parameter">>>>;
 
 RegisterType(CustomObjectData, CustomObjectDataSpec);

@@ -16,7 +16,19 @@ namespace APICore
     {
         using pointerTypeLookup = void;
         using parameterPack = Parameters;
+        static bool isConstructor;
     };
+
+    template <auto Pointer, StringLiteral Description, ParameterPackDefinition Parameters>
+    struct Constructor : public StaticFunction<"__constructor", Pointer, Description, Parameters>
+    {
+        static bool isConstructor;
+    };
+    template <auto Pointer, StringLiteral Description, ParameterPackDefinition Parameters>
+    bool Constructor<Pointer, Description, Parameters>::isConstructor = true;
+    
+    template <StringLiteral Key, auto Pointer, StringLiteral Description, ParameterPackDefinition Parameters>
+    bool StaticFunction<Key, Pointer, Description, Parameters>::isConstructor = false;
 
     template <typename PointerType>
     struct StaticFunctionTyping

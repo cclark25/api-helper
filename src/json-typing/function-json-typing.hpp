@@ -13,9 +13,9 @@ namespace APICore
     template <typename StaticFunctionDef, class ReturnType, class... Parameters>
     struct JsonTypingGenerator<ReturnType(Parameters...), StaticFunctionDef>
     {
-        static std::shared_ptr<json> generateType()
+        static void generateType(std::shared_ptr<json> type)
         {
-            std::shared_ptr<json> type = std::shared_ptr<json>(new json());
+            JsonTypingGenerator<ReturnType(Parameters...)>::generateType(type);
 
             (*type)["name"] = StaticFunctionDef::key;
             (*type)["description"] = StaticFunctionDef::description;
@@ -28,8 +28,9 @@ namespace APICore
                  ([&index, &parameters]()
                   {
                         json param;
-                        param["name"] = StaticFunctionDef::parameterPack::parameters[index].first;
-                        param["description"] = StaticFunctionDef::parameterPack::parameters[index].second;
+                        auto p = StaticFunctionDef::parameterPack::parameters[index];
+                        param["name"] = p.first;
+                        param["description"] = p.second;
                         param["typeId"] = (*JsonTyper<Parameters>::declareType())["typeId"];
 
                         parameters[index++] = param; })()),
@@ -40,8 +41,6 @@ namespace APICore
             functionDescription["returnTypeId"] = (*JsonTyper<ReturnType>::declareType())["typeId"];
 
             (*type)["functionDescription"] = functionDescription;
-
-            return type;
         }
     };
 }

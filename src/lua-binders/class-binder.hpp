@@ -65,12 +65,17 @@ namespace APICore
                      {
                          if constexpr (StaticPtrSpec<Fields>)
                          {
+                             if (Fields::isConstructor)
+                             {
+                                 (*userType)["new"] = sol::var(std::ref(*Fields::ptr));
+                             }
+
                              if constexpr (!std::is_function_v<typename Fields::type>)
                              {
                                  LuaBinder<typename Fields::type>::declareType(state);
                              }
                              std::string key = Fields::key;
-                             
+
                              (*userType)[Fields::key] = sol::var(std::ref(*Fields::ptr));
                              return true;
                          }
@@ -85,7 +90,7 @@ namespace APICore
             }
         };
 
-        static sol::usertype<FunctionType>* generateType(sol::state &state)
+        static sol::usertype<FunctionType> *generateType(sol::state &state)
         {
             sol::usertype<FunctionType> *newClassType = new sol::usertype<FunctionType>;
             (*newClassType) = state.new_usertype<FunctionType>(
@@ -98,76 +103,6 @@ namespace APICore
             return newClassType;
         };
     };
-
-    // template <class ClassType>
-    //     requires requires(ClassType val) {
-    //                  requires std::is_class_v<ClassType>;
-    //                  requires !requires {
-    //                                {
-    //                                    *val
-    //                                };
-    //                            };
-    //              }
-    // struct LuaBinder<ClassType>
-    // {
-    //     template <typename T>
-    //     struct FieldBinders
-    //     {
-
-    //         static void bindMembers(sol::state &state, sol::usertype<auto> *userType)
-    //         {
-    //         }
-
-    //         static void bindStaticFields(sol::state &state, sol::usertype<auto> *userType)
-    //         {
-    //         }
-    //     };
-
-    //     template <StringLiteral Name, StringLiteral Description, ClassField<ClassType>... Fields>
-    //     struct FieldBinders<ClassTyping<Name, Description, ClassType, Fields...>>
-    //     {
-    //         static void bindMembers(sol::state &state, sol::usertype<ClassType> *userType)
-    //         {
-    //             ((
-    //                  MemberPtrSpec<Fields> ? [&state, &userType]()
-    //                      {
-    //                     LuaBinder<typename Fields::type>::bind(state, userType, Fields::ptr, std::string(Fields::key));
-    //                     return true; }()
-    //                                        : false),
-    //              ...);
-
-    //             return;
-    //         }
-    //         static void bindStaticFields(sol::state &state, sol::usertype<ClassType> *userType)
-    //         {
-    //             ((
-    //                  StaticPtrSpec<Fields> ? [&state, &userType]()
-    //                      {
-    //                     LuaBinder<typename Fields::type>::bind(state, userType, Fields::ptr, std::string(Fields::key));
-    //                     return true; }()
-    //                                        : false),
-    //              ...);
-
-    //             return;
-    //         }
-    //     };
-
-    //     using type_definition = TypeLookup<ClassType>;
-
-    //     template <class ParentClassType>
-    //     static void bind(sol::state &state, sol::usertype<ParentClassType> *userType)
-    //     {
-    //         sol::usertype<ClassType> newClassType = state.new_usertype<ClassType>(
-    //             type_definition::registeredType::name,
-    //             sol::constructors<ClassType()>());
-
-    //         FieldBinders<typename type_definition::registeredType>::bindMembers(state, &newClassType);
-    //         FieldBinders<typename type_definition::registeredType>::bindStaticFields(state, &newClassType);
-
-    //         // TODO: add support for defining constructors
-    //     }
-    // };
-
 }
 
 #endif
