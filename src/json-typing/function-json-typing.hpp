@@ -16,8 +16,9 @@ namespace APICore
         static void generateType(std::shared_ptr<json> type)
         {
             JsonTypingGenerator<ReturnType(Parameters...)>::generateType(type);
+            std::string name = StaticFunctionDef::key;
 
-            (*type)["name"] = StaticFunctionDef::key;
+            (*type)["name"] = name;
             (*type)["description"] = StaticFunctionDef::description;
 
             json parameters;
@@ -27,6 +28,11 @@ namespace APICore
             ((
                  ([&index, &parameters]()
                   {
+                        
+                        if(StaticFunctionDef::isCustomMember && index == 0){
+                            return;
+                        }
+
                         json param;
                         auto p = StaticFunctionDef::parameterPack::parameters[index];
                         param["name"] = p.first;

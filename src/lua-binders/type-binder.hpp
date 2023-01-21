@@ -27,7 +27,10 @@ namespace APICore
         static sol::usertype<T> *declareType(sol::state &state);
     };
     template <class T>
-        requires requires { requires !ReferenceTypeConcept<T>; requires !FutureTypeConcept<T>; }
+        requires requires { 
+            requires !ReferenceTypeConcept<T>; 
+            // requires !FutureTypeConcept<T>; 
+    }
     sol::usertype<T> *LuaBinder<T>::declareType(sol::state &state)
     {
         if (!LuaBinder<T>::usertypeDeclarations.contains(&state))

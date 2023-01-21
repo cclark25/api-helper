@@ -68,7 +68,7 @@ function staticTest()
     testField(runData, CustomObjectData, newRunData, "d1");
     assert(runData.CustomObjectDataType == type(CustomObjectData));
 
-    promise = CustomObjectData.asyncFunction(1);
+    promise = CustomObjectData.staticAsync(1);
     print('Promise return type: ' .. type(promise));
     print('Promise return value: ' .. (promise:await()));
 end
@@ -94,6 +94,11 @@ function test(testObject)
 
     assert(testObject:doStuff(0,"abc") == "abc");
     assert(testObject:doStuff(1,"abc") == "abc\nabc");
+    -- assert(testObject:memberLambdaFunction(2):await() == 8 * testObject.i1);
+
+    promise = testObject:memberAsync(1);
+    print('Member promise return type: ' .. type(promise));
+    print('Member promise return value: ' .. (promise:await()));
 
     assert(runData.testObjectO1Type == type(testObject.o1));
 

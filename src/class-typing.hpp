@@ -10,8 +10,9 @@ namespace APICore
 {
     template <typename T, class FunctionType>
     concept ClassMember = requires {
-                              requires MemberPtrSpec<T> || MemberFunctionPtrSpec<T>;
-                              requires std::is_same<typename T::classType, FunctionType>::value;
+        requires true;
+                            //   requires MemberPtrSpec<T> || MemberFunctionPtrSpec<T>;
+                            //   requires std::is_same<typename T::classType, FunctionType>::value;
                           };
 
     template <typename T, class FunctionType>

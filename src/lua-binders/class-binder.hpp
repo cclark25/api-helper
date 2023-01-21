@@ -44,9 +44,9 @@ namespace APICore
                 ((
                      [&state, &userType]()
                      {
+                             std::string key = Fields::key;
                          if constexpr (MemberPtrSpec<Fields>)
                          {
-                             std::string key = Fields::key;
                              auto ptr = Fields::ptr;
                              if constexpr (!std::is_function_v<typename Fields::type>)
                              {
@@ -56,6 +56,7 @@ namespace APICore
                              else
                              {
                                  (*userType)[Fields::key] = ptr;
+                                int i = 0;
                              }
                              return true;
                          }

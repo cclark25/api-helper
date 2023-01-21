@@ -33,6 +33,18 @@ namespace APICore {
     struct ParameterPack
     {
         static std::vector<std::pair<std::string, std::string>> parameters;
+        static bool countMatches(const size_t paramCount) { 
+            if(sizeof...(Parameters) == paramCount) {
+                int i = 0;
+                std::cout << "true\n";
+                return true;
+            } 
+            else {
+                int i = 0;
+                std::cout << "false\n";
+                throw "Parameter lists do not match!";
+            } 
+        };
     };
     template <ParameterDescription... Parameters>
     std::vector<std::pair<std::string, std::string>>
@@ -41,9 +53,7 @@ namespace APICore {
             std::vector<std::pair<std::string, std::string>> parameterList;
             (parameterList.push_back(std::pair<std::string, std::string>(Parameters::name, Parameters::description)), ...);
             return parameterList; })();
-
-    template<>
-    std::vector<std::pair<std::string, std::string>> ParameterPack<>::parameters = {};
+    
 
     template <typename T>
     concept ParameterPackDefinition = requires

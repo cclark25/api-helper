@@ -16,6 +16,9 @@ namespace APICore {
         static ptrType ptr;
 
         static bool isConstructor;
+
+        static const bool isMember = false;
+        static const bool isCustomMember = false;
     };
     template<StringLiteral Key, auto Pointer, StringLiteral Description>
     std::string Static<Key, Pointer, Description>::key = Key.value;
@@ -35,6 +38,8 @@ namespace APICore {
         static std::string description;
         static ptrType ptr;
         static bool isConstructor;
+        static const bool isMember = false;
+        static const bool isCustomMember = false;
     };
     template<StringLiteral Key, typename T, T* Pointer, StringLiteral Description>
     std::string Static<Key, Pointer, Description>::key = Key.value;
@@ -50,6 +55,7 @@ namespace APICore {
        { T::key } -> std::convertible_to<std::string>;
        { T::ptr } -> std::convertible_to<typename T::ptrType>;
        { T::ptr } -> std::convertible_to<typename T::type*>;
+       requires !T::isMember ;
     };
 };
 

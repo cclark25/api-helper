@@ -25,26 +25,24 @@ namespace APICore
     template <StringLiteral Key, auto Pointer, StringLiteral Description, ParameterPackDefinition Parameters>
     std::string MemberFunction<Key, Pointer, Description, Parameters>::description = Description.value;
 
-    template <typename PointerType>
+    template <typename PointerType, ParameterPackDefinition ParameterDescriptions>
     struct MemberFunctionTyping
     {
         using classType = void;
         using returnType = void;
     };
 
-    template <class FunctionType, typename ReturnType, typename... Parameters>
-    struct MemberFunctionTyping<ReturnType FunctionType::*(Parameters...)>
+    template <class FunctionType, typename ReturnType, ParameterPackDefinition ParameterDescriptions, typename... Parameters>
+    struct MemberFunctionTyping<ReturnType FunctionType::*(Parameters...), ParameterDescriptions>
     {
         using classType = FunctionType;
         using returnType = ReturnType;
-
-      
     };
 
     template <typename PointerType, StringLiteral Key, PointerType Pointer, StringLiteral Description, ParameterPackDefinition Parameters>
     struct MemberFunction<Key, Pointer, Description, Parameters> : public MemberPtr<Pointer>
     {
-        using functionTyping = MemberFunctionTyping<PointerType>;
+        using functionTyping = MemberFunctionTyping<PointerType, Parameters>;
         using parameterPack = Parameters;
         static std::vector<std::pair<std::string, std::string>> parameters;
         static std::string key;

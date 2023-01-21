@@ -9,9 +9,9 @@
 #include "../../../src/member-pointer.hpp"
 #include "../../../src/member-function-pointer.hpp"
 #include "../../../src/static-pointer.hpp"
-#include "../../../src/async.hpp"
 #include "../../../src/static-function-pointer.hpp"
 #include "../../../src/class-typing.hpp"
+#include "../../../src/standard-bindings.hpp"
 #include "../../../src/json-typing/json-typing.hpp"
 
 using namespace APICore;
@@ -19,6 +19,10 @@ using namespace std;
 
 struct CustomObjectData
 {
+	CustomObjectData(){
+		std::cout << "CustomObjectData constructed.\n";
+	}
+
 	static double d1;
 	int i1 = 15;
 	std::string s1 = "ABC123";
@@ -37,6 +41,20 @@ struct CustomObjectData
 	{
 		return to_string(num * 2);
 	}
+	static std::future<std::string> staticAsync(int i){
+		return std::async(std::launch::async, [i](){
+			std::this_thread::sleep_for(std::chrono::seconds(i));
+			auto result = std::string("Return Value from static async function.");
+			return result;
+		});
+	}
+	std::future<std::string> memberAsync(int i){
+		return std::async(std::launch::async, [i, this](){
+			std::this_thread::sleep_for(std::chrono::seconds(i));
+			auto result = std::string("Return Value from member async function. i1 val: ").append(to_string(this->i1));
+			return result;
+		});
+	}
 
 	std::string doStuff(int i, std::string s)
 	{
@@ -47,6 +65,21 @@ struct CustomObjectData
 		}
 		return r;
 	}
+
+	// TODO: Add support for overloaded functions.
+
+	// std::string doStuff(int i)
+	// {
+	// 	std::string s = "NO STRING PROVIDED";
+	// 	std::string r = s;
+	// 	for (int j = i; j > 0; j--)
+	// 	{
+	// 		r.append("\n").append(r);
+	// 	}
+
+	// 	auto f = &CustomObjectData::doStuff;
+	// 	return r;
+	// }
 };
 double CustomObjectData::d1 = 12.678;
 
@@ -79,36 +112,29 @@ using CustomObjectDataSpec = ClassTyping<
 		ParameterPack<
 			Parameter<"i", "int parameter">,
 			Parameter<"s", "string parameter">>>,
+
 	StaticFunction<
 		"staticFunction",
 		&CustomObjectData::staticFunction,
 		"An static function that does stuff.",
 		ParameterPack<
 			Parameter<"num", "int parameter">>>,
-	StaticFunction<
-		"asyncFunction",
-		// +[]()
-		// {
-		// 	auto fut = ( (std::async(std::launch::async, []()
-		// 		{
-		// 			std::this_thread::sleep_for(std::chrono::seconds(5));
-		// 			auto result = std::string("Return Value from async function.");
-		// 			return result;
-		// 		}
-		// 	)));
 
-		// 	return fut;
-		// },
-		Async<+[](int i)
-			  {
-				  std::this_thread::sleep_for(std::chrono::seconds(i));
-				  auto result = std::string("Return Value from async function.");
-				  return result;
-			  }>,
+	// TODO: generated json is typing these 2 functions the same for some reason.
+	StaticFunction<
+		"staticAsync",
+		&CustomObjectData::staticAsync,
 		"An static function that does stuff asynchronously and returns a promise.",
 		ParameterPack<
-			Parameter<"num", "int parameter">>>,
+			Parameter<"numSeconds", "Number of seconds to wait.">>>,
+	MemberFunction<
+		"memberAsync",
+		&CustomObjectData::memberAsync,
+		"An member function that does stuff asynchronously and returns a promise.",
+		ParameterPack<
+			Parameter<"numSeconds", "Number of seconds to wait.">>>,
 
+	// Constructors should always be declared with a lambda function.
 	Constructor<
 		+[](int num)
 		{
