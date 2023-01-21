@@ -1,7 +1,7 @@
 SHELL=/bin/bash
 
 CXX= "g++-10"
-CFLAGS=  -Wall -pedantic -ggdb -fPIC 
+CFLAGS=  -Wall -pedantic -ggdb -fPIC -lpthread
 
 OUT_DIR=./dist
 
@@ -17,7 +17,7 @@ test: $(out)
 
 $(out): ./src/**/* ./src/* ./test/lua-test/*
 	# make $(lualibFile)
-	$(CXX) $(gppAdditionalParameter) $(cppVersionParameter) ./test/lua-test/main.cpp $(includeParameters) -L"./include/lua/lib" -I"./include/json" -llua -ldl -o ${out}
+	$(CXX) $(gppAdditionalParameter) $(cppVersionParameter) ./test/lua-test/main.cpp $(includeParameters) -L"./include/lua/lib" -I"./include/json" -llua -ldl -lpthread -o ${out}
 
 # $(lualibFile): $(luaLibSrc)
 # 	echo -e "#ifndef T2L_HEADERS \n#define T2L_HEADERS" > $(lualibFile); \

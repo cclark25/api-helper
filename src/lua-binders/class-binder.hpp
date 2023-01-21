@@ -10,6 +10,16 @@
 
 namespace APICore
 {
+    template<class T>
+    struct FunctionTyping {
+        using ReturnType = void;
+    };
+
+    template<class ReturnTypeT, class... Parameters>
+    struct FunctionTyping<ReturnTypeT(Parameters...)> {
+        using ReturnType = ReturnTypeT;
+    };
+
     template <ClassTypeConcept FunctionType>
     struct LuaBinderGenerator<FunctionType>
     {
@@ -65,6 +75,7 @@ namespace APICore
                      {
                          if constexpr (StaticPtrSpec<Fields>)
                          {
+                             std::string key = Fields::key;
                              if (Fields::isConstructor)
                              {
                                  (*userType)["new"] = sol::var(std::ref(*Fields::ptr));
@@ -74,7 +85,9 @@ namespace APICore
                              {
                                  LuaBinder<typename Fields::type>::declareType(state);
                              }
-                             std::string key = Fields::key;
+                             else {
+                                 LuaBinder<typename FunctionTyping<typename Fields::type>::ReturnType>::declareType(state);
+                             }
 
                              (*userType)[Fields::key] = sol::var(std::ref(*Fields::ptr));
                              return true;
@@ -90,17 +103,10 @@ namespace APICore
             }
         };
 
-        static sol::usertype<FunctionType> *generateType(sol::state &state)
+        static void generateType(sol::state &state, sol::usertype<FunctionType> *newClassType)
         {
-            sol::usertype<FunctionType> *newClassType = new sol::usertype<FunctionType>;
-            (*newClassType) = state.new_usertype<FunctionType>(
-                TypeLookup<FunctionType>::registeredType::name,
-                sol::constructors<FunctionType()>());
-
             FieldBinders<typename TypeLookup<FunctionType>::registeredType>::bindMembers(state, newClassType);
             FieldBinders<typename TypeLookup<FunctionType>::registeredType>::bindStaticFields(state, newClassType);
-
-            return newClassType;
         };
     };
 }

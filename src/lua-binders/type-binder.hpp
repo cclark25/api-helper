@@ -6,20 +6,15 @@
 #include <sol.hpp>
 #include "../concepts.hpp"
 
+
 namespace APICore
 {
 
     template <class T>
     struct LuaBinderGenerator
     {
-        static sol::usertype<T> *generateType(sol::state &state)
+        static void generateType(sol::state &state, sol::usertype<T> *type)
         {
-            sol::usertype<T> *utype = new sol::usertype<T>();
-            (*utype) = state.new_usertype<T>(
-                TypeLookup<T>::registeredType::name,
-                sol::constructors<T()>());
-
-            return utype;
         }
     };
 
@@ -32,13 +27,19 @@ namespace APICore
         static sol::usertype<T> *declareType(sol::state &state);
     };
     template <class T>
-        requires requires { requires !ReferenceTypeConcept<T>; }
+        requires requires { requires !ReferenceTypeConcept<T>; requires !FutureTypeConcept<T>; }
     sol::usertype<T> *LuaBinder<T>::declareType(sol::state &state)
     {
         if (!LuaBinder<T>::usertypeDeclarations.contains(&state))
         {
-            sol::usertype<T> *uType = LuaBinderGenerator<T>::generateType(state);
-            usertypeDeclarations[&state] = uType;
+            sol::usertype<T> *newType = new sol::usertype<T>;
+
+            (*newType) = state.new_usertype<T>(
+                TypeLookup<T>::registeredType::name);
+
+            usertypeDeclarations[&state] = newType;
+
+            LuaBinderGenerator<T>::generateType(state, newType);
         }
         return LuaBinder<T>::usertypeDeclarations.at(&state);
     };
@@ -53,5 +54,6 @@ namespace APICore
 
 #include "./reference-binder.hpp"
 #include "./class-binder.hpp"
+#include "./promise-binder.hpp"
 
 #endif

@@ -5,6 +5,7 @@
 #include "./static-pointer.hpp"
 #include "./type-lookup.hpp"
 #include "./function-parameters.hpp"
+#include "./async.hpp"
 #include <type_traits>
 #include <string>
 #include <vector>

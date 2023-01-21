@@ -68,7 +68,12 @@
         "ios": "cpp",
         "locale": "cpp",
         "queue": "cpp",
-        "version": "cpp"
+        "version": "cpp",
+        "condition_variable": "cpp",
+        "future": "cpp",
+        "mutex": "cpp",
+        "stop_token": "cpp",
+        "thread": "cpp"
     },
     "files.watcherInclude": [
         "./include"

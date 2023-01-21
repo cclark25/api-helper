@@ -3,6 +3,7 @@
 
 #include <type_traits>
 #include <string>
+#include <future>
 
 namespace APICore
 {
@@ -15,11 +16,19 @@ namespace APICore
                                   requires !std::is_function_v<T>;
                               };
     
+    template<class T>
+    concept FutureTypeConcept = requires(T val) {
+        requires std::is_same_v<std::future<decltype(val.get())>, T>;
+    };
+
     template <class FunctionType>
     concept ClassTypeConcept = requires {
                      requires std::is_class_v<FunctionType>;
                      requires !ReferenceTypeConcept<FunctionType>; 
                      requires !std::is_same_v<FunctionType, std::string>;
+                     requires !FutureTypeConcept<FunctionType>;
+                     requires !std::is_function_v<FunctionType>;
+                     
     };
 
     template<ReferenceTypeConcept T>

@@ -1,11 +1,15 @@
 #ifndef __TEST_CLASS_DEFINITION
 #define __TEST_CLASS_DEFINITION
 #include <memory>
-#include "../../../src/type-lookup.hpp"
+#include <future>
+#include <thread>
+#include <chrono>
 #include <string>
+#include "../../../src/type-lookup.hpp"
 #include "../../../src/member-pointer.hpp"
 #include "../../../src/member-function-pointer.hpp"
 #include "../../../src/static-pointer.hpp"
+#include "../../../src/async.hpp"
 #include "../../../src/static-function-pointer.hpp"
 #include "../../../src/class-typing.hpp"
 #include "../../../src/json-typing/json-typing.hpp"
@@ -46,6 +50,11 @@ struct CustomObjectData
 };
 double CustomObjectData::d1 = 12.678;
 
+struct Promise
+{
+	std::shared_future<std::string> fut;
+};
+
 using CustomObjectSubDataSpec = ClassTyping<
 	"CustomObjectSubData",
 	"A custom class to test typing a class's sub class.",
@@ -74,6 +83,29 @@ using CustomObjectDataSpec = ClassTyping<
 		"staticFunction",
 		&CustomObjectData::staticFunction,
 		"An static function that does stuff.",
+		ParameterPack<
+			Parameter<"num", "int parameter">>>,
+	StaticFunction<
+		"asyncFunction",
+		// +[]()
+		// {
+		// 	auto fut = ( (std::async(std::launch::async, []()
+		// 		{
+		// 			std::this_thread::sleep_for(std::chrono::seconds(5));
+		// 			auto result = std::string("Return Value from async function.");
+		// 			return result;
+		// 		}
+		// 	)));
+
+		// 	return fut;
+		// },
+		Async<+[](int i)
+			  {
+				  std::this_thread::sleep_for(std::chrono::seconds(i));
+				  auto result = std::string("Return Value from async function.");
+				  return result;
+			  }>,
+		"An static function that does stuff asynchronously and returns a promise.",
 		ParameterPack<
 			Parameter<"num", "int parameter">>>,
 

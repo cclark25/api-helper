@@ -60,7 +60,6 @@ int main(int argc, char **argv)
 	if (inputFile != "")
 	{
 		lua.safe_script_file(inputFile);
-		// -- TODO: Functions result in seg fault upon garbage collection as it would seem.
 		lua.collect_garbage();
 		lua2.safe_script_file(inputFile);
 		lua2.collect_garbage();

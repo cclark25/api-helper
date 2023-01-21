@@ -67,6 +67,10 @@ function staticTest()
     assert(CustomObjectData.staticFunction(25) == "50");
     testField(runData, CustomObjectData, newRunData, "d1");
     assert(runData.CustomObjectDataType == type(CustomObjectData));
+
+    promise = CustomObjectData.asyncFunction(1);
+    print('Promise return type: ' .. type(promise));
+    print('Promise return value: ' .. (promise:await()));
 end
 
 function test(testObject)
@@ -111,6 +115,6 @@ test(testObject);
 if(runNum == 1) then
     newObj = CustomObjectData.__constructor(12);
     test(newObj);
-    newObj2 = CustomObjectData.new('12');
+    newObj2 = CustomObjectData.new(12);
     test(newObj2);
 end
