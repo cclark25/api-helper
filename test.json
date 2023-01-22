@@ -1,193 +1,229 @@
 {
-    "94620109747312": {
+    "94118142223824": {
         "description": "A custom class to test typing.",
         "memberFields": {
             "doStuff": {
                 "description": "An instance function that does stuff.",
-                "typeId": "94620109766896"
+                "typeId": "94118142244880"
+            },
+            "functionPointer": {
+                "description": "A function pointer to bind to lua.",
+                "typeId": "94118142243536"
             },
             "i1": {
                 "description": "An instance int field.",
-                "typeId": "94620109750240"
+                "typeId": "94118142226752"
             },
             "memberAsync": {
                 "description": "An member function that does stuff asynchronously and returns a promise.",
-                "typeId": "94620109751456"
+                "typeId": "94118142227968"
             },
             "o1": {
                 "description": "Sub class data pointer.",
-                "typeId": "94620109754688"
+                "typeId": "94118142231200"
             },
             "o2": {
                 "description": "Sub class data shared pointer.",
-                "typeId": "94620109764256"
+                "typeId": "94118142240896"
             },
             "o3": {
                 "description": "Sub class data non-pointer.",
-                "typeId": "94620109759424"
+                "typeId": "94118142236064"
             },
             "o4": {
                 "description": "Sub class data & reference.",
-                "typeId": "94620109759424"
+                "typeId": "94118142236064"
             },
             "s1": {
                 "description": "An instance string field.",
-                "typeId": "94620109751744"
+                "typeId": "94118142228256"
+            },
+            "testPassedFunction": {
+                "description": "A function to test how many invocations of the functionPointer can be done per second.",
+                "typeId": "94118142246752"
             }
         },
         "name": "CustomObjectData",
         "staticFields": {
             "__constructor": {
                 "description": "An inline lambda function attached as a static function.",
-                "typeId": "94620109751584"
+                "typeId": "94118142228096"
             },
             "d1": {
                 "description": "A static double field.",
-                "typeId": "94620109748064"
+                "typeId": "94118142224576"
             },
             "staticAsync": {
                 "description": "An static function that does stuff asynchronously and returns a promise.",
-                "typeId": "94620109751456"
+                "typeId": "94118142227968"
             },
             "staticFunction": {
                 "description": "An static function that does stuff.",
-                "typeId": "94620109748896"
+                "typeId": "94118142225408"
             }
         },
-        "typeId": "94620109747312"
+        "typeId": "94118142223824"
     },
-    "94620109748064": {
+    "94118142224576": {
         "isBasicType": true,
         "name": "double",
-        "typeId": "94620109748064"
+        "typeId": "94118142224576"
     },
-    "94620109748896": {
+    "94118142225408": {
         "description": "An static function that does stuff.",
         "functionDescription": {
             "parameters": [
                 {
                     "description": "int parameter",
                     "name": "num",
-                    "typeId": "94620109750240"
+                    "typeId": "94118142226752"
                 }
             ],
-            "returnTypeId": "94620109751744"
+            "returnTypeId": "94118142228256"
         },
         "isBasicType": true,
         "name": "staticFunction",
-        "typeId": "94620109748896"
+        "typeId": "94118142225408"
     },
-    "94620109750240": {
+    "94118142226752": {
         "isBasicType": true,
         "name": "int",
-        "typeId": "94620109750240"
+        "typeId": "94118142226752"
     },
-    "94620109751456": {
+    "94118142227968": {
         "description": "An static function that does stuff asynchronously and returns a promise.",
         "functionDescription": {
             "parameters": [
                 {
                     "description": "Number of seconds to wait.",
                     "name": "numSeconds",
-                    "typeId": "94620109750240"
+                    "typeId": "94118142226752"
                 }
             ],
-            "returnTypeId": "94620109754848"
+            "returnTypeId": "94118142231360"
         },
         "isBasicType": true,
         "name": "staticAsync",
-        "typeId": "94620109751456"
+        "typeId": "94118142227968"
     },
-    "94620109751584": {
+    "94118142228096": {
         "description": "An inline lambda function attached as a static function.",
         "functionDescription": {
             "parameters": [
                 {
                     "description": "int parameter",
                     "name": "num",
-                    "typeId": "94620109750240"
+                    "typeId": "94118142226752"
                 }
             ],
-            "returnTypeId": "94620109747312"
+            "returnTypeId": "94118142223824"
         },
         "isBasicType": true,
         "name": "__constructor",
-        "typeId": "94620109751584"
+        "typeId": "94118142228096"
     },
-    "94620109751744": {
+    "94118142228256": {
         "isBasicType": true,
         "name": "string",
-        "typeId": "94620109751744"
+        "typeId": "94118142228256"
     },
-    "94620109754688": {
+    "94118142231200": {
         "description": "",
         "name": "reference",
-        "referenceTypeId": "94620109759424",
-        "typeId": "94620109754688"
+        "referenceTypeId": "94118142236064",
+        "typeId": "94118142231200"
     },
-    "94620109754848": {
+    "94118142231360": {
         "description": "An awaitable promise of an asynchronous execution.",
         "memberFields": {
             "await": {
-                "description": "",
-                "typeId": "94620109755424"
+                "description": "Block this thread and wait for the promise to resolve.",
+                "typeId": "94118142231936"
             }
         },
         "name": "Promise",
         "staticFields": null,
-        "typeId": "94620109754848"
+        "typeId": "94118142231360"
     },
-    "94620109755424": {
-        "description": "",
+    "94118142231936": {
+        "description": "Block this thread and wait for the promise to resolve.",
         "functionDescription": {
             "parameters": null,
-            "returnTypeId": "94620109751744"
+            "returnTypeId": "94118142228256"
         },
         "isBasicType": true,
         "name": "await",
-        "typeId": "94620109755424"
+        "typeId": "94118142231936"
     },
-    "94620109759424": {
+    "94118142236064": {
         "description": "A custom class to test typing a class's sub class.",
         "memberFields": {
             "i2": {
                 "description": "Sub data's instance int field.",
-                "typeId": "94620109750240"
+                "typeId": "94118142226752"
             },
             "s2": {
                 "description": "Sub data's instance string field.",
-                "typeId": "94620109751744"
+                "typeId": "94118142228256"
             }
         },
         "name": "CustomObjectSubData",
         "staticFields": null,
-        "typeId": "94620109759424"
+        "typeId": "94118142236064"
     },
-    "94620109764256": {
+    "94118142240896": {
         "description": "",
         "name": "reference",
-        "referenceTypeId": "94620109759424",
-        "typeId": "94620109764256"
+        "referenceTypeId": "94118142236064",
+        "typeId": "94118142240896"
     },
-    "94620109766896": {
+    "94118142243536": {
+        "description": "STANDIN_DESCRIPTION",
+        "memberFields": null,
+        "name": "STANDIN_NAME",
+        "staticFields": null,
+        "typeId": "94118142243536"
+    },
+    "94118142244880": {
         "description": "An instance function that does stuff.",
         "functionDescription": {
             "parameters": [
                 {
                     "description": "int parameter",
                     "name": "i",
-                    "typeId": "94620109750240"
+                    "typeId": "94118142226752"
                 },
                 {
                     "description": "string parameter",
                     "name": "s",
-                    "typeId": "94620109751744"
+                    "typeId": "94118142228256"
                 }
             ],
-            "returnTypeId": "94620109751744"
+            "returnTypeId": "94118142228256"
         },
         "isBasicType": true,
         "name": "doStuff",
-        "typeId": "94620109766896"
+        "typeId": "94118142244880"
+    },
+    "94118142246752": {
+        "description": "A function to test how many invocations of the functionPointer can be done per second.",
+        "functionDescription": {
+            "parameters": [
+                {
+                    "description": "int parameter",
+                    "name": "i",
+                    "typeId": "94118142249264"
+                }
+            ],
+            "returnTypeId": "94118142224576"
+        },
+        "isBasicType": true,
+        "name": "testPassedFunction",
+        "typeId": "94118142246752"
+    },
+    "94118142249264": {
+        "isBasicType": true,
+        "name": "unknown",
+        "typeId": "94118142249264"
     }
 }

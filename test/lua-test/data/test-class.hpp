@@ -4,6 +4,7 @@
 #include <future>
 #include <thread>
 #include <chrono>
+#include <ratio>
 #include <string>
 #include "../../../src/type-lookup.hpp"
 #include "../../../src/member-pointer.hpp"
@@ -19,8 +20,15 @@ using namespace std;
 
 struct CustomObjectData
 {
-	CustomObjectData(){
+	CustomObjectData()
+	{
 		std::cout << "CustomObjectData constructed.\n";
+	}
+
+	~CustomObjectData()
+	{
+		int i = 0;
+		return;
 	}
 
 	static double d1;
@@ -41,19 +49,21 @@ struct CustomObjectData
 	{
 		return to_string(num * 2);
 	}
-	static std::future<std::string> staticAsync(int i){
-		return std::async(std::launch::async, [i](){
+	static std::future<std::string> staticAsync(int i)
+	{
+		return std::async(std::launch::async, [i]()
+						  {
 			std::this_thread::sleep_for(std::chrono::seconds(i));
 			auto result = std::string("Return Value from static async function.");
-			return result;
-		});
+			return result; });
 	}
-	std::future<std::string> memberAsync(int i){
-		return std::async(std::launch::async, [i, this](){
+	std::future<std::string> memberAsync(int i)
+	{
+		return std::async(std::launch::async, [i, this]()
+						  {
 			std::this_thread::sleep_for(std::chrono::seconds(i));
 			auto result = std::string("Return Value from member async function. i1 val: ").append(to_string(this->i1));
-			return result;
-		});
+			return result; });
 	}
 
 	std::string doStuff(int i, std::string s)
@@ -64,6 +74,27 @@ struct CustomObjectData
 			r.append("\n").append(s);
 		}
 		return r;
+	}
+
+	std::function<int(int)> functionPointer = [](int i)
+	{
+		// std::cout << "Default functionPointer called.\n";
+		return i * 12;
+	};
+	static std::function<int(int)> staticFunctionPointer;
+
+	double testPassedFunction(size_t loopCount)
+	{
+		auto startTime = std::chrono::steady_clock::now();
+
+		for (size_t i = 0; i < loopCount; i++)
+		{
+			this->functionPointer(1);
+		}
+
+		auto endTime = std::chrono::steady_clock::now();
+
+		return ((double)loopCount) / std::chrono::duration<double, std::ratio<1, 1>>(endTime - startTime).count();
 	}
 
 	// TODO: Add support for overloaded functions.
@@ -82,6 +113,11 @@ struct CustomObjectData
 	// }
 };
 double CustomObjectData::d1 = 12.678;
+std::function<int(int)> CustomObjectData::staticFunctionPointer = [](int i)
+{
+	// std::cout << "Default functionPointer called.\n";
+	return i * 12;
+};
 
 struct Promise
 {
@@ -105,6 +141,11 @@ using CustomObjectDataSpec = ClassTyping<
 	Member<"o2", &CustomObjectData::o2, "Sub class data shared pointer.">,
 	Member<"o3", &CustomObjectData::o3, "Sub class data non-pointer.">,
 	Member<"o4", &CustomObjectData::o3, "Sub class data & reference.">,
+
+	// TODO: Add json typing support for std::function's and their parameters.
+	Member<"functionPointer", &CustomObjectData::functionPointer, "A function pointer to bind to lua.">,
+	Static<"staticFunctionPointer", &CustomObjectData::staticFunctionPointer, "A function pointer to bind to lua.">,
+
 	MemberFunction<
 		"doStuff",
 		&CustomObjectData::doStuff,
@@ -112,6 +153,13 @@ using CustomObjectDataSpec = ClassTyping<
 		ParameterPack<
 			Parameter<"i", "int parameter">,
 			Parameter<"s", "string parameter">>>,
+
+	MemberFunction<
+		"testPassedFunction",
+		&CustomObjectData::testPassedFunction,
+		"A function to test how many invocations of the functionPointer can be done per second.",
+		ParameterPack<
+			Parameter<"i", "int parameter">>>,
 
 	StaticFunction<
 		"staticFunction",

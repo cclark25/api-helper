@@ -45,6 +45,38 @@ secondRun = {
     };
 }
 
+
+function loopFunctionPointerTest(testObject)
+    j = 1;
+    while true do
+        local oldFuncPtr = testObject.functionPointer;
+        -- invokesPerSecond1 = testObject:testPassedFunction(1000);
+        -- print('invokesPerSecond: ' .. invokesPerSecond1)
+        testObject.functionPointer = function (i)
+            -- print('Overwritten function called.')
+            do
+                i = 0
+                while i < j do
+                    i = i + 1;
+                end
+            end
+            return 1;
+            
+        end
+        invokesPerSecond2 = testObject:testPassedFunction(10);
+        if j % 2 == 0 then
+            print('invokesPerSecond (#' .. j .. '): ' .. invokesPerSecond2)
+        end
+        -- print('invokesPerSecond difference: ' .. invokesPerSecond2 / invokesPerSecond1)
+        testObject.functionPointer = oldFuncPtr;
+        if j < 524288 then
+            j = j * 2;
+        else
+            break;
+        end
+    end
+end
+
 function testField(runData, parentObject, secondaryRunData, key)
     print("runData[" .. key .. "] = " .. tostring(runData[key]) .. "\tparentObject[" .. key .. "] = " .. tostring(parentObject[key]) .. "\t new value = " .. tostring(secondaryRunData[key]));	
     assert(type(runData[key]) == type(parentObject[key]));
@@ -71,6 +103,14 @@ function staticTest()
     promise = CustomObjectData.staticAsync(1);
     print('Promise return type: ' .. type(promise));
     print('Promise return value: ' .. (promise:await()));
+    
+    assert(CustomObjectData.staticFunctionPointer(1) == 12)
+    oldFuncPtr = CustomObjectData.staticFunctionPointer;
+    CustomObjectData.staticFunctionPointer = function (i)
+        return i * 13;
+    end
+    assert(CustomObjectData.staticFunctionPointer(1) == 13)
+    CustomObjectData.staticFunctionPointer = oldFuncPtr
 end
 
 function test(testObject)
@@ -94,7 +134,8 @@ function test(testObject)
 
     assert(testObject:doStuff(0,"abc") == "abc");
     assert(testObject:doStuff(1,"abc") == "abc\nabc");
-    -- assert(testObject:memberLambdaFunction(2):await() == 8 * testObject.i1);
+    
+    loopFunctionPointerTest(testObject);
 
     promise = testObject:memberAsync(1);
     print('Member promise return type: ' .. type(promise));
@@ -113,6 +154,7 @@ function test(testObject)
 
     print("Test completed successfully.");
 end
+
 
 staticTest();
 test(testObject);

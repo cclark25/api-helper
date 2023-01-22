@@ -48,7 +48,9 @@ int main(int argc, char **argv)
 	sol::state lua2;
 	LuaBinder<CustomObjectData>::declareType(lua);
 	LuaBinder<CustomObjectData>::declareType(lua2);
-	auto customInstance = std::shared_ptr<CustomObjectData>(new CustomObjectData());
+	auto customInstance = (new CustomObjectData());
+
+	
 	lua["testObject"] = customInstance;
 	lua2["testObject"] = customInstance;
 	lua["runNum"] = 1;
@@ -67,6 +69,9 @@ int main(int argc, char **argv)
 		lua.collect_garbage();
 		lua2.safe_script_file(inputFile);
 		lua2.collect_garbage();
+
+		delete customInstance;
+
 		return 0;
 	}
 

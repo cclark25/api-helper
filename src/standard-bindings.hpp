@@ -2,6 +2,7 @@
 #define STANDARD_API_BINDINGS
 
 #include <future>
+#include <functional>
 #include "./type-lookup.hpp"
 #include "./member-pointer.hpp"
 #include "./member-function-pointer.hpp"
@@ -30,6 +31,20 @@ namespace APICore
     };
     template <class T>
     bool APICore::TypeLookup<std::future<T>>::isDefined = true;
+
+
+    // template <class T>
+    // struct TypeLookup<std::function<T>>
+    // {
+    //     using registeredType = ClassTyping<
+    //         "FunctionObject",
+    //         "A lua binding for the std::function.",
+    //         std::function<T>
+    //         >;
+    //     static bool isDefined;
+    // };
+    // template <class T>
+    // bool APICore::TypeLookup<std::function<T>>::isDefined = true;
 
 }
 
