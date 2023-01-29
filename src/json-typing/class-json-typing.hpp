@@ -53,6 +53,7 @@ namespace APICore
             ((
                  StaticPtrSpec<Fields> ? [&results]()
                      {
+                        std::string key = Fields::key;
                         std::shared_ptr<json> typeDef = JsonTyper<typename Fields::type, Fields>::declareType();
                         json fieldDef;
                         fieldDef["typeId"] = (*typeDef)["typeId"]; 

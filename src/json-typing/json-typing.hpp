@@ -8,6 +8,17 @@
 
 using json = nlohmann::json;
 
+#define DeclareBasicType(typename)                           \
+    template <>                                              \
+    struct JsonTypingGenerator<typename>                     \
+    {                                                        \
+        static void generateType(std::shared_ptr<json> type) \
+        {                                                    \
+            (*type)["name"] = #typename;                     \
+            (*type)["isBasicType"] = true;                   \
+        }                                                    \
+    }
+
 namespace APICore
 {
     std::map<size_t, std::shared_ptr<json>> typeMap;
@@ -34,63 +45,14 @@ namespace APICore
         }
     };
 
-    template <>
-    struct JsonTypingGenerator<double>
-    {
-        static void generateType(std::shared_ptr<json> type)
-        {
-            (*type)["name"] = "double";
-            (*type)["isBasicType"] = true;
-        }
-    };
-
-    template <>
-    struct JsonTypingGenerator<int>
-    {
-        static void generateType(std::shared_ptr<json> type)
-        {
-            (*type)["name"] = "int";
-            (*type)["isBasicType"] = true;
-        }
-    };
-    template <>
-    struct JsonTypingGenerator<std::string>
-    {
-        static void generateType(std::shared_ptr<json> type)
-        {
-            (*type)["name"] = "string";
-            (*type)["isBasicType"] = true;
-        }
-    };
-    template <>
-    struct JsonTypingGenerator<bool>
-    {
-        static void generateType(std::shared_ptr<json> type)
-        {
-            (*type)["name"] = "bool";
-            (*type)["isBasicType"] = true;
-        }
-    };
-
-    template <>
-    struct JsonTypingGenerator<char>
-    {
-        static void generateType(std::shared_ptr<json> type)
-        {
-            (*type)["name"] = "char";
-            (*type)["isBasicType"] = true;
-        }
-    };
-
-    template <>
-    struct JsonTypingGenerator<void>
-    {
-        static void generateType(std::shared_ptr<json> type)
-        {
-            (*type)["name"] = "void";
-            (*type)["isBasicType"] = true;
-        }
-    };
+    DeclareBasicType(double);
+    DeclareBasicType(int);
+    DeclareBasicType(size_t);
+    using string = std::string;
+    DeclareBasicType(string);
+    DeclareBasicType(bool);
+    DeclareBasicType(char);
+    DeclareBasicType(void);
 
     template <class T, class... ExtraData>
     struct JsonTyper : public JsonTyper<T>

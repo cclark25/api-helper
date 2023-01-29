@@ -99,6 +99,7 @@ namespace APICore
                              }
                              else
                              {
+                                 LuaBinder<typename FunctionTyping<typename Fields::type>::ReturnType>::declareType(state);
                                  (*userType)[Fields::key] = ptr;
                              }
                              return true;

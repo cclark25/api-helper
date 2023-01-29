@@ -48,11 +48,14 @@ int main(int argc, char **argv)
 	sol::state lua2;
 	LuaBinder<CustomObjectData>::declareType(lua);
 	LuaBinder<CustomObjectData>::declareType(lua2);
+	LuaBinder<CustomObjectData2>::declareType(lua);
+	LuaBinder<CustomObjectData2>::declareType(lua2);
 	auto customInstance = (new CustomObjectData());
+	auto customInstance2 = (new CustomObjectData2());
 
 	
-	lua["testObject"] = customInstance;
-	lua2["testObject"] = customInstance;
+	lua["testObject"] = customInstance2;
+	lua2["testObject"] = customInstance2;
 	lua["runNum"] = 1;
 	lua2["runNum"] = 2;
 

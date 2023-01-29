@@ -29,7 +29,6 @@ namespace APICore
     template <class T>
         requires requires { 
             requires !ReferenceTypeConcept<T>; 
-            // requires !FutureTypeConcept<T>; 
     }
     sol::usertype<T> *LuaBinder<T>::declareType(sol::state &state)
     {
@@ -57,6 +56,5 @@ namespace APICore
 
 #include "./reference-binder.hpp"
 #include "./class-binder.hpp"
-#include "./promise-binder.hpp"
 
 #endif

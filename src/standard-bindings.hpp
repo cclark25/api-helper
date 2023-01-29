@@ -2,7 +2,6 @@
 #define STANDARD_API_BINDINGS
 
 #include <future>
-#include <functional>
 #include "./type-lookup.hpp"
 #include "./member-pointer.hpp"
 #include "./member-function-pointer.hpp"
@@ -12,40 +11,71 @@
 
 namespace APICore
 {
+
     template <class T>
     struct TypeLookup<std::future<T>>
     {
         using registeredType = ClassTyping<
-            "Promise",
+            "DeferredPromise",
             "An awaitable promise of an asynchronous execution.",
             std::future<T>,
             MemberFunction<
                 "await",
-                +[](std::future<T>& self){
+                +[](std::future<T> &self)
+                {
                     self.wait();
                     return self.get();
                 },
                 "Block this thread and wait for the promise to resolve.",
-                ParameterPack<>>>;
+                ParameterPack<>>
+        >;
+
         static bool isDefined;
     };
+
     template <class T>
     bool APICore::TypeLookup<std::future<T>>::isDefined = true;
 
 
-    // template <class T>
-    // struct TypeLookup<std::function<T>>
-    // {
-    //     using registeredType = ClassTyping<
-    //         "FunctionObject",
-    //         "A lua binding for the std::function.",
-    //         std::function<T>
-    //         >;
-    //     static bool isDefined;
-    // };
-    // template <class T>
-    // bool APICore::TypeLookup<std::function<T>>::isDefined = true;
+    template <class T>
+    struct TypeLookup<std::shared_future<T>>
+    {
+        using registeredType = ClassTyping<
+            "ThreadedPromise",
+            "An awaitable promise of an asynchronous execution.",
+            std::shared_future<T>,
+            MemberFunction<
+                "await",
+                +[](std::shared_future<T> &self)
+                {
+                    self.wait();
+                    return self.get();
+                },
+                "Block this thread and wait for the promise to resolve.",
+                ParameterPack<>>,
+            MemberFunction<
+                "onResolve",
+                +[](std::shared_future<T>& self, std::function<void(T &promiseResult)> callback)
+                {
+                    return std::async(
+                        std::launch::deferred,
+                        [self, callback]()
+                        {
+                self.wait();
+                T promiseResult = self.get();
+                callback(promiseResult); }
+
+                    );
+                },
+                "Execute the passed callback function upon completion of the promise. Execution is deferred until the promise returned by onResolve is awaited.",
+                ParameterPack<>>>;
+
+        static bool isDefined;
+    };
+
+    template <class T>
+    bool APICore::TypeLookup<std::shared_future<T>>::isDefined = true;
+
 
 }
-
 #endif

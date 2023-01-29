@@ -101,8 +101,16 @@ function staticTest()
     assert(runData.CustomObjectDataType == type(CustomObjectData));
 
     promise = CustomObjectData.staticAsync(1);
+    // TODO: This callback is never called!
+    promise:onResolve(
+        function(result)
+            print('Promise return value in callback: ' .. (result));
+        end
+    )
+    promise:await();
+    promise = CustomObjectData.staticAsync(1);
     print('Promise return type: ' .. type(promise));
-    print('Promise return value: ' .. (promise:await()));
+    print('Promise return value in await: ' .. (promise:await()));
     
     assert(CustomObjectData.staticFunctionPointer(1) == 12)
     oldFuncPtr = CustomObjectData.staticFunctionPointer;

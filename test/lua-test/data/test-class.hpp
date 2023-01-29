@@ -49,7 +49,7 @@ struct CustomObjectData
 	{
 		return to_string(num * 2);
 	}
-	static std::future<std::string> staticAsync(int i)
+	static std::shared_future<std::string> staticAsync(int i)
 	{
 		return std::async(std::launch::async, [i]()
 						  {
@@ -59,11 +59,11 @@ struct CustomObjectData
 	}
 	std::future<std::string> memberAsync(int i)
 	{
-		return std::async(std::launch::async, [i, this]()
+		return (std::async(std::launch::async, [i, this]()
 						  {
 			std::this_thread::sleep_for(std::chrono::seconds(i));
 			auto result = std::string("Return Value from member async function. i1 val: ").append(to_string(this->i1));
-			return result; });
+			return result; }));
 	}
 
 	std::string doStuff(int i, std::string s)
@@ -119,10 +119,7 @@ std::function<int(int)> CustomObjectData::staticFunctionPointer = [](int i)
 	return i * 12;
 };
 
-struct Promise
-{
-	std::shared_future<std::string> fut;
-};
+struct CustomObjectData2 : public CustomObjectData {};
 
 using CustomObjectSubDataSpec = ClassTyping<
 	"CustomObjectSubData",
@@ -142,9 +139,18 @@ using CustomObjectDataSpec = ClassTyping<
 	Member<"o3", &CustomObjectData::o3, "Sub class data non-pointer.">,
 	Member<"o4", &CustomObjectData::o3, "Sub class data & reference.">,
 
-	// TODO: Add json typing support for std::function's and their parameters.
-	Member<"functionPointer", &CustomObjectData::functionPointer, "A function pointer to bind to lua.">,
-	Static<"staticFunctionPointer", &CustomObjectData::staticFunctionPointer, "A function pointer to bind to lua.">,
+	MemberFunction<
+		"functionPointer",
+		&CustomObjectData::functionPointer,
+		"A function pointer to bind to lua.",
+		ParameterPack<
+			Parameter<"i", "int parameter to be used in the function passed.">>>,
+	StaticFunction<
+		"staticFunctionPointer",
+		&CustomObjectData::staticFunctionPointer,
+		"A function pointer to bind to lua.",
+		ParameterPack<
+			Parameter<"i", "int parameter to be used in the function passed.">>>,
 
 	MemberFunction<
 		"doStuff",
@@ -194,5 +200,89 @@ using CustomObjectDataSpec = ClassTyping<
 
 RegisterType(CustomObjectData, CustomObjectDataSpec);
 RegisterType(CustomObjectData::CustomObjectSubData, CustomObjectSubDataSpec);
+
+
+///////////////////////////////////////////////////////////////////////////////
+
+
+
+using CustomObjectSubDataSpec2 = ClassTyping<
+	"CustomObjectSubData2",
+	"A custom class to test typing a class's sub class.",
+	CustomObjectData2::CustomObjectSubData,
+	Member<"i2", &CustomObjectData2::CustomObjectSubData::i2, "Sub data's instance int field.">,
+	Member<"s2", &CustomObjectData2::CustomObjectSubData::s2, "Sub data's instance string field.">>;
+using CustomObjectDataSpec2 = ClassTyping<
+	"CustomObjectData2",
+	"A custom class to test typing.",
+	CustomObjectData2,
+	Static<"d1", &CustomObjectData2::d1, "A static double field.">,
+	Member<"i1", &CustomObjectData2::i1, "An instance int field.">,
+	Member<"s1", &CustomObjectData2::s1, "An instance string field.">,
+	Member<"o1", &CustomObjectData2::o1, "Sub class data pointer.">,
+	Member<"o2", &CustomObjectData2::o2, "Sub class data shared pointer.">,
+	Member<"o3", &CustomObjectData2::o3, "Sub class data non-pointer.">,
+	Member<"o4", &CustomObjectData2::o3, "Sub class data & reference.">,
+
+	MemberFunction<
+		"functionPointer",
+		&CustomObjectData2::functionPointer,
+		"A function pointer to bind to lua.",
+		ParameterPack<
+			Parameter<"i", "int parameter to be used in the function passed.">>>,
+	StaticFunction<
+		"staticFunctionPointer",
+		&CustomObjectData2::staticFunctionPointer,
+		"A function pointer to bind to lua.",
+		ParameterPack<
+			Parameter<"i", "int parameter to be used in the function passed.">>>,
+
+	MemberFunction<
+		"doStuff",
+		&CustomObjectData2::doStuff,
+		"An instance function that does stuff.",
+		ParameterPack<
+			Parameter<"i", "int parameter">,
+			Parameter<"s", "string parameter">>>,
+
+	MemberFunction<
+		"testPassedFunction",
+		&CustomObjectData2::testPassedFunction,
+		"A function to test how many invocations of the functionPointer can be done per second.",
+		ParameterPack<
+			Parameter<"i", "int parameter">>>,
+
+	StaticFunction<
+		"staticFunction",
+		&CustomObjectData2::staticFunction,
+		"An static function that does stuff.",
+		ParameterPack<
+			Parameter<"num", "int parameter">>>,
+
+	// TODO: generated json is typing these 2 functions the same for some reason.
+	StaticFunction<
+		"staticAsync",
+		&CustomObjectData2::staticAsync,
+		"An static function that does stuff asynchronously and returns a promise.",
+		ParameterPack<
+			Parameter<"numSeconds", "Number of seconds to wait.">>>,
+	MemberFunction<
+		"memberAsync",
+		&CustomObjectData2::memberAsync,
+		"An member function that does stuff asynchronously and returns a promise.",
+		ParameterPack<
+			Parameter<"numSeconds", "Number of seconds to wait.">>>,
+
+	// Constructors should always be declared with a lambda function.
+	Constructor<
+		+[](int num)
+		{
+			return CustomObjectData2();
+		},
+		"An inline lambda function attached as a static function.",
+		ParameterPack<
+			Parameter<"num", "int parameter">>>>;
+
+RegisterType(CustomObjectData2, CustomObjectDataSpec2);
 
 #endif
