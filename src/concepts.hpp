@@ -18,12 +18,12 @@ namespace APICore
                               };
     
 
-    template <class FunctionType>
+    template <class ClassType>
     concept ClassTypeConcept = requires {
-                     requires std::is_class_v<FunctionType>;
-                     requires !ReferenceTypeConcept<FunctionType>; 
-                     requires !std::is_same_v<FunctionType, std::string>;
-                     requires !std::is_function_v<FunctionType>;
+                     requires std::is_class_v<ClassType>;
+                     requires !ReferenceTypeConcept<ClassType>; 
+                     requires !std::is_same_v<ClassType, std::string>;
+                     requires !std::is_function_v<ClassType>;
                      
     };
 

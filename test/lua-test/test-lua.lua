@@ -4,6 +4,7 @@ firstRun = {
     testObjectO1Type = "userdata";
 
     i1 = 15;
+    secondI = 12;
     s1 = "ABC123";
     d1 = 12.678;
 
@@ -26,6 +27,7 @@ secondRun = {
     testObjectO1Type = "userdata";
 
     i1 = 30;
+    secondI = 17;
     s1 = "AAABBB";
     d1 = 37890.3435;
 
@@ -82,8 +84,9 @@ function testField(runData, parentObject, secondaryRunData, key)
     assert(type(runData[key]) == type(parentObject[key]));
     assert(runData[key] == parentObject[key]);
     print("runData[" .. key .. "] = " .. tostring(runData[key]) .. "\tparentObject[" .. key .. "] = " .. tostring(parentObject[key]) .. "\t new value = " .. tostring(secondaryRunData[key]));	
-    parentObject[key] = secondaryRunData[key];
-    
+    if secondaryRunData[key] ~= nil then 
+        parentObject[key] = secondaryRunData[key];
+    end
 end
 
 function staticTest()
@@ -101,13 +104,16 @@ function staticTest()
     assert(runData.CustomObjectDataType == type(CustomObjectData));
 
     promise = CustomObjectData.staticAsync(1);
-    // TODO: This callback is never called!
+    
     promise:onResolve(
         function(result)
             print('Promise return value in callback: ' .. (result));
         end
-    )
-    promise:await();
+    ):onResolve(
+        function()
+            print('Callback on the callback was called.');
+        end
+    ):await();
     promise = CustomObjectData.staticAsync(1);
     print('Promise return type: ' .. type(promise));
     print('Promise return value in await: ' .. (promise:await()));
@@ -137,11 +143,12 @@ function test(testObject)
     assert(runData.testObjectType == type(testObject));
 
     testField(runData, testObject, newRunData, "i1");
+    testField(runData, testObject, newRunData, "secondI");
     testField(runData, testObject, newRunData, "s1");
 
 
-    assert(testObject:doStuff(0,"abc") == "abc");
-    assert(testObject:doStuff(1,"abc") == "abc\nabc");
+    assert(testObject:doStuff(0,"abc") == "abc" );
+    assert(testObject:doStuff(1,"abc") == "abc\nabc" or testObject:doStuff(1,"abc") == "abc\tabc");
     
     loopFunctionPointerTest(testObject);
 
@@ -168,6 +175,8 @@ staticTest();
 test(testObject);
 
 if(runNum == 1) then
+    firstRun.secondI = nil;
+    secondRun.secondI = nil;
     newObj = CustomObjectData.__constructor(12);
     test(newObj);
     newObj2 = CustomObjectData.new(12);

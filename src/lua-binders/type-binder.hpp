@@ -10,10 +10,11 @@
 namespace APICore
 {
 
-    template <class T>
+    template <class T, class InheritedType>
     struct LuaBinderGenerator
     {
-        static void generateType(sol::state &state, sol::usertype<T> *type)
+        template<class ChildType = T>
+        static void generateType(sol::state &state, sol::usertype<ChildType> *type)
         {
         }
     };
@@ -34,6 +35,7 @@ namespace APICore
     {
         if (!LuaBinder<T>::usertypeDeclarations.contains(&state))
         {
+            using InheritedFrom = TypeLookup<T>::registeredType::inheritedFrom;
             sol::usertype<T> *newType = new sol::usertype<T>;
 
             (*newType) = state.new_usertype<T>(
@@ -41,7 +43,7 @@ namespace APICore
 
             usertypeDeclarations[&state] = newType;
 
-            LuaBinderGenerator<T>::generateType(state, newType);
+            LuaBinderGenerator<T, InheritedFrom>::generateType(state, newType);
         }
         return LuaBinder<T>::usertypeDeclarations.at(&state);
     };

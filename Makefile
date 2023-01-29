@@ -8,6 +8,7 @@ OUT_DIR=./dist
 testString:="abc"
 includeParameters=-I"./include" -I"./include/lua/include" -I"./include/sol" -I"./include/typescript-to-lua"
 cppVersionParameter=--std=c++2a
+# Note that the debugging flag greatly increases to size of the resulting executable. For example, from 19 MB to 29 MB.
 gppAdditionalParameter="-g"
 
 out=dist/engine

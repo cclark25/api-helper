@@ -66,7 +66,7 @@ struct CustomObjectData
 			return result; }));
 	}
 
-	std::string doStuff(int i, std::string s)
+	virtual std::string doStuff(int i, std::string s)
 	{
 		std::string r = s;
 		for (int j = i; j > 0; j--)
@@ -119,18 +119,31 @@ std::function<int(int)> CustomObjectData::staticFunctionPointer = [](int i)
 	return i * 12;
 };
 
-struct CustomObjectData2 : public CustomObjectData {};
+struct CustomObjectData2 : public CustomObjectData {
+	int secondI = 12;
+	virtual std::string doStuff(int i, std::string s)
+	{
+		std::string r = s;
+		for (int j = i; j > 0; j--)
+		{
+			r.append("\t").append(s);
+		}
+		return r;
+	}
+};
 
 using CustomObjectSubDataSpec = ClassTyping<
 	"CustomObjectSubData",
 	"A custom class to test typing a class's sub class.",
 	CustomObjectData::CustomObjectSubData,
+	void,
 	Member<"i2", &CustomObjectData::CustomObjectSubData::i2, "Sub data's instance int field.">,
 	Member<"s2", &CustomObjectData::CustomObjectSubData::s2, "Sub data's instance string field.">>;
 using CustomObjectDataSpec = ClassTyping<
 	"CustomObjectData",
 	"A custom class to test typing.",
 	CustomObjectData,
+	void,
 	Static<"d1", &CustomObjectData::d1, "A static double field.">,
 	Member<"i1", &CustomObjectData::i1, "An instance int field.">,
 	Member<"s1", &CustomObjectData::s1, "An instance string field.">,
@@ -205,83 +218,13 @@ RegisterType(CustomObjectData::CustomObjectSubData, CustomObjectSubDataSpec);
 ///////////////////////////////////////////////////////////////////////////////
 
 
-
-using CustomObjectSubDataSpec2 = ClassTyping<
-	"CustomObjectSubData2",
-	"A custom class to test typing a class's sub class.",
-	CustomObjectData2::CustomObjectSubData,
-	Member<"i2", &CustomObjectData2::CustomObjectSubData::i2, "Sub data's instance int field.">,
-	Member<"s2", &CustomObjectData2::CustomObjectSubData::s2, "Sub data's instance string field.">>;
 using CustomObjectDataSpec2 = ClassTyping<
 	"CustomObjectData2",
 	"A custom class to test typing.",
 	CustomObjectData2,
-	Static<"d1", &CustomObjectData2::d1, "A static double field.">,
-	Member<"i1", &CustomObjectData2::i1, "An instance int field.">,
-	Member<"s1", &CustomObjectData2::s1, "An instance string field.">,
-	Member<"o1", &CustomObjectData2::o1, "Sub class data pointer.">,
-	Member<"o2", &CustomObjectData2::o2, "Sub class data shared pointer.">,
-	Member<"o3", &CustomObjectData2::o3, "Sub class data non-pointer.">,
-	Member<"o4", &CustomObjectData2::o3, "Sub class data & reference.">,
-
-	MemberFunction<
-		"functionPointer",
-		&CustomObjectData2::functionPointer,
-		"A function pointer to bind to lua.",
-		ParameterPack<
-			Parameter<"i", "int parameter to be used in the function passed.">>>,
-	StaticFunction<
-		"staticFunctionPointer",
-		&CustomObjectData2::staticFunctionPointer,
-		"A function pointer to bind to lua.",
-		ParameterPack<
-			Parameter<"i", "int parameter to be used in the function passed.">>>,
-
-	MemberFunction<
-		"doStuff",
-		&CustomObjectData2::doStuff,
-		"An instance function that does stuff.",
-		ParameterPack<
-			Parameter<"i", "int parameter">,
-			Parameter<"s", "string parameter">>>,
-
-	MemberFunction<
-		"testPassedFunction",
-		&CustomObjectData2::testPassedFunction,
-		"A function to test how many invocations of the functionPointer can be done per second.",
-		ParameterPack<
-			Parameter<"i", "int parameter">>>,
-
-	StaticFunction<
-		"staticFunction",
-		&CustomObjectData2::staticFunction,
-		"An static function that does stuff.",
-		ParameterPack<
-			Parameter<"num", "int parameter">>>,
-
-	// TODO: generated json is typing these 2 functions the same for some reason.
-	StaticFunction<
-		"staticAsync",
-		&CustomObjectData2::staticAsync,
-		"An static function that does stuff asynchronously and returns a promise.",
-		ParameterPack<
-			Parameter<"numSeconds", "Number of seconds to wait.">>>,
-	MemberFunction<
-		"memberAsync",
-		&CustomObjectData2::memberAsync,
-		"An member function that does stuff asynchronously and returns a promise.",
-		ParameterPack<
-			Parameter<"numSeconds", "Number of seconds to wait.">>>,
-
-	// Constructors should always be declared with a lambda function.
-	Constructor<
-		+[](int num)
-		{
-			return CustomObjectData2();
-		},
-		"An inline lambda function attached as a static function.",
-		ParameterPack<
-			Parameter<"num", "int parameter">>>>;
+	CustomObjectData,
+	Member<"secondI", &CustomObjectData2::secondI, "A value only available on the child class CustomObjectData2.">
+	>;
 
 RegisterType(CustomObjectData2, CustomObjectDataSpec2);
 

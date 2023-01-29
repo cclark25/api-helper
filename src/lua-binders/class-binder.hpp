@@ -23,26 +23,38 @@ namespace APICore
         using ReturnType = ReturnTypeT;
     };
 
-    template <ClassTypeConcept FunctionType>
-    struct LuaBinderGenerator<FunctionType>
+    template <ClassTypeConcept ClassType, class InheritedFrom>
+    struct LuaBinderGenerator<ClassType, InheritedFrom>
     {
         template <typename T>
         struct FieldBinders
         {
-
-            static void bindMembers(sol::state &state, sol::usertype<auto> *userType)
+            template <class C = ClassType>
+            static void bindMembers(sol::state &state, sol::usertype<C> *userType)
             {
+                using a = T::type;
+                bool b = T::isClass;
+                std::string c = T::name;
+                std::string d = T::description;
+                bool x = ClassTypingDef<T>;
+
+                bool y = std::is_same_v<decltype(T::name), std::string>;
+                bool z = std::is_same_v<decltype(T::description), std::string>;
+
+                return;
             }
 
-            static void bindStaticFields(sol::state &state, sol::usertype<auto> *userType)
+            template <class C = ClassType>
+            static void bindStaticFields(sol::state &state, sol::usertype<C> *userType)
             {
             }
         };
 
-        template <StringLiteral Name, StringLiteral Description, ClassField<FunctionType>... Fields>
-        struct FieldBinders<ClassTyping<Name, Description, FunctionType, Fields...>>
+        template <StringLiteral Name, StringLiteral Description, ClassField<ClassType>... Fields>
+        struct FieldBinders<ClassTyping<Name, Description, ClassType, InheritedFrom, Fields...>>
         {
-            static void bindMembers(sol::state &state, sol::usertype<FunctionType> *userType)
+            template <class T = ClassType>
+            static void bindMembers(sol::state &state, sol::usertype<T> *userType)
             {
                 ((
                      [&state, &userType]()
@@ -65,12 +77,12 @@ namespace APICore
                                          extra overhead with every sol wrap.
                                      */
                                      (*userType)[Fields::key] = sol::property(
-                                         [ptr](FunctionType &self)
+                                         [ptr](T &self)
                                          {
                                              return std::shared_ptr<decltype(std::function(self.*ptr))>(new std::function(self.*ptr));
                                          },
 
-                                         [ptr](FunctionType &self, sol::object newVal)
+                                         [ptr](T &self, sol::object newVal)
                                          {
                                              /*
                                                  Overload when setting an std::function using a shared_ptr.
@@ -113,7 +125,9 @@ namespace APICore
 
                 return;
             }
-            static void bindStaticFields(sol::state &state, sol::usertype<FunctionType> *userType)
+
+            template <class T = ClassType>
+            static void bindStaticFields(sol::state &state, sol::usertype<T> *userType)
             {
                 ((
                      [&state, &userType]()
@@ -176,10 +190,19 @@ namespace APICore
             }
         };
 
-        static void generateType(sol::state &state, sol::usertype<FunctionType> *newClassType)
+        template <class ChildType = ClassType>
+        static void generateType(sol::state &state, sol::usertype<ChildType> *newClassType)
         {
-            FieldBinders<typename TypeLookup<FunctionType>::registeredType>::bindMembers(state, newClassType);
-            FieldBinders<typename TypeLookup<FunctionType>::registeredType>::bindStaticFields(state, newClassType);
+            if constexpr (!std::is_void_v<InheritedFrom>)
+            {
+                using inherited_lookup = TypeLookup<InheritedFrom>;
+                LuaBinder<InheritedFrom>::declareType(state);
+                LuaBinderGenerator<
+                    InheritedFrom,
+                    typename inherited_lookup::registeredType::inheritedFrom>::generateType(state, newClassType);
+            }
+            FieldBinders<typename TypeLookup<ClassType>::registeredType>::bindMembers(state, newClassType);
+            FieldBinders<typename TypeLookup<ClassType>::registeredType>::bindStaticFields(state, newClassType);
         };
     };
 }

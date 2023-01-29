@@ -10,6 +10,9 @@ namespace APICore
     {
         struct registeredType
         {
+            using inheritedFrom = void;
+            using type = T;
+            static const bool isClass = false;
             static std::string name;
             static std::string description;
             static void* ptr;

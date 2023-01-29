@@ -21,18 +21,18 @@ namespace APICore
     template <auto Pointer>
     MemberPtr<Pointer>::ptrType MemberPtr<Pointer>::ptr = nullptr;
 
-    template <class FunctionType, typename T, T FunctionType::*Pointer>
+    template <class ClassType, typename T, T ClassType::*Pointer>
     requires std::is_member_pointer_v<decltype(Pointer)>
     struct MemberPtr<Pointer>
     {
-        using classType = FunctionType;
+        using classType = ClassType;
         using type = T;
         using ptrType = type classType::*;
         static ptrType ptr;
         static const bool isMember = true;
         static const bool isCustomMember = false;
     };
-    template <class FunctionType, typename T, T FunctionType::*Pointer>
+    template <class ClassType, typename T, T ClassType::*Pointer>
     requires std::is_member_pointer_v<decltype(Pointer)>
     MemberPtr<Pointer>::ptrType MemberPtr<Pointer>::ptr = Pointer;
 

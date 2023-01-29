@@ -36,7 +36,7 @@ int main(int argc, char **argv)
 	sol::state lua;
 	if (generateTypes)
 	{
-		APICore::JsonTyper<CustomObjectData>::declareType();
+		APICore::JsonTyper<CustomObjectData2>::declareType();
 		auto typing = APICore::generateTypeMap();
 		std::string typingJson = typing.dump(4);
 

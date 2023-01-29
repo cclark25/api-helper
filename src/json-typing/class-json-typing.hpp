@@ -22,8 +22,8 @@ namespace APICore
         }
     };
 
-    template <StringLiteral Name, StringLiteral Description, class FunctionType, ClassField<FunctionType>... Fields>
-    struct JSONFieldTypings<ClassTyping<Name, Description, FunctionType, Fields...>>
+    template <StringLiteral Name, StringLiteral Description, class ClassType, class InheritedFrom, ClassField<ClassType>... Fields>
+    struct JSONFieldTypings<ClassTyping<Name, Description, ClassType, InheritedFrom, Fields...>>
     {
         static json generateMemberTypings()
         {
@@ -68,12 +68,13 @@ namespace APICore
         }
     };
 
-    template <ClassTypeConcept FunctionType>
-    struct JsonTypingGenerator<FunctionType>
+    template <ClassTypeConcept ClassType>
+    struct JsonTypingGenerator<ClassType>
     {
-        using type_definition = TypeLookup<FunctionType>;
+        using type_definition = TypeLookup<ClassType>;
         static void generateType(std::shared_ptr<json> type)
         {
+            
             (*type)["name"] = type_definition::registeredType::name;
             (*type)["description"] = type_definition::registeredType::description;
 
@@ -82,6 +83,12 @@ namespace APICore
 
             (*type)["staticFields"] = staticFields;
             (*type)["memberFields"] = memberFields;
+
+            if constexpr (!std::is_void_v<typename type_definition::registeredType::inheritedFrom>){
+                using ParentType = type_definition::registeredType::inheritedFrom;
+                auto parentType = JsonTyper<ParentType>::declareType();
+                (*type)["inheritsFrom"] = (*parentType)["typeId"];
+            }
         }
     };
 }

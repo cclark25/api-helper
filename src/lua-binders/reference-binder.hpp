@@ -24,6 +24,7 @@ namespace APICore
     struct LuaBinder<ReturnType(*)(Parameters...)>
     {
         using T = ReturnType(*)(Parameters...);
+        using InheritedFrom = TypeLookup<T>::inheritedFrom;
 
         using type_definition = TypeLookup<T>;
         static std::map<sol::state *, sol::usertype<T> *> usertypeDeclarations;
@@ -39,7 +40,7 @@ namespace APICore
 
                 usertypeDeclarations[&state] = newType;
 
-                LuaBinderGenerator<T>::generateType(state, newType);
+                LuaBinderGenerator<T, InheritedFrom>::generateType(state, newType);
             }
             return LuaBinder<T>::usertypeDeclarations.at(&state);
         };
@@ -48,14 +49,15 @@ namespace APICore
     template <class ReturnType, class...Parameters> 
     std::map<sol::state *, sol::usertype<ReturnType(*)(Parameters...)> *> LuaBinder<ReturnType(*)(Parameters...)>::usertypeDeclarations;
 
-    template <class ReturnType, class...Parameters>
-    struct LuaBinderGenerator<ReturnType(*)(Parameters...)>
+    template <class ReturnType, class InheritedType, class...Parameters>
+    struct LuaBinderGenerator<ReturnType(*)(Parameters...), InheritedType>
     {
         using T = ReturnType(*)(Parameters...);
 
+        template<class ChildType = T>
         static void generateType(
             sol::state &state,
-            sol::usertype<T> *type)
+            sol::usertype<ChildType> *type)
         {
             // sol::usertype<T> *newClassType = new sol::usertype<T>();
             // (*newClassType) = state.new_usertype<void>(
