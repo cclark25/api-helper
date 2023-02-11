@@ -8,9 +8,12 @@
 #include <sol.hpp>
 #include <string>
 #include <functional>
+#include <set>
+#include <vector>
 
 namespace APICore
 {
+
     template <class T>
     struct FunctionTyping
     {
@@ -50,18 +53,43 @@ namespace APICore
             }
         };
 
+        template <class T, MemberOverloadSpec Overload>
+        struct OverLoaders
+        {
+            static void bindMemberOverloads(sol::state &state, sol::usertype<T> *userType, std::string key)
+            {
+                return;
+            }
+        };
+        template <class T, MemberFunctionPtrSpec... Overloads>
+        struct OverLoaders<T, MemberOverload<Overloads...>>
+        {
+            static void bindMemberOverloads(sol::state &state, sol::usertype<T> *userType, std::string key)
+            {
+                /*
+                    The sol::overload function does not work with member functions from parent classes
+                    unless the member function pointer is cast as a member function pointer of the child
+                    class.
+                */
+                (*userType)[key] =  sol::overload(
+                    ((typename Overloads::functionTyping::childMemberCast<T>) Overloads::ptr)...
+                );
+            }
+        };
+
         template <StringLiteral Name, StringLiteral Description, ClassField<ClassType>... Fields>
         struct FieldBinders<ClassTyping<Name, Description, ClassType, InheritedFrom, Fields...>>
         {
+
             template <class T = ClassType>
             static void bindMembers(sol::state &state, sol::usertype<T> *userType)
             {
                 ((
                      [&state, &userType]()
                      {
-                         std::string key = Fields::key;
                          if constexpr (MemberPtrSpec<Fields>)
                          {
+                             std::string key = Fields::key;
                              auto ptr = Fields::ptr;
                              if constexpr (!std::is_function_v<typename Fields::type>)
                              {
@@ -115,6 +143,14 @@ namespace APICore
                                  (*userType)[Fields::key] = ptr;
                              }
                              return true;
+                         }
+                         else if constexpr (MemberOverloadSpec<Fields>)
+                         {
+                             std::string key = Fields::getKey();
+                             using overloaders = typename LuaBinderGenerator::OverLoaders<T, Fields>;
+
+                             overloaders::bindMemberOverloads(state, userType, key);
+                             return false;
                          }
                          else
                          {
@@ -203,6 +239,21 @@ namespace APICore
             }
             FieldBinders<typename TypeLookup<ClassType>::registeredType>::bindMembers(state, newClassType);
             FieldBinders<typename TypeLookup<ClassType>::registeredType>::bindStaticFields(state, newClassType);
+
+            /*
+                Add a universal getType member function to every class usertype.
+                It returns the metatable for the type, which can be compared.
+                Example:
+
+                testObject:getType() == GlobalMetatable;
+
+                The above will resolve to true if testObject is a usertype with bindings
+                provided by the GlobalMetatable metatable.
+                Note: It must be the exact type in order to match, and not a child class of the type.
+            */
+            (*newClassType)["getType"] = [newClassType](sol::variadic_args args){
+                return *newClassType;
+            };
         };
     };
 }

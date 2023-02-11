@@ -36,11 +36,17 @@ int main(int argc, char **argv)
 	sol::state lua;
 	if (generateTypes)
 	{
-		APICore::JsonTyper<CustomObjectData2>::declareType();
-		auto typing = APICore::generateTypeMap();
-		std::string typingJson = typing.dump(4);
+		/*
+			TODO: JsonTyping is currently broken by the new function overloading mechanics.
+			After function overloading is fully implemented in Lua, JsonTyping support for 
+			function overloading should be the next focus.
+		*/
 
-		std::cout << typingJson << "\n";
+		// APICore::JsonTyper<CustomObjectData2>::declareType();
+		// auto typing = APICore::generateTypeMap();
+		// std::string typingJson = typing.dump(4);
+
+		// std::cout << typingJson << "\n";
 
 		return 0;
 	}
@@ -58,6 +64,8 @@ int main(int argc, char **argv)
 	lua2["testObject"] = customInstance2;
 	lua["runNum"] = 1;
 	lua2["runNum"] = 2;
+
+	
 
 	lua.open_libraries(sol::lib::base, sol::lib::package, sol::lib::table, sol::lib::math, sol::lib::string, sol::lib::coroutine, sol::lib::debug, sol::lib::os);
 	lua2.open_libraries(sol::lib::base, sol::lib::package, sol::lib::table, sol::lib::math, sol::lib::string, sol::lib::coroutine, sol::lib::debug, sol::lib::os);

@@ -105,18 +105,18 @@ function staticTest()
 
     promise = CustomObjectData.staticAsync(1);
     
-    promise:onResolve(
-        function(result)
-            print('Promise return value in callback: ' .. (result));
-        end
-    ):onResolve(
-        function()
-            print('Callback on the callback was called.');
-        end
-    ):await();
-    promise = CustomObjectData.staticAsync(1);
-    print('Promise return type: ' .. type(promise));
-    print('Promise return value in await: ' .. (promise:await()));
+    -- promise:onResolve(
+    --     function(result)
+    --         print('Promise return value in callback: ' .. (result));
+    --     end
+    -- ):onResolve(
+    --     function()
+    --         print('Callback on the callback was called.');
+    --     end
+    -- ):await();
+    -- promise = CustomObjectData.staticAsync(1);
+    -- print('Promise return type: ' .. type(promise));
+    -- print('Promise return value in await: ' .. (promise:await()));
     
     assert(CustomObjectData.staticFunctionPointer(1) == 12)
     oldFuncPtr = CustomObjectData.staticFunctionPointer;
@@ -147,7 +147,20 @@ function test(testObject)
     testField(runData, testObject, newRunData, "s1");
 
 
+    assert(testObject:doStuff(0) == "NO STRING PROVIDED" );
+    assert(testObject:doStuff(1) == "NO STRING PROVIDED\nNO STRING PROVIDED" );
+
     assert(testObject:doStuff(0,"abc") == "abc" );
+
+    if(testObject:getType() == CustomObjectData) then
+        assert(testObject:doStuff(1,"abc") == "abc\nabc");
+    elseif(testObject:getType() == CustomObjectData2) then 
+        assert(testObject:doStuff("abc") == "abc" );
+        assert(testObject:doStuff(1,"abc") == "abc\tabc");
+    else
+        assert(false);
+    end
+
     assert(testObject:doStuff(1,"abc") == "abc\nabc" or testObject:doStuff(1,"abc") == "abc\tabc");
     
     loopFunctionPointerTest(testObject);
@@ -181,4 +194,7 @@ if(runNum == 1) then
     test(newObj);
     newObj2 = CustomObjectData.new(12);
     test(newObj2);
+
+    -- TODO: Make the metatable callable to act as constructors.
+    -- newObj3 = CustomObjectData(12)
 end

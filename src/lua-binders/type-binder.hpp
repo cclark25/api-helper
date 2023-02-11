@@ -3,6 +3,7 @@
 
 #include <memory>
 #include <string>
+#include <map>
 #include <sol.hpp>
 #include "../concepts.hpp"
 

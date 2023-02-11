@@ -13,7 +13,7 @@
 #include "../../../src/static-function-pointer.hpp"
 #include "../../../src/class-typing.hpp"
 #include "../../../src/standard-bindings.hpp"
-#include "../../../src/json-typing/json-typing.hpp"
+// #include "../../../src/json-typing/json-typing.hpp"
 
 using namespace APICore;
 using namespace std;
@@ -60,20 +60,10 @@ struct CustomObjectData
 	std::future<std::string> memberAsync(int i)
 	{
 		return (std::async(std::launch::async, [i, this]()
-						  {
+						   {
 			std::this_thread::sleep_for(std::chrono::seconds(i));
 			auto result = std::string("Return Value from member async function. i1 val: ").append(to_string(this->i1));
 			return result; }));
-	}
-
-	virtual std::string doStuff(int i, std::string s)
-	{
-		std::string r = s;
-		for (int j = i; j > 0; j--)
-		{
-			r.append("\n").append(s);
-		}
-		return r;
 	}
 
 	std::function<int(int)> functionPointer = [](int i)
@@ -97,20 +87,27 @@ struct CustomObjectData
 		return ((double)loopCount) / std::chrono::duration<double, std::ratio<1, 1>>(endTime - startTime).count();
 	}
 
-	// TODO: Add support for overloaded functions.
+	virtual std::string doStuff(int i, std::string s)
+	{
+		std::string r = s;
+		for (int j = i; j > 0; j--)
+		{
+			r.append("\n").append(s);
+		}
+		return r;
+	}
 
-	// std::string doStuff(int i)
-	// {
-	// 	std::string s = "NO STRING PROVIDED";
-	// 	std::string r = s;
-	// 	for (int j = i; j > 0; j--)
-	// 	{
-	// 		r.append("\n").append(r);
-	// 	}
+	std::string doStuff(int i)
+	{
+		std::string s = "NO STRING PROVIDED";
+		std::string r = s;
+		for (int j = i; j > 0; j--)
+		{
+			r.append("\n").append(s);
+		}
 
-	// 	auto f = &CustomObjectData::doStuff;
-	// 	return r;
-	// }
+		return r;
+	}
 };
 double CustomObjectData::d1 = 12.678;
 std::function<int(int)> CustomObjectData::staticFunctionPointer = [](int i)
@@ -119,8 +116,15 @@ std::function<int(int)> CustomObjectData::staticFunctionPointer = [](int i)
 	return i * 12;
 };
 
-struct CustomObjectData2 : public CustomObjectData {
+struct CustomObjectData2 : public CustomObjectData
+{
 	int secondI = 12;
+
+	/*
+		Since this function is virtual, there is no need to redeclare this member function
+		in the type definition for CustomObjectData2.
+		The function resolution is automatically handled by C++ mechanics.
+	*/
 	virtual std::string doStuff(int i, std::string s)
 	{
 		std::string r = s;
@@ -129,6 +133,11 @@ struct CustomObjectData2 : public CustomObjectData {
 			r.append("\t").append(s);
 		}
 		return r;
+	}
+
+	std::string doStuff(std::string s)
+	{
+		return s;
 	}
 };
 
@@ -139,10 +148,39 @@ using CustomObjectSubDataSpec = ClassTyping<
 	void,
 	Member<"i2", &CustomObjectData::CustomObjectSubData::i2, "Sub data's instance int field.">,
 	Member<"s2", &CustomObjectData::CustomObjectSubData::s2, "Sub data's instance string field.">>;
+
+using CustomObjectDataDoStuffOverloads = MemberOverload<
+	MemberFunction<
+		"doStuff",
+		(std::string(CustomObjectData::*)(int, std::string)) & CustomObjectData::doStuff,
+		"An instance function that does stuff.",
+		ParameterPack<
+			Parameter<"i", "int parameter">,
+			Parameter<"s", "string parameter">>>,
+	MemberFunction<
+		"doStuff",
+		(std::string(CustomObjectData::*)(int)) & CustomObjectData::doStuff,
+		"An instance function that does stuff.",
+		ParameterPack<
+			Parameter<"i", "int parameter">>>
+
+	>;
+
+// TODO: Add support for static function overloading
+
+// using CustomObjectDataSTATICOverloads = StaticOverload<
+// 	StaticFunction<>,
+// 	StaticFunction<>
+// 	>;
+
 using CustomObjectDataSpec = ClassTyping<
+	// Class name to bind to
 	"CustomObjectData",
+	// Description
 	"A custom class to test typing.",
+	// C++ type to bind
 	CustomObjectData,
+	// Inherits from nothing. It is its own class
 	void,
 	Static<"d1", &CustomObjectData::d1, "A static double field.">,
 	Member<"i1", &CustomObjectData::i1, "An instance int field.">,
@@ -165,13 +203,7 @@ using CustomObjectDataSpec = ClassTyping<
 		ParameterPack<
 			Parameter<"i", "int parameter to be used in the function passed.">>>,
 
-	MemberFunction<
-		"doStuff",
-		&CustomObjectData::doStuff,
-		"An instance function that does stuff.",
-		ParameterPack<
-			Parameter<"i", "int parameter">,
-			Parameter<"s", "string parameter">>>,
+	CustomObjectDataDoStuffOverloads,
 
 	MemberFunction<
 		"testPassedFunction",
@@ -214,17 +246,29 @@ using CustomObjectDataSpec = ClassTyping<
 RegisterType(CustomObjectData, CustomObjectDataSpec);
 RegisterType(CustomObjectData::CustomObjectSubData, CustomObjectSubDataSpec);
 
-
 ///////////////////////////////////////////////////////////////////////////////
 
-
 using CustomObjectDataSpec2 = ClassTyping<
-	"CustomObjectData2",
-	"A custom class to test typing.",
-	CustomObjectData2,
-	CustomObjectData,
-	Member<"secondI", &CustomObjectData2::secondI, "A value only available on the child class CustomObjectData2.">
-	>;
+								  "CustomObjectData2",
+								  "A custom class to test typing.",
+								  CustomObjectData2,
+								  /*
+									  Specifies that CustomObjectData inherits from CustomObjectData, and all
+									  CustomObjectData bindings should also be bound to CustomObjectData2.
+								  */
+								  CustomObjectData,
+								  Member<"secondI", &CustomObjectData2::secondI, "A value only available on the child class CustomObjectData2.">,
+								  CustomObjectDataDoStuffOverloads::AddOverloads<
+									  MemberFunction<
+										  "doStuff",
+										  (std::string(CustomObjectData2::*)(std::string)) & CustomObjectData2::doStuff,
+										  "An instance function that does stuff.",
+										  ParameterPack<
+											  Parameter<"s", "string parameter">
+										  >
+									  >
+								  >
+								> ;
 
 RegisterType(CustomObjectData2, CustomObjectDataSpec2);
 
