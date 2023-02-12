@@ -64,7 +64,7 @@ namespace APICore
 
     template <typename T>
     concept MemberPtrSpec = requires {
-
+                                requires true;
                                 requires T::isMember;
                                 {
                                     T::key

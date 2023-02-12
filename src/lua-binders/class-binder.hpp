@@ -53,10 +53,11 @@ namespace APICore
             }
         };
 
-        template <class T, MemberOverloadSpec Overload>
+        template <class T, class Overload>
+            requires MemberOverloadSpec<Overload> || StaticOverloadSpec<Overload>
         struct OverLoaders
         {
-            static void bindMemberOverloads(sol::state &state, sol::usertype<T> *userType, std::string key)
+            static void bindOverloads(sol::state &state, sol::usertype<T> *userType, std::string key)
             {
                 return;
             }
@@ -64,16 +65,48 @@ namespace APICore
         template <class T, MemberFunctionPtrSpec... Overloads>
         struct OverLoaders<T, MemberOverload<Overloads...>>
         {
-            static void bindMemberOverloads(sol::state &state, sol::usertype<T> *userType, std::string key)
+            static void bindOverloads(sol::state &state, sol::usertype<T> *userType, std::string key)
             {
                 /*
                     The sol::overload function does not work with member functions from parent classes
                     unless the member function pointer is cast as a member function pointer of the child
                     class.
                 */
-                (*userType)[key] =  sol::overload(
-                    ((typename Overloads::functionTyping::childMemberCast<T>) Overloads::ptr)...
-                );
+                (*userType)[key] = sol::overload(
+                    ((typename Overloads::functionTyping::childMemberCast<T>)Overloads::ptr)...);
+            }
+        };
+
+        template <class T, StaticFunctionPtrSpec... Overloads>
+        struct OverLoaders<T, StaticOverload<Overloads...>>
+        {
+            static void bindOverloads(sol::state &state, sol::usertype<T> *userType, std::string key)
+            {
+                if (StaticOverload<Overloads...>::isConstructor)
+                {
+                    key = "new";
+
+                    /*
+                        TODO: Figure out how to set the metatable of the metatable in order to
+                        allow the metatable to be called as though it was a constructor.
+                    */
+                    // sol::table new_meta_table = state.create_table();
+                    // new_meta_table["name"] = "test";
+                    // new_meta_table[sol::meta_function::call_function] = [](sol::table self)
+                    // {
+                    //     std::cout << "Metatable called.\n";
+                    // };
+                    // (*userType)[sol::metatable_key] = new_meta_table;
+
+                    if (!std::is_same_v<T, ClassType>)
+                    {
+                        // Child classes should not inherit their parent's constructors.
+                        return;
+                    }
+                }
+
+                (*userType)[key] = sol::overload(
+                    (Overloads::ptr)...);
             }
         };
 
@@ -149,7 +182,7 @@ namespace APICore
                              std::string key = Fields::getKey();
                              using overloaders = typename LuaBinderGenerator::OverLoaders<T, Fields>;
 
-                             overloaders::bindMemberOverloads(state, userType, key);
+                             overloaders::bindOverloads(state, userType, key);
                              return false;
                          }
                          else
@@ -171,9 +204,10 @@ namespace APICore
                          if constexpr (StaticPtrSpec<Fields>)
                          {
                              std::string key = Fields::key;
-                             if (Fields::isConstructor)
+                             if constexpr (ConstructorSpec<Fields> && std::is_same_v<T, ClassType>)
                              {
                                  (*userType)["new"] = sol::var(std::ref(*Fields::ptr));
+                                 return true;
                              }
 
                              if constexpr (!std::is_function_v<typename Fields::type>)
@@ -215,6 +249,14 @@ namespace APICore
 
                              return true;
                          }
+                         else if constexpr (StaticOverloadSpec<Fields>)
+                         {
+                             std::string key = Fields::getKey();
+                             using overloaders = typename LuaBinderGenerator::OverLoaders<T, Fields>;
+
+                             overloaders::bindOverloads(state, userType, key);
+                             return false;
+                         }
                          else
                          {
                              return false;
@@ -251,7 +293,8 @@ namespace APICore
                 provided by the GlobalMetatable metatable.
                 Note: It must be the exact type in order to match, and not a child class of the type.
             */
-            (*newClassType)["getType"] = [newClassType](sol::variadic_args args){
+            (*newClassType)["getType"] = [newClassType](sol::variadic_args args)
+            {
                 return *newClassType;
             };
         };

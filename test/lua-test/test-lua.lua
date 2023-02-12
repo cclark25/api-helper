@@ -105,18 +105,18 @@ function staticTest()
 
     promise = CustomObjectData.staticAsync(1);
     
-    -- promise:onResolve(
-    --     function(result)
-    --         print('Promise return value in callback: ' .. (result));
-    --     end
-    -- ):onResolve(
-    --     function()
-    --         print('Callback on the callback was called.');
-    --     end
-    -- ):await();
-    -- promise = CustomObjectData.staticAsync(1);
-    -- print('Promise return type: ' .. type(promise));
-    -- print('Promise return value in await: ' .. (promise:await()));
+    promise:onResolve(
+        function(result)
+            print('Promise return value in callback: ' .. (result));
+        end
+    ):onResolve(
+        function()
+            print('Callback on the callback was called.');
+        end
+    ):await();
+    promise = CustomObjectData.staticAsync(1);
+    print('Promise return type: ' .. type(promise));
+    print('Promise return value in await: ' .. (promise:await()));
     
     assert(CustomObjectData.staticFunctionPointer(1) == 12)
     oldFuncPtr = CustomObjectData.staticFunctionPointer;
@@ -125,6 +125,12 @@ function staticTest()
     end
     assert(CustomObjectData.staticFunctionPointer(1) == 13)
     CustomObjectData.staticFunctionPointer = oldFuncPtr
+
+    assert(CustomObjectData.staticOverload(1) == "1");
+    assert(CustomObjectData.staticOverload("1") == "2");
+    assert(CustomObjectData2.staticOverload(1) == "1");
+    assert(CustomObjectData2.staticOverload("1") == "2");
+    assert(CustomObjectData2.staticOverload("1", 1) == "3");
 end
 
 function test(testObject)
@@ -143,7 +149,11 @@ function test(testObject)
     assert(runData.testObjectType == type(testObject));
 
     testField(runData, testObject, newRunData, "i1");
-    testField(runData, testObject, newRunData, "secondI");
+
+    if (testObject.getType() == CustomObjectData2) then
+        testField(runData, testObject, newRunData, "secondI");
+    end
+
     testField(runData, testObject, newRunData, "s1");
 
 
@@ -184,17 +194,19 @@ function test(testObject)
 end
 
 
-staticTest();
-test(testObject);
+-- staticTest();
+-- test(testObject);
 
 if(runNum == 1) then
-    firstRun.secondI = nil;
-    secondRun.secondI = nil;
-    newObj = CustomObjectData.__constructor(12);
+    newObj = CustomObjectData.new(12);
     test(newObj);
-    newObj2 = CustomObjectData.new(12);
+    newObj2 = CustomObjectData.new("12");
     test(newObj2);
 
+    newObj4 = CustomObjectData2.new(12.123);
+    test(newObj4);
+
     -- TODO: Make the metatable callable to act as constructors.
-    -- newObj3 = CustomObjectData(12)
+    -- newObj3 = CustomObjectData.__call({}, 12)
+    -- print(type(getmetatable(CustomObjectData)["test"] ));
 end

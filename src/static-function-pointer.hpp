@@ -16,19 +16,14 @@ namespace APICore
     {
         using pointerTypeLookup = void;
         using parameterPack = Parameters;
-        static bool isConstructor;
+        static const bool isConstructor = false;
     };
 
     template <auto Pointer, StringLiteral Description, ParameterPackDefinition Parameters>
     struct Constructor : public StaticFunction<"__constructor", Pointer, Description, Parameters>
     {
-        static bool isConstructor;
+        static const bool isConstructor = true;
     };
-    template <auto Pointer, StringLiteral Description, ParameterPackDefinition Parameters>
-    bool Constructor<Pointer, Description, Parameters>::isConstructor = true;
-    
-    template <StringLiteral Key, auto Pointer, StringLiteral Description, ParameterPackDefinition Parameters>
-    bool StaticFunction<Key, Pointer, Description, Parameters>::isConstructor = false;
 
     template <typename PointerType>
     struct StaticFunctionTyping
@@ -39,7 +34,7 @@ namespace APICore
     template <typename ReturnType, typename... Parameters>
     struct StaticFunctionTyping<ReturnType *(Parameters...)>
     {
-        using returnType = ReturnType;      
+        using returnType = ReturnType;
     };
 
     template <typename PointerType, StringLiteral Key, PointerType Pointer, StringLiteral Description, ParameterPackDefinition Parameters>
@@ -48,13 +43,40 @@ namespace APICore
         using functionTyping = StaticFunctionTyping<PointerType>;
         using parameterPack = Parameters;
         static bool lookupCreated;
+        static const bool isConstructor = false;
+    };
+
+    template<class T>
+    concept ConstructorSpec = requires {
+        requires T::isConstructor;
     };
 
     template <typename T>
-    concept StaticFunctionPtrSpec = requires()
+    concept StaticFunctionPtrSpec = requires() {
+                                        requires StaticPtrSpec<T>;
+                                        
+                                        requires std::is_same_v<
+                                            typename T::functionTyping::returnType,
+                                            std::type_identity_t<typename T::functionTyping::returnType>>;
+                                    };
+
+    template <class T>
+    concept StaticOverloadSpec = requires() {
+        requires T::isStaticOverload;
+    };
+
+    template <StaticFunctionPtrSpec FirstFunction, StaticFunctionPtrSpec... Functions>
+    struct StaticOverload
     {
-        requires StaticPtrSpec<T>;
-        {T::functionTyping::returnType};
+        static const bool isStaticOverload = true;
+        static const bool isConstructor = FirstFunction::isConstructor;
+        static std::string getKey()
+        {
+            return FirstFunction::key;
+        }
+
+        template <StaticFunctionPtrSpec... OtherFunctions>
+        using AddOverloads = StaticOverload<FirstFunction, OtherFunctions..., Functions...>;
     };
 };
 

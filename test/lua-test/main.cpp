@@ -12,6 +12,7 @@ using namespace std;
 int main(int argc, char **argv)
 {
 	bool generateTypes = false;
+
 	bool isInputFile = false;
 	std::string inputFile;
 	for (int i = 1; i < argc; i++)
@@ -38,7 +39,7 @@ int main(int argc, char **argv)
 	{
 		/*
 			TODO: JsonTyping is currently broken by the new function overloading mechanics.
-			After function overloading is fully implemented in Lua, JsonTyping support for 
+			After function overloading is fully implemented in Lua, JsonTyping support for
 			function overloading should be the next focus.
 		*/
 
@@ -59,13 +60,10 @@ int main(int argc, char **argv)
 	auto customInstance = (new CustomObjectData());
 	auto customInstance2 = (new CustomObjectData2());
 
-	
 	lua["testObject"] = customInstance2;
 	lua2["testObject"] = customInstance2;
 	lua["runNum"] = 1;
 	lua2["runNum"] = 2;
-
-	
 
 	lua.open_libraries(sol::lib::base, sol::lib::package, sol::lib::table, sol::lib::math, sol::lib::string, sol::lib::coroutine, sol::lib::debug, sol::lib::os);
 	lua2.open_libraries(sol::lib::base, sol::lib::package, sol::lib::table, sol::lib::math, sol::lib::string, sol::lib::coroutine, sol::lib::debug, sol::lib::os);
@@ -85,8 +83,6 @@ int main(int argc, char **argv)
 
 		return 0;
 	}
-
-
 
 	return 0;
 }

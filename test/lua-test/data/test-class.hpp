@@ -108,6 +108,15 @@ struct CustomObjectData
 
 		return r;
 	}
+
+	static std::string staticOverload(int i)
+	{
+		return "1";
+	}
+	static std::string staticOverload(std::string s)
+	{
+		return "2";
+	}
 };
 double CustomObjectData::d1 = 12.678;
 std::function<int(int)> CustomObjectData::staticFunctionPointer = [](int i)
@@ -139,6 +148,11 @@ struct CustomObjectData2 : public CustomObjectData
 	{
 		return s;
 	}
+
+	static std::string staticOverload(std::string s, int i)
+	{
+		return "3";
+	}
 };
 
 using CustomObjectSubDataSpec = ClassTyping<
@@ -166,12 +180,87 @@ using CustomObjectDataDoStuffOverloads = MemberOverload<
 
 	>;
 
-// TODO: Add support for static function overloading
+using CustomObjectDataStaticOverloads = StaticOverload<
+	StaticFunction<
+		"staticOverload",
+		(std::string(*)(int)) & CustomObjectData::staticOverload,
+		"A static function to test overloading.",
+		ParameterPack<
+			Parameter<"i", "int parameter to be used in the function passed.">>>,
+	StaticFunction<
+		"staticOverload",
+		(std::string(*)(std::string)) & CustomObjectData::staticOverload,
+		"A static function to test overloading.",
+		ParameterPack<
+			Parameter<"s", "string parameter to be used in the function passed.">>>>;
 
-// using CustomObjectDataSTATICOverloads = StaticOverload<
-// 	StaticFunction<>,
-// 	StaticFunction<>
-// 	>;
+using F1 = Static<"d1", &CustomObjectData::d1, "A static double field.">;
+using F2 = Member<"i1", &CustomObjectData::i1, "An instance int field.">;
+using F3 = Member<"s1", &CustomObjectData::s1, "An instance string field.">;
+using F4 = Member<"o1", &CustomObjectData::o1, "Sub class data pointer.">;
+using F5 = Member<"o2", &CustomObjectData::o2, "Sub class data shared pointer.">;
+using F6 = Member<"o3", &CustomObjectData::o3, "Sub class data non-pointer.">;
+using F7 = Member<"o4", &CustomObjectData::o3, "Sub class data & reference.">;
+
+using F8 = MemberFunction<
+	"functionPointer",
+	&CustomObjectData::functionPointer,
+	"A function pointer to bind to lua.",
+	ParameterPack<
+		Parameter<"i", "int parameter to be used in the function passed.">>>;
+using F9 = StaticFunction<
+	"staticFunctionPointer",
+	&CustomObjectData::staticFunctionPointer,
+	"A function pointer to bind to lua.",
+	ParameterPack<
+		Parameter<"i", "int parameter to be used in the function passed.">>>;
+
+using F10 = MemberFunction<
+	"testPassedFunction",
+	&CustomObjectData::testPassedFunction,
+	"A function to test how many invocations of the functionPointer can be done per second.",
+	ParameterPack<
+		Parameter<"i", "int parameter">>>;
+
+using F11 = StaticFunction<
+	"staticFunction",
+	&CustomObjectData::staticFunction,
+	"An static function that does stuff.",
+	ParameterPack<
+		Parameter<"num", "int parameter">>>;
+
+// TODO: generated json is typing these 2 functions the same for some reason.
+using F12 = StaticFunction<
+	"staticAsync",
+	&CustomObjectData::staticAsync,
+	"An static function that does stuff asynchronously and returns a promise.",
+	ParameterPack<
+		Parameter<"numSeconds", "Number of seconds to wait.">>>;
+using F13 = MemberFunction<
+	"memberAsync",
+	&CustomObjectData::memberAsync,
+	"An member function that does stuff asynchronously and returns a promise.",
+	ParameterPack<
+		Parameter<"numSeconds", "Number of seconds to wait.">>>;
+
+using CustomConstructor =
+	StaticOverload<
+		Constructor<
+			+[](int num)
+			{
+				return CustomObjectData();
+			},
+			"An inline lambda function attached as a constructor function.",
+			ParameterPack<
+				Parameter<"num", "int parameter">>>,
+		Constructor<
+			+[](std::string str)
+			{
+				return CustomObjectData();
+			},
+			"An overloaded inline lambda function attached as a constructor function. Takes a string instead of an int.",
+			ParameterPack<
+				Parameter<"str", "string parameter">>>>;
 
 using CustomObjectDataSpec = ClassTyping<
 	// Class name to bind to
@@ -182,93 +271,74 @@ using CustomObjectDataSpec = ClassTyping<
 	CustomObjectData,
 	// Inherits from nothing. It is its own class
 	void,
-	Static<"d1", &CustomObjectData::d1, "A static double field.">,
-	Member<"i1", &CustomObjectData::i1, "An instance int field.">,
-	Member<"s1", &CustomObjectData::s1, "An instance string field.">,
-	Member<"o1", &CustomObjectData::o1, "Sub class data pointer.">,
-	Member<"o2", &CustomObjectData::o2, "Sub class data shared pointer.">,
-	Member<"o3", &CustomObjectData::o3, "Sub class data non-pointer.">,
-	Member<"o4", &CustomObjectData::o3, "Sub class data & reference.">,
 
-	MemberFunction<
-		"functionPointer",
-		&CustomObjectData::functionPointer,
-		"A function pointer to bind to lua.",
-		ParameterPack<
-			Parameter<"i", "int parameter to be used in the function passed.">>>,
-	StaticFunction<
-		"staticFunctionPointer",
-		&CustomObjectData::staticFunctionPointer,
-		"A function pointer to bind to lua.",
-		ParameterPack<
-			Parameter<"i", "int parameter to be used in the function passed.">>>,
+	F1,
+	F2,
+	F3,
+	F4,
+	F5,
+	F6,
+	F7,
+
+	F8,
+	F9,
 
 	CustomObjectDataDoStuffOverloads,
+	CustomObjectDataStaticOverloads,
 
-	MemberFunction<
-		"testPassedFunction",
-		&CustomObjectData::testPassedFunction,
-		"A function to test how many invocations of the functionPointer can be done per second.",
-		ParameterPack<
-			Parameter<"i", "int parameter">>>,
+	F10,
+	F11,
+	F12,
+	F13,
 
-	StaticFunction<
-		"staticFunction",
-		&CustomObjectData::staticFunction,
-		"An static function that does stuff.",
-		ParameterPack<
-			Parameter<"num", "int parameter">>>,
-
-	// TODO: generated json is typing these 2 functions the same for some reason.
-	StaticFunction<
-		"staticAsync",
-		&CustomObjectData::staticAsync,
-		"An static function that does stuff asynchronously and returns a promise.",
-		ParameterPack<
-			Parameter<"numSeconds", "Number of seconds to wait.">>>,
-	MemberFunction<
-		"memberAsync",
-		&CustomObjectData::memberAsync,
-		"An member function that does stuff asynchronously and returns a promise.",
-		ParameterPack<
-			Parameter<"numSeconds", "Number of seconds to wait.">>>,
-
-	// Constructors should always be declared with a lambda function.
-	Constructor<
-		+[](int num)
-		{
-			return CustomObjectData();
-		},
-		"An inline lambda function attached as a static function.",
-		ParameterPack<
-			Parameter<"num", "int parameter">>>>;
+	CustomConstructor>;
 
 RegisterType(CustomObjectData, CustomObjectDataSpec);
 RegisterType(CustomObjectData::CustomObjectSubData, CustomObjectSubDataSpec);
 
 ///////////////////////////////////////////////////////////////////////////////
 
+using G1 = Member<"secondI", &CustomObjectData2::secondI, "A value only available on the child class CustomObjectData2.">;
+using SecondCustomObjectDataDoStuffOverloads = CustomObjectDataDoStuffOverloads::AddOverloads<
+	MemberFunction<
+		"doStuff",
+		(std::string(CustomObjectData2::*)(std::string)) & CustomObjectData2::doStuff,
+		"An instance function that does stuff.",
+		ParameterPack<
+			Parameter<"s", "string parameter">>>>;
+
+using SecondCustomObjectDataStaticOverloads = CustomObjectDataStaticOverloads::AddOverloads<
+	StaticFunction<
+		"staticOverload",
+		&CustomObjectData2::staticOverload,
+		"A static function to test overloading.",
+		ParameterPack<
+			Parameter<"s", "string parameter to be used in the function passed.">,
+			Parameter<"i", "int parameter to be used in the function passed.">>>>;
+
 using CustomObjectDataSpec2 = ClassTyping<
-								  "CustomObjectData2",
-								  "A custom class to test typing.",
-								  CustomObjectData2,
-								  /*
-									  Specifies that CustomObjectData inherits from CustomObjectData, and all
-									  CustomObjectData bindings should also be bound to CustomObjectData2.
-								  */
-								  CustomObjectData,
-								  Member<"secondI", &CustomObjectData2::secondI, "A value only available on the child class CustomObjectData2.">,
-								  CustomObjectDataDoStuffOverloads::AddOverloads<
-									  MemberFunction<
-										  "doStuff",
-										  (std::string(CustomObjectData2::*)(std::string)) & CustomObjectData2::doStuff,
-										  "An instance function that does stuff.",
-										  ParameterPack<
-											  Parameter<"s", "string parameter">
-										  >
-									  >
-								  >
-								> ;
+	"CustomObjectData2",
+	"A custom class to test typing.",
+	CustomObjectData2,
+	/*
+		Specifies that CustomObjectData inherits from CustomObjectData, and all
+		CustomObjectData bindings should also be bound to CustomObjectData2.
+	*/
+	CustomObjectData,
+	G1,
+	SecondCustomObjectDataDoStuffOverloads,
+	SecondCustomObjectDataStaticOverloads,
+	Constructor<
+		+[](double d)
+		{
+			return CustomObjectData2();
+		},
+		"An inline lambda function attached as a constructor function. Specifically for CustomObjectData2.",
+		ParameterPack<
+			Parameter<"d", "double parameter">
+		>
+	>
+>;
 
 RegisterType(CustomObjectData2, CustomObjectDataSpec2);
 

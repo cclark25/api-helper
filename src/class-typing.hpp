@@ -11,12 +11,12 @@ namespace APICore
     template <typename T, class ClassType>
     concept ClassMember = requires {
         requires true;
-                            //   requires MemberPtrSpec<T> || MemberFunctionPtrSpec<T>;
-                            //   requires std::is_same<typename T::classType, FunctionType>::value;
+                              requires MemberPtrSpec<T> || MemberFunctionPtrSpec<T> ;
+                              requires std::is_same<typename T::classType, ClassType>::value;
                           };
     
     template <typename T, class ClassType>
-    concept ClassField = StaticPtrSpec<T> || ClassMember<T, ClassType> ;
+    concept ClassField = StaticPtrSpec<T> || ClassMember<T, ClassType> || MemberOverloadSpec<T> || StaticOverloadSpec<T>;
 
     template <StringLiteral ClassName, StringLiteral ClassDescription, class ClassType, class InheritedFrom, ClassField<ClassType>... Fields>
     requires ( std::is_void_v<InheritedFrom> || std::derived_from<ClassType, InheritedFrom>)

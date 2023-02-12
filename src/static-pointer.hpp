@@ -15,7 +15,7 @@ namespace APICore {
         static std::string description;
         static ptrType ptr;
 
-        static bool isConstructor;
+        static const bool isConstructor = false;
 
         static const bool isMember = false;
         static const bool isCustomMember = false;
@@ -27,9 +27,6 @@ namespace APICore {
     template<StringLiteral Key, auto Pointer, StringLiteral Description>
     typename Static<Key, Pointer, Description>::ptrType Static<Key, Pointer, Description>::ptr = nullptr;
 
-    template <StringLiteral Key, auto Pointer, StringLiteral Description>
-    bool Static<Key, Pointer, Description>::isConstructor = false;
-
     template<StringLiteral Key, typename T, T* Pointer, StringLiteral Description>
     struct Static<Key, Pointer, Description> {
         using type = T;
@@ -37,9 +34,9 @@ namespace APICore {
         static std::string key;
         static std::string description;
         static ptrType ptr;
-        static bool isConstructor;
+        static const bool isConstructor = false;
         static const bool isMember = false;
-        static const bool isCustomMember = false;
+        static bool isCustomMember ;
     };
     template<StringLiteral Key, typename T, T* Pointer, StringLiteral Description>
     std::string Static<Key, Pointer, Description>::key = Key.value;
@@ -47,14 +44,15 @@ namespace APICore {
     std::string Static<Key, Pointer, Description>::description = Description.value;
     template<StringLiteral Key, typename T, T* Pointer, StringLiteral Description>
     typename Static<Key, Pointer, Description>::ptrType Static<Key, Pointer, Description>::ptr = Pointer;
+    
     template<StringLiteral Key, typename T, T* Pointer, StringLiteral Description>
-    bool Static<Key, Pointer, Description>::isConstructor = false;
+    bool Static<Key, Pointer, Description>::isCustomMember = false;
 
     template<typename T>
-    concept StaticPtrSpec = requires (T::type typeVal, T::ptrType ptrVal) {
-       { T::key } -> std::convertible_to<std::string>;
-       { T::ptr } -> std::convertible_to<typename T::ptrType>;
-       { T::ptr } -> std::convertible_to<typename T::type*>;
+    concept StaticPtrSpec = requires  {
+       requires std::is_same_v<decltype(T::key), std::string>;
+       requires std::is_same_v<decltype(T::ptr), typename T::ptrType>;
+       requires std::is_same_v<decltype(T::ptr), typename T::type*>;
        requires !T::isMember ;
     };
 };
