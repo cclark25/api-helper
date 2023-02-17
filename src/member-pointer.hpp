@@ -1,5 +1,4 @@
-#ifndef MEMBER_POINTER
-#define MEMBER_POINTER
+#pragma once
 
 #include "./string-literal.hpp"
 #include <type_traits>
@@ -76,5 +75,3 @@ namespace APICore
                             };
 
 };
-
-#endif

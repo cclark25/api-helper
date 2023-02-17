@@ -1,5 +1,4 @@
-#ifndef STATIC_FUNCTION_POINTER
-#define STATIC_FUNCTION_POINTER
+#pragma once
 
 #include "./string-literal.hpp"
 #include "./static-pointer.hpp"
@@ -79,5 +78,3 @@ namespace APICore
         using AddOverloads = StaticOverload<FirstFunction, OtherFunctions..., Functions...>;
     };
 };
-
-#endif

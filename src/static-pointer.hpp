@@ -1,5 +1,4 @@
-#ifndef STATIC_POINTER
-#define STATIC_POINTER
+#pragma once
 
 #include "./string-literal.hpp"
 #include <type_traits>
@@ -56,5 +55,3 @@ namespace APICore {
        requires !T::isMember ;
     };
 };
-
-#endif

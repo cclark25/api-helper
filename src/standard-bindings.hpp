@@ -1,5 +1,4 @@
-#ifndef STANDARD_API_BINDINGS
-#define STANDARD_API_BINDINGS
+#pragma once
 
 #include <future>
 #include "./type-lookup.hpp"
@@ -92,4 +91,4 @@ namespace APICore
     bool APICore::TypeLookup<std::shared_future<T>>::isDefined = true;
 
 }
-#endif
+#pragma once

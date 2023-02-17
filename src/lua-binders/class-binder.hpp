@@ -1,5 +1,4 @@
-#ifndef CLASS_LUA_BINDER
-#define CLASS_LUA_BINDER
+#pragma once
 
 #include "../type-lookup.hpp"
 #include "./type-binder.hpp"
@@ -300,5 +299,3 @@ namespace APICore
         };
     };
 }
-
-#endif

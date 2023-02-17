@@ -1,5 +1,4 @@
-#ifndef LUA_BINDING_CONCEPTS
-#define LUA_BINDING_CONCEPTS
+#pragma once
 
 #include <type_traits>
 #include <string>
@@ -47,5 +46,3 @@ namespace APICore
     // bool IsFunctionObject<std::function<R(P...)>>::value = true;
 
 }
-
-#endif

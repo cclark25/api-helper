@@ -1,5 +1,4 @@
-#ifndef LUA_REFERENCE_BINDER
-#define LUA_REFERENCE_BINDER
+#pragma once
 
 #include <memory>
 #include <string>
@@ -67,5 +66,3 @@ namespace APICore
         };
     };
 }
-
-#endif

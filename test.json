@@ -1,368 +1,555 @@
 {
-    "94459393004112": {
+    "94024865524880": {
         "description": "A custom class to test typing.",
-        "inheritsFrom": "94459393006864",
+        "inheritsFrom": "94024865551232",
         "memberFields": {
+            "doStuff": {
+                "isMemberOverload": true,
+                "overloads": [
+                    {
+                        "description": "An instance function that does stuff. Takes an int and a string.",
+                        "typeId": "94024865537776"
+                    },
+                    {
+                        "description": "An instance function that does stuff. Takes a string. Specifically for CustomObjectData2.",
+                        "typeId": "94024865537808"
+                    },
+                    {
+                        "description": "An instance function that does stuff. Takes an int.",
+                        "typeId": "94024865544048"
+                    }
+                ]
+            },
             "secondI": {
                 "description": "A value only available on the child class CustomObjectData2.",
-                "typeId": "94459393004864"
+                "typeId": "94024865527024"
             }
         },
         "name": "CustomObjectData2",
-        "staticFields": null,
-        "typeId": "94459393004112"
+        "staticFields": {
+            "__constructor": {
+                "description": "An inline lambda function attached as a constructor function. Specifically for CustomObjectData2.",
+                "typeId": "94024865525632"
+            },
+            "staticOverload": {
+                "isStaticOverload": true,
+                "overloads": [
+                    {
+                        "description": "A static function to test overloading. Takes an int.",
+                        "typeId": "94024865525824"
+                    },
+                    {
+                        "description": "A static function to test overloading. Takes a string and an int. Specifically for CustomObjectData2.",
+                        "typeId": "94024865528304"
+                    },
+                    {
+                        "description": "A static function to test overloading. Takes a string.",
+                        "typeId": "94024865528368"
+                    }
+                ]
+            }
+        },
+        "typeId": "94024865524880"
     },
-    "94459393004864": {
+    "94024865525632": {
+        "description": "An inline lambda function attached as a constructor function. Specifically for CustomObjectData2.",
+        "functionDescription": {
+            "parameters": [
+                {
+                    "description": "double parameter",
+                    "name": "d",
+                    "typeId": "94024865537360"
+                }
+            ],
+            "returnTypeId": "94024865524880"
+        },
+        "isBasicType": true,
+        "name": "__constructor",
+        "typeId": "94024865525632"
+    },
+    "94024865525824": {
+        "description": "A static function to test overloading. Takes an int.",
+        "functionDescription": {
+            "parameters": [
+                {
+                    "description": "int parameter to be used in the function passed.",
+                    "name": "i",
+                    "typeId": "94024865527024"
+                }
+            ],
+            "returnTypeId": "94024865528528"
+        },
+        "isBasicType": true,
+        "name": "staticOverload",
+        "typeId": "94024865525824"
+    },
+    "94024865527024": {
         "isBasicType": true,
         "name": "int",
-        "typeId": "94459393004864"
+        "typeId": "94024865527024"
     },
-    "94459393006864": {
+    "94024865528304": {
+        "description": "A static function to test overloading. Takes a string and an int. Specifically for CustomObjectData2.",
+        "functionDescription": {
+            "parameters": [
+                {
+                    "description": "string parameter to be used in the function passed.",
+                    "name": "s",
+                    "typeId": "94024865528528"
+                },
+                {
+                    "description": "int parameter to be used in the function passed.",
+                    "name": "i",
+                    "typeId": "94024865527024"
+                }
+            ],
+            "returnTypeId": "94024865528528"
+        },
+        "isBasicType": true,
+        "name": "staticOverload",
+        "typeId": "94024865528304"
+    },
+    "94024865528368": {
+        "description": "A static function to test overloading. Takes a string.",
+        "functionDescription": {
+            "parameters": [
+                {
+                    "description": "string parameter to be used in the function passed.",
+                    "name": "s",
+                    "typeId": "94024865528528"
+                }
+            ],
+            "returnTypeId": "94024865528528"
+        },
+        "isBasicType": true,
+        "name": "staticOverload",
+        "typeId": "94024865528368"
+    },
+    "94024865528528": {
+        "isBasicType": true,
+        "name": "string",
+        "typeId": "94024865528528"
+    },
+    "94024865537360": {
+        "isBasicType": true,
+        "name": "double",
+        "typeId": "94024865537360"
+    },
+    "94024865537776": {
+        "description": "An instance function that does stuff. Takes an int and a string.",
+        "functionDescription": {
+            "parameters": [
+                {
+                    "description": "int parameter",
+                    "name": "i",
+                    "typeId": "94024865527024"
+                },
+                {
+                    "description": "string parameter",
+                    "name": "s",
+                    "typeId": "94024865528528"
+                }
+            ],
+            "returnTypeId": "94024865528528"
+        },
+        "isBasicType": true,
+        "name": "doStuff",
+        "typeId": "94024865537776"
+    },
+    "94024865537808": {
+        "description": "An instance function that does stuff. Takes a string. Specifically for CustomObjectData2.",
+        "functionDescription": {
+            "parameters": [
+                {
+                    "description": "string parameter",
+                    "name": "s",
+                    "typeId": "94024865528528"
+                }
+            ],
+            "returnTypeId": "94024865528528"
+        },
+        "isBasicType": true,
+        "name": "doStuff",
+        "typeId": "94024865537808"
+    },
+    "94024865544048": {
+        "description": "An instance function that does stuff. Takes an int.",
+        "functionDescription": {
+            "parameters": [
+                {
+                    "description": "int parameter",
+                    "name": "i",
+                    "typeId": "94024865527024"
+                }
+            ],
+            "returnTypeId": "94024865528528"
+        },
+        "isBasicType": true,
+        "name": "doStuff",
+        "typeId": "94024865544048"
+    },
+    "94024865551232": {
         "description": "A custom class to test typing.",
         "memberFields": {
             "doStuff": {
-                "description": "An instance function that does stuff.",
-                "typeId": "94459393037360"
+                "isMemberOverload": true,
+                "overloads": [
+                    {
+                        "description": "An instance function that does stuff. Takes an int and a string.",
+                        "typeId": "94024865537776"
+                    },
+                    {
+                        "description": "An instance function that does stuff. Takes an int.",
+                        "typeId": "94024865544048"
+                    }
+                ]
             },
             "functionPointer": {
                 "description": "A function pointer to bind to lua.",
-                "typeId": "94459393035696"
+                "typeId": "94024865583312"
             },
             "i1": {
                 "description": "An instance int field.",
-                "typeId": "94459393004864"
+                "typeId": "94024865527024"
             },
             "memberAsync": {
                 "description": "An member function that does stuff asynchronously and returns a promise.",
-                "typeId": "94459393037424"
+                "typeId": "94024865584976"
             },
             "o1": {
                 "description": "Sub class data pointer.",
-                "typeId": "94459393016112"
+                "typeId": "94024865558480"
             },
             "o2": {
                 "description": "Sub class data shared pointer.",
-                "typeId": "94459393033056"
+                "typeId": "94024865580672"
             },
             "o3": {
                 "description": "Sub class data non-pointer.",
-                "typeId": "94459393028224"
+                "typeId": "94024865572976"
             },
             "o4": {
                 "description": "Sub class data & reference.",
-                "typeId": "94459393028224"
+                "typeId": "94024865572976"
             },
             "s1": {
                 "description": "An instance string field.",
-                "typeId": "94459393013248"
+                "typeId": "94024865528528"
             },
             "testPassedFunction": {
                 "description": "A function to test how many invocations of the functionPointer can be done per second.",
-                "typeId": "94459393040112"
+                "typeId": "94024865585008"
             }
         },
         "name": "CustomObjectData",
         "staticFields": {
             "__constructor": {
-                "description": "An inline lambda function attached as a static function.",
-                "typeId": "94459393010880"
+                "isStaticOverload": true,
+                "overloads": [
+                    {
+                        "description": "An inline lambda function attached as a constructor function.",
+                        "typeId": "94024865558512"
+                    },
+                    {
+                        "description": "An overloaded inline lambda function attached as a constructor function. Takes a string instead of an int.",
+                        "typeId": "94024865560704"
+                    }
+                ]
             },
             "d1": {
                 "description": "A static double field.",
-                "typeId": "94459393007456"
+                "typeId": "94024865537360"
             },
             "staticAsync": {
                 "description": "An static function that does stuff asynchronously and returns a promise.",
-                "typeId": "94459393010816"
+                "typeId": "94024865554720"
             },
             "staticFunction": {
                 "description": "An static function that does stuff.",
-                "typeId": "94459393008288"
+                "typeId": "94024865552128"
             },
             "staticFunctionPointer": {
                 "description": "A function pointer to bind to lua.",
-                "typeId": "94459393009008"
+                "typeId": "94024865552848"
+            },
+            "staticOverload": {
+                "isStaticOverload": true,
+                "overloads": [
+                    {
+                        "description": "A static function to test overloading. Takes an int.",
+                        "typeId": "94024865525824"
+                    },
+                    {
+                        "description": "A static function to test overloading. Takes a string.",
+                        "typeId": "94024865528368"
+                    }
+                ]
             }
         },
-        "typeId": "94459393006864"
+        "typeId": "94024865551232"
     },
-    "94459393007456": {
-        "isBasicType": true,
-        "name": "double",
-        "typeId": "94459393007456"
-    },
-    "94459393008288": {
+    "94024865552128": {
         "description": "An static function that does stuff.",
         "functionDescription": {
             "parameters": [
                 {
                     "description": "int parameter",
                     "name": "num",
-                    "typeId": "94459393004864"
+                    "typeId": "94024865527024"
                 }
             ],
-            "returnTypeId": "94459393013248"
+            "returnTypeId": "94024865528528"
         },
         "isBasicType": true,
         "name": "staticFunction",
-        "typeId": "94459393008288"
+        "typeId": "94024865552128"
     },
-    "94459393009008": {
+    "94024865552848": {
         "description": "A function pointer to bind to lua.",
         "functionDescription": {
             "parameters": [
                 {
                     "description": "int parameter to be used in the function passed.",
                     "name": "i",
-                    "typeId": "94459393004864"
+                    "typeId": "94024865527024"
                 }
             ],
-            "returnTypeId": "94459393004864"
+            "returnTypeId": "94024865527024"
         },
         "isFunctionPointer": true,
         "memberFields": null,
         "name": "staticFunctionPointer",
         "staticFields": null,
-        "typeId": "94459393009008"
+        "typeId": "94024865552848"
     },
-    "94459393010816": {
+    "94024865554720": {
         "description": "An static function that does stuff asynchronously and returns a promise.",
         "functionDescription": {
             "parameters": [
                 {
                     "description": "Number of seconds to wait.",
                     "name": "numSeconds",
-                    "typeId": "94459393004864"
+                    "typeId": "94024865527024"
                 }
             ],
-            "returnTypeId": "94459393016272"
+            "returnTypeId": "94024865560832"
         },
         "isBasicType": true,
         "name": "staticAsync",
-        "typeId": "94459393010816"
+        "typeId": "94024865554720"
     },
-    "94459393010880": {
-        "description": "An inline lambda function attached as a static function.",
+    "94024865558480": {
+        "description": "",
+        "name": "reference",
+        "referenceTypeId": "94024865572976",
+        "typeId": "94024865558480"
+    },
+    "94024865558512": {
+        "description": "An inline lambda function attached as a constructor function.",
         "functionDescription": {
             "parameters": [
                 {
                     "description": "int parameter",
                     "name": "num",
-                    "typeId": "94459393004864"
+                    "typeId": "94024865527024"
                 }
             ],
-            "returnTypeId": "94459393006864"
+            "returnTypeId": "94024865551232"
         },
         "isBasicType": true,
         "name": "__constructor",
-        "typeId": "94459393010880"
+        "typeId": "94024865558512"
     },
-    "94459393013248": {
+    "94024865560704": {
+        "description": "An overloaded inline lambda function attached as a constructor function. Takes a string instead of an int.",
+        "functionDescription": {
+            "parameters": [
+                {
+                    "description": "string parameter",
+                    "name": "str",
+                    "typeId": "94024865528528"
+                }
+            ],
+            "returnTypeId": "94024865551232"
+        },
         "isBasicType": true,
-        "name": "string",
-        "typeId": "94459393013248"
+        "name": "__constructor",
+        "typeId": "94024865560704"
     },
-    "94459393016112": {
-        "description": "",
-        "name": "reference",
-        "referenceTypeId": "94459393028224",
-        "typeId": "94459393016112"
-    },
-    "94459393016272": {
+    "94024865560832": {
         "description": "An awaitable promise of an asynchronous execution.",
         "memberFields": {
             "await": {
                 "description": "Block this thread and wait for the promise to resolve.",
-                "typeId": "94459393016848"
+                "typeId": "94024865561408"
             },
             "onResolve": {
                 "description": "Execute the passed callback function upon completion of the promise. Execution is deferred until the promise returned by onResolve is awaited.",
-                "typeId": "94459393019104"
+                "typeId": "94024865563664"
             }
         },
         "name": "SharedPromise",
         "staticFields": null,
-        "typeId": "94459393016272"
+        "typeId": "94024865560832"
     },
-    "94459393016848": {
+    "94024865561408": {
         "description": "Block this thread and wait for the promise to resolve.",
         "functionDescription": {
             "parameters": null,
-            "returnTypeId": "94459393013248"
+            "returnTypeId": "94024865528528"
         },
         "isBasicType": true,
         "name": "await",
-        "typeId": "94459393016848"
+        "typeId": "94024865561408"
     },
-    "94459393019104": {
+    "94024865563664": {
         "description": "Execute the passed callback function upon completion of the promise. Execution is deferred until the promise returned by onResolve is awaited.",
         "functionDescription": {
             "parameters": null,
-            "returnTypeId": "94459393019616"
+            "returnTypeId": "94024865564176"
         },
         "isBasicType": true,
         "name": "onResolve",
-        "typeId": "94459393019104"
+        "typeId": "94024865563664"
     },
-    "94459393019616": {
+    "94024865564176": {
         "description": "An awaitable promise of an asynchronous execution.",
         "memberFields": {
             "await": {
                 "description": "Block this thread and wait for the promise to resolve.",
-                "typeId": "94459393020240"
+                "typeId": "94024865564800"
             },
             "onResolve": {
                 "description": "Execute the passed callback function upon completion of the promise. Execution is deferred until the promise returned by onResolve is awaited.",
-                "typeId": "94459393023072"
+                "typeId": "94024865567632"
             }
         },
         "name": "SharedPromise",
         "staticFields": null,
-        "typeId": "94459393019616"
+        "typeId": "94024865564176"
     },
-    "94459393020240": {
+    "94024865564800": {
         "description": "Block this thread and wait for the promise to resolve.",
         "functionDescription": {
             "parameters": null,
-            "returnTypeId": "94459393021120"
+            "returnTypeId": "94024865565680"
         },
         "isBasicType": true,
         "name": "await",
-        "typeId": "94459393020240"
+        "typeId": "94024865564800"
     },
-    "94459393021120": {
+    "94024865565680": {
         "isBasicType": true,
         "name": "void",
-        "typeId": "94459393021120"
+        "typeId": "94024865565680"
     },
-    "94459393023072": {
+    "94024865567632": {
         "description": "Execute the passed callback function upon completion of the promise. Execution is deferred until the promise returned by onResolve is awaited.",
         "functionDescription": {
             "parameters": null,
-            "returnTypeId": "94459393019616"
+            "returnTypeId": "94024865564176"
         },
         "isBasicType": true,
         "name": "onResolve",
-        "typeId": "94459393023072"
+        "typeId": "94024865567632"
     },
-    "94459393028224": {
+    "94024865572976": {
         "description": "A custom class to test typing a class's sub class.",
         "memberFields": {
             "i2": {
                 "description": "Sub data's instance int field.",
-                "typeId": "94459393004864"
+                "typeId": "94024865527024"
             },
             "s2": {
                 "description": "Sub data's instance string field.",
-                "typeId": "94459393013248"
+                "typeId": "94024865528528"
             }
         },
         "name": "CustomObjectSubData",
         "staticFields": null,
-        "typeId": "94459393028224"
+        "typeId": "94024865572976"
     },
-    "94459393033056": {
+    "94024865580672": {
         "description": "",
         "name": "reference",
-        "referenceTypeId": "94459393028224",
-        "typeId": "94459393033056"
+        "referenceTypeId": "94024865572976",
+        "typeId": "94024865580672"
     },
-    "94459393035696": {
+    "94024865583312": {
         "description": "A function pointer to bind to lua.",
         "functionDescription": {
             "parameters": [
                 {
                     "description": "int parameter to be used in the function passed.",
                     "name": "i",
-                    "typeId": "94459393004864"
+                    "typeId": "94024865527024"
                 }
             ],
-            "returnTypeId": "94459393004864"
+            "returnTypeId": "94024865527024"
         },
         "isFunctionPointer": true,
         "memberFields": null,
         "name": "functionPointer",
         "staticFields": null,
-        "typeId": "94459393035696"
+        "typeId": "94024865583312"
     },
-    "94459393037360": {
-        "description": "An instance function that does stuff.",
-        "functionDescription": {
-            "parameters": [
-                {
-                    "description": "int parameter",
-                    "name": "i",
-                    "typeId": "94459393004864"
-                },
-                {
-                    "description": "string parameter",
-                    "name": "s",
-                    "typeId": "94459393013248"
-                }
-            ],
-            "returnTypeId": "94459393013248"
-        },
-        "isBasicType": true,
-        "name": "doStuff",
-        "typeId": "94459393037360"
-    },
-    "94459393037424": {
+    "94024865584976": {
         "description": "An member function that does stuff asynchronously and returns a promise.",
         "functionDescription": {
             "parameters": [
                 {
                     "description": "Number of seconds to wait.",
                     "name": "numSeconds",
-                    "typeId": "94459393004864"
+                    "typeId": "94024865527024"
                 }
             ],
-            "returnTypeId": "94459393045760"
+            "returnTypeId": "94024865591888"
         },
         "isBasicType": true,
         "name": "memberAsync",
-        "typeId": "94459393037424"
+        "typeId": "94024865584976"
     },
-    "94459393040112": {
+    "94024865585008": {
         "description": "A function to test how many invocations of the functionPointer can be done per second.",
         "functionDescription": {
             "parameters": [
                 {
                     "description": "int parameter",
                     "name": "i",
-                    "typeId": "94459393042624"
+                    "typeId": "94024865588576"
                 }
             ],
-            "returnTypeId": "94459393007456"
+            "returnTypeId": "94024865537360"
         },
         "isBasicType": true,
         "name": "testPassedFunction",
-        "typeId": "94459393040112"
+        "typeId": "94024865585008"
     },
-    "94459393042624": {
+    "94024865588576": {
         "isBasicType": true,
         "name": "size_t",
-        "typeId": "94459393042624"
+        "typeId": "94024865588576"
     },
-    "94459393045760": {
+    "94024865591888": {
         "description": "An awaitable promise of an asynchronous execution.",
         "memberFields": {
             "await": {
                 "description": "Block this thread and wait for the promise to resolve.",
-                "typeId": "94459393046336"
+                "typeId": "94024865592464"
             }
         },
         "name": "Promise",
         "staticFields": null,
-        "typeId": "94459393045760"
+        "typeId": "94024865591888"
     },
-    "94459393046336": {
+    "94024865592464": {
         "description": "Block this thread and wait for the promise to resolve.",
         "functionDescription": {
             "parameters": null,
-            "returnTypeId": "94459393013248"
+            "returnTypeId": "94024865528528"
         },
         "isBasicType": true,
         "name": "await",
-        "typeId": "94459393046336"
+        "typeId": "94024865592464"
     }
 }

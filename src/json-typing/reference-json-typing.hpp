@@ -1,5 +1,4 @@
-#ifndef REFERENCE_LUA_JSON_TYPING
-#define REFERENCE_LUA_JSON_TYPING
+#pragma once
 
 #include <json.hpp>
 #include "../class-typing.hpp"
@@ -23,5 +22,3 @@ namespace APICore
         }
     };
 }
-
-#endif

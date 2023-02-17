@@ -1,5 +1,5 @@
-#ifndef __TEST_CLASS_DEFINITION
-#define __TEST_CLASS_DEFINITION
+#pragma once
+
 #include <memory>
 #include <future>
 #include <thread>
@@ -167,14 +167,14 @@ using CustomObjectDataDoStuffOverloads = MemberOverload<
 	MemberFunction<
 		"doStuff",
 		(std::string(CustomObjectData::*)(int, std::string)) & CustomObjectData::doStuff,
-		"An instance function that does stuff.",
+		"An instance function that does stuff. Takes an int and a string.",
 		ParameterPack<
 			Parameter<"i", "int parameter">,
 			Parameter<"s", "string parameter">>>,
 	MemberFunction<
 		"doStuff",
 		(std::string(CustomObjectData::*)(int)) & CustomObjectData::doStuff,
-		"An instance function that does stuff.",
+		"An instance function that does stuff. Takes an int.",
 		ParameterPack<
 			Parameter<"i", "int parameter">>>
 
@@ -184,13 +184,13 @@ using CustomObjectDataStaticOverloads = StaticOverload<
 	StaticFunction<
 		"staticOverload",
 		(std::string(*)(int)) & CustomObjectData::staticOverload,
-		"A static function to test overloading.",
+		"A static function to test overloading. Takes an int.",
 		ParameterPack<
 			Parameter<"i", "int parameter to be used in the function passed.">>>,
 	StaticFunction<
 		"staticOverload",
 		(std::string(*)(std::string)) & CustomObjectData::staticOverload,
-		"A static function to test overloading.",
+		"A static function to test overloading. Takes a string.",
 		ParameterPack<
 			Parameter<"s", "string parameter to be used in the function passed.">>>>;
 
@@ -303,7 +303,7 @@ using SecondCustomObjectDataDoStuffOverloads = CustomObjectDataDoStuffOverloads:
 	MemberFunction<
 		"doStuff",
 		(std::string(CustomObjectData2::*)(std::string)) & CustomObjectData2::doStuff,
-		"An instance function that does stuff.",
+		"An instance function that does stuff. Takes a string. Specifically for CustomObjectData2.",
 		ParameterPack<
 			Parameter<"s", "string parameter">>>>;
 
@@ -311,7 +311,7 @@ using SecondCustomObjectDataStaticOverloads = CustomObjectDataStaticOverloads::A
 	StaticFunction<
 		"staticOverload",
 		&CustomObjectData2::staticOverload,
-		"A static function to test overloading.",
+		"A static function to test overloading. Takes a string and an int. Specifically for CustomObjectData2.",
 		ParameterPack<
 			Parameter<"s", "string parameter to be used in the function passed.">,
 			Parameter<"i", "int parameter to be used in the function passed.">>>>;
@@ -341,5 +341,3 @@ using CustomObjectDataSpec2 = ClassTyping<
 >;
 
 RegisterType(CustomObjectData2, CustomObjectDataSpec2);
-
-#endif

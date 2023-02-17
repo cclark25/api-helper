@@ -1,5 +1,4 @@
-#ifndef FUNCTION_LUA_JSON_TYPING
-#define FUNCTION_LUA_JSON_TYPING
+#pragma once
 
 #include <json.hpp>
 #include <functional>
@@ -137,5 +136,3 @@ namespace APICore
     std::shared_ptr<json> JsonTyper<std::function<ReturnType(Parameters...)>, StaticFunctionDef>::declaration = nullptr;
 
 }
-
-#endif

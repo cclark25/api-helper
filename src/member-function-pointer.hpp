@@ -1,5 +1,4 @@
-#ifndef MEMBER_FUNCTION_POINTER
-#define MEMBER_FUNCTION_POINTER
+#pragma once
 
 #include "./string-literal.hpp"
 #include "./member-pointer.hpp"
@@ -103,5 +102,3 @@ namespace APICore
     };
 
 };
-
-#endif

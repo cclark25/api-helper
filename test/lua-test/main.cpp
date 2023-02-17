@@ -1,6 +1,7 @@
 #define SOL_ALL_SAFETIES_ON 1
 #include "./data/test-class.hpp"
 #include "../../src/lua-binders/type-binder.hpp"
+#include "../../src/json-typing/json-typing.hpp"
 #include <lualib.h>
 #include <iostream>
 #include <cassert>
@@ -8,6 +9,7 @@
 
 using namespace APICore;
 using namespace std;
+
 
 int main(int argc, char **argv)
 {
@@ -37,17 +39,11 @@ int main(int argc, char **argv)
 	sol::state lua;
 	if (generateTypes)
 	{
-		/*
-			TODO: JsonTyping is currently broken by the new function overloading mechanics.
-			After function overloading is fully implemented in Lua, JsonTyping support for
-			function overloading should be the next focus.
-		*/
+		APICore::JsonTyper<CustomObjectData2>::declareType();
+		auto typing = APICore::generateTypeMap();
+		std::string typingJson = typing.dump(4);
 
-		// APICore::JsonTyper<CustomObjectData2>::declareType();
-		// auto typing = APICore::generateTypeMap();
-		// std::string typingJson = typing.dump(4);
-
-		// std::cout << typingJson << "\n";
+		std::cout << typingJson << "\n";
 
 		return 0;
 	}

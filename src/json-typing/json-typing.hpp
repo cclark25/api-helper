@@ -1,5 +1,4 @@
-#ifndef BASE_LUA_JSON_TYPING
-#define BASE_LUA_JSON_TYPING
+#pragma once
 
 #include <memory>
 #include <string>
@@ -106,5 +105,3 @@ namespace APICore
 #include "./class-json-typing.hpp"
 #include "./function-json-typing.hpp"
 #include "./reference-json-typing.hpp"
-
-#endif

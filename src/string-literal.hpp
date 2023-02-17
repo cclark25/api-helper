@@ -1,5 +1,4 @@
-#ifndef STRING_LITERAL
-#define STRING_LITERAL
+#pragma once
 
 namespace APICore
 {
@@ -29,5 +28,3 @@ namespace APICore
     };
 
 };
-
-#endif

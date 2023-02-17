@@ -1,5 +1,4 @@
-#ifndef CLASS_TYPING
-#define CLASS_TYPING
+#pragma once
 
 #include "./member-pointer.hpp"
 #include "./member-function-pointer.hpp"
@@ -43,5 +42,3 @@ namespace APICore
                                  requires std::is_same_v<decltype(T::description),std::string>;
                              };
 };
-
-#endif

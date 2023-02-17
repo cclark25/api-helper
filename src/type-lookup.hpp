@@ -1,5 +1,4 @@
-#ifndef TYPE_BINDING_LOOKUP
-#define TYPE_BINDING_LOOKUP
+#pragma once
 
 #include <string>
 
@@ -38,5 +37,3 @@ namespace APICore
     bool APICore::TypeLookup<type>::isDefined = true
 
 }
-
-#endif

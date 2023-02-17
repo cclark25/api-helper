@@ -1,5 +1,4 @@
-#ifndef FUNCTION_PARAMETERS
-#define FUNCTION_PARAMETERS
+#pragma once
 
 #include "./string-literal.hpp"
 #include <type_traits>
@@ -63,5 +62,3 @@ namespace APICore {
             } -> std::convertible_to<std::vector<std::pair<std::string, std::string>>>;
     };
 }
-
-#endif

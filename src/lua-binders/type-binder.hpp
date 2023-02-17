@@ -1,5 +1,4 @@
-#ifndef BASE_LUA_BINDER
-#define BASE_LUA_BINDER
+#pragma once
 
 #include <memory>
 #include <string>
@@ -59,5 +58,3 @@ namespace APICore
 
 #include "./reference-binder.hpp"
 #include "./class-binder.hpp"
-
-#endif
