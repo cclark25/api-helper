@@ -194,8 +194,8 @@ function test(testObject)
 end
 
 
--- staticTest();
--- test(testObject);
+staticTest();
+test(testObject);
 
 if(runNum == 1) then
     newObj = CustomObjectData.new(12);

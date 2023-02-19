@@ -8,6 +8,17 @@
         "isBackground": true,
         "presentation": { "reveal": "never" },
         "group": { "kind": "build", "isDefault": true }
+      }, {
+        "label": "launchMono",
+        "command": "mono",
+        "isBackground": true,
+        
+        "args": [
+          "--debug",
+          "--debugger-agent=transport=dt_socket,server=y,address=127.0.0.1:55555",
+          "tools/mono-library-generator/build/test.exe",
+          "./test.json"
+        ]
       }
     ]
   }
