@@ -30,6 +30,7 @@ namespace APICore
     template <class T>
         requires requires { 
             requires !ReferenceTypeConcept<T>; 
+            requires !TemplatedDataConcept<T>;
     }
     sol::usertype<T> *LuaBinder<T>::declareType(sol::state &state)
     {
@@ -58,3 +59,5 @@ namespace APICore
 
 #include "./reference-binder.hpp"
 #include "./class-binder.hpp"
+#include "./templated-data-binder.hpp"
+#include "./function-binder.hpp"

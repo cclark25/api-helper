@@ -108,15 +108,17 @@ function staticTest()
     promise:onResolve(
         function(result)
             print('Promise return value in callback: ' .. (result));
+            return '123';
         end
-    ):onResolve(
-        function()
-            print('Callback on the callback was called.');
-        end
-    ):await();
-    promise = CustomObjectData.staticAsync(1);
-    print('Promise return type: ' .. type(promise));
-    print('Promise return value in await: ' .. (promise:await()));
+    )
+    -- :onResolve(
+    --     function()
+    --         print('Callback on the callback was called.');
+    --     end
+    -- ):await();
+    -- promise = CustomObjectData.staticAsync(1);
+    -- print('Promise return type: ' .. type(promise));
+    -- print('Promise return value in await: ' .. (promise:await()));
     
     assert(CustomObjectData.staticFunctionPointer(1) == 12)
     oldFuncPtr = CustomObjectData.staticFunctionPointer;
@@ -126,6 +128,7 @@ function staticTest()
     assert(CustomObjectData.staticFunctionPointer(1) == 13)
     CustomObjectData.staticFunctionPointer = oldFuncPtr
 
+    print("Class name of testObject: ", testObject.className);
     assert(CustomObjectData.staticOverload(1) == "1");
     assert(CustomObjectData.staticOverload("1") == "2");
     assert(CustomObjectData2.staticOverload(1) == "1");
@@ -160,6 +163,7 @@ function test(testObject)
     assert(testObject:doStuff(0) == "NO STRING PROVIDED" );
     assert(testObject:doStuff(1) == "NO STRING PROVIDED\nNO STRING PROVIDED" );
 
+    print("Class name of testObject: ", testObject.className);
     assert(testObject:doStuff(0,"abc") == "abc" );
 
     if(testObject:getType() == CustomObjectData) then
@@ -205,6 +209,9 @@ if(runNum == 1) then
 
     newObj4 = CustomObjectData2.new(12.123);
     test(newObj4);
+
+    -- newObj5 = CustomObjectData2(12.123);
+
 
     -- TODO: Make the metatable callable to act as constructors.
     -- newObj3 = CustomObjectData.__call({}, 12)

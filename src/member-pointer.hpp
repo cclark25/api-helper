@@ -61,17 +61,6 @@ namespace APICore
     template <StringLiteral Key, auto Pointer, StringLiteral Description>
     std::string Member<Key, Pointer, Description>::description = Description.value;
 
-    template <typename T>
-    concept MemberPtrSpec = requires {
-                                requires true;
-                                requires T::isMember;
-                                {
-                                    T::key
-                                    } -> std::convertible_to<std::string>;
-                                {
-                                    T::ptr
-                                    } -> std::convertible_to<typename T::ptrType>;
-                                
-                            };
+ 
 
 };

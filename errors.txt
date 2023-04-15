@@ -1,0 +1,2744 @@
+In file included from ./test/lua-test/../../src/lua-binders/type-binder.hpp:61,
+                 from ./test/lua-test/main.cpp:3:
+./test/lua-test/../../src/lua-binders/./class-binder.hpp: In instantiation of ‘static void APICore::LuaBinderGenerator<T, InheritedType>::FieldBinders<APICore::ClassTyping<Name, Description, ClassType, InheritedFrom, Fields ...> >::bindMembers(sol::state&, sol::usertype<C>*) [with T = CustomObjectData2; StringLiteral<...auto...> Name = APICore::StringLiteral<18>{"CustomObjectData2", 17}; StringLiteral<...auto...> Description = APICore::StringLiteral<31>{"A custom class to test typing.", 30}; Fields = {APICore::Member<APICore::StringLiteral<8>{"secondI", 7}, &CustomObjectData2::secondI, APICore::StringLiteral<61>{"A value only available on the child class CustomObjectData2.", 60}>, APICore::MemberOverload<APICore::MemberFunction<APICore::StringLiteral<8>{"doStuff", 7}, &CustomObjectData::doStuff, APICore::StringLiteral<65>{"An instance function that does stuff. Takes an int and a string.", 64}, APICore::ParameterPack<APICore::Parameter<APICore::StringLiteral<2>{"i", 1}, APICore::StringLiteral<14>{"int parameter", 13}>, APICore::Parameter<APICore::StringLiteral<2>{"s", 1}, APICore::StringLiteral<17>{"string parameter", 16}> > >, APICore::MemberFunction<APICore::StringLiteral<8>{"doStuff", 7}, &CustomObjectData2::doStuff, APICore::StringLiteral<90>{"An instance function that does stuff. Takes a string. Specifically for CustomObjectData2.", 89}, APICore::ParameterPack<APICore::Parameter<APICore::StringLiteral<2>{"s", 1}, APICore::StringLiteral<17>{"string parameter", 16}> > >, APICore::MemberFunction<APICore::StringLiteral<8>{"doStuff", 7}, &CustomObjectData::doStuff, APICore::StringLiteral<52>{"An instance function that does stuff. Takes an int.", 51}, APICore::ParameterPack<APICore::Parameter<APICore::StringLiteral<2>{"i", 1}, APICore::StringLiteral<14>{"int parameter", 13}> > > >, APICore::StaticOverload<APICore::StaticFunction<APICore::StringLiteral<15>{"staticOverload", 14}, CustomObjectData::staticOverload, APICore::StringLiteral<53>{"A static function to test overloading. Takes an int.", 52}, APICore::ParameterPack<APICore::Parameter<APICore::StringLiteral<2>{"i", 1}, APICore::StringLiteral<49>{"int parameter to be used in the function passed.", 48}> > >, APICore::StaticFunction<APICore::StringLiteral<15>{"staticOverload", 14}, CustomObjectData2::staticOverload, APICore::StringLiteral<102>{"A static function to test overloading. Takes a string and an int. Specifically for CustomObjectData2.", 101}, APICore::ParameterPack<APICore::Parameter<APICore::StringLiteral<2>{"s", 1}, APICore::StringLiteral<52>{"string parameter to be used in the function passed.", 51}>, APICore::Parameter<APICore::StringLiteral<2>{"i", 1}, APICore::StringLiteral<49>{"int parameter to be used in the function passed.", 48}> > >, APICore::StaticFunction<APICore::StringLiteral<15>{"staticOverload", 14}, CustomObjectData::staticOverload, APICore::StringLiteral<55>{"A static function to test overloading. Takes a string.", 54}, APICore::ParameterPack<APICore::Parameter<APICore::StringLiteral<2>{"s", 1}, APICore::StringLiteral<52>{"string parameter to be used in the function passed.", 51}> > > >, APICore::Member<APICore::StringLiteral<10>{"className", 9}, &CustomObjectData2::className, APICore::StringLiteral<1>{"", 0}>, APICore::Constructor<<lambda(double)>::_FUN, APICore::StringLiteral<98>{"An inline lambda function attached as a constructor function. Specifically for CustomObjectData2.", 97}, APICore::ParameterPack<APICore::Parameter<APICore::StringLiteral<2>{"d", 1}, APICore::StringLiteral<17>{"double parameter", 16}> > >}; ClassType = CustomObjectData2; InheritedFrom = CustomObjectData; sol::usertype<C> = sol::basic_usertype<CustomObjectData2, sol::basic_reference<false> >]’:
+./test/lua-test/../../src/lua-binders/./class-binder.hpp:220:86:   required from ‘static void APICore::LuaBinderGenerator<ClassType, InheritedFrom>::generateType(sol::state&, sol::usertype<Class>*) [with ChildType = CustomObjectData2; ClassType = CustomObjectData2; InheritedFrom = CustomObjectData; sol::usertype<Class> = sol::basic_usertype<CustomObjectData2, sol::basic_reference<false> >]’
+./test/lua-test/../../src/lua-binders/type-binder.hpp:47:63:   required from ‘static sol::usertype<Class>* APICore::LuaBinder<T>::declareType(sol::state&) [with T = CustomObjectData2; sol::usertype<Class> = sol::basic_usertype<CustomObjectData2, sol::basic_reference<false> >]’
+./test/lua-test/main.cpp:53:32:   required from here
+./test/lua-test/../../src/lua-binders/./class-binder.hpp:111:78: error: no type named ‘isFunctional’ in ‘class APICore::FunctionBinder<APICore::Member<APICore::StringLiteral<8>{"secondI", 7}, &CustomObjectData2::secondI, APICore::StringLiteral<61>{"A value only available on the child class CustomObjectData2.", 60}> >’
+  111 |                          if constexpr (FunctionBinder<Fields>::isFunctional::isMember || FunctionBinder<Fields>::isFunctional)
+      |                                                                              ^~~~~~~~
+./test/lua-test/../../src/lua-binders/./class-binder.hpp:111:78: error: no type named ‘isFunctional’ in ‘class APICore::FunctionBinder<APICore::MemberOverload<APICore::MemberFunction<APICore::StringLiteral<8>{"doStuff", 7}, &CustomObjectData::doStuff, APICore::StringLiteral<65>{"An instance function that does stuff. Takes an int and a string.", 64}, APICore::ParameterPack<APICore::Parameter<APICore::StringLiteral<2>{"i", 1}, APICore::StringLiteral<14>{"int parameter", 13}>, APICore::Parameter<APICore::StringLiteral<2>{"s", 1}, APICore::StringLiteral<17>{"string parameter", 16}> > >, APICore::MemberFunction<APICore::StringLiteral<8>{"doStuff", 7}, &CustomObjectData2::doStuff, APICore::StringLiteral<90>{"An instance function that does stuff. Takes a string. Specifically for CustomObjectData2.", 89}, APICore::ParameterPack<APICore::Parameter<APICore::StringLiteral<2>{"s", 1}, APICore::StringLiteral<17>{"string parameter", 16}> > >, APICore::MemberFunction<APICore::StringLiteral<8>{"doStuff", 7}, &CustomObjectData::doStuff, APICore::StringLiteral<52>{"An instance function that does stuff. Takes an int.", 51}, APICore::ParameterPack<APICore::Parameter<APICore::StringLiteral<2>{"i", 1}, APICore::StringLiteral<14>{"int parameter", 13}> > > > >’
+./test/lua-test/../../src/lua-binders/./class-binder.hpp:111:78: error: no type named ‘isFunctional’ in ‘class APICore::FunctionBinder<APICore::StaticOverload<APICore::StaticFunction<APICore::StringLiteral<15>{"staticOverload", 14}, CustomObjectData::staticOverload, APICore::StringLiteral<53>{"A static function to test overloading. Takes an int.", 52}, APICore::ParameterPack<APICore::Parameter<APICore::StringLiteral<2>{"i", 1}, APICore::StringLiteral<49>{"int parameter to be used in the function passed.", 48}> > >, APICore::StaticFunction<APICore::StringLiteral<15>{"staticOverload", 14}, CustomObjectData2::staticOverload, APICore::StringLiteral<102>{"A static function to test overloading. Takes a string and an int. Specifically for CustomObjectData2.", 101}, APICore::ParameterPack<APICore::Parameter<APICore::StringLiteral<2>{"s", 1}, APICore::StringLiteral<52>{"string parameter to be used in the function passed.", 51}>, APICore::Parameter<APICore::StringLiteral<2>{"i", 1}, APICore::StringLiteral<49>{"int parameter to be used in the function passed.", 48}> > >, APICore::StaticFunction<APICore::StringLiteral<15>{"staticOverload", 14}, CustomObjectData::staticOverload, APICore::StringLiteral<55>{"A static function to test overloading. Takes a string.", 54}, APICore::ParameterPack<APICore::Parameter<APICore::StringLiteral<2>{"s", 1}, APICore::StringLiteral<52>{"string parameter to be used in the function passed.", 51}> > > > >’
+./test/lua-test/../../src/lua-binders/./class-binder.hpp:115:42: error: ‘key’ is not a member of ‘APICore::StaticOverload<APICore::StaticFunction<APICore::StringLiteral<15>{"staticOverload", 14}, CustomObjectData::staticOverload, APICore::StringLiteral<53>{"A static function to test overloading. Takes an int.", 52}, APICore::ParameterPack<APICore::Parameter<APICore::StringLiteral<2>{"i", 1}, APICore::StringLiteral<49>{"int parameter to be used in the function passed.", 48}> > >, APICore::StaticFunction<APICore::StringLiteral<15>{"staticOverload", 14}, CustomObjectData2::staticOverload, APICore::StringLiteral<102>{"A static function to test overloading. Takes a string and an int. Specifically for CustomObjectData2.", 101}, APICore::ParameterPack<APICore::Parameter<APICore::StringLiteral<2>{"s", 1}, APICore::StringLiteral<52>{"string parameter to be used in the function passed.", 51}>, APICore::Parameter<APICore::StringLiteral<2>{"i", 1}, APICore::StringLiteral<49>{"int parameter to be used in the function passed.", 48}> > >, APICore::StaticFunction<APICore::StringLiteral<15>{"staticOverload", 14}, CustomObjectData::staticOverload, APICore::StringLiteral<55>{"A static function to test overloading. Takes a string.", 54}, APICore::ParameterPack<APICore::Parameter<APICore::StringLiteral<2>{"s", 1}, APICore::StringLiteral<52>{"string parameter to be used in the function passed.", 51}> > > >’
+  115 |                                  Fields::key,
+      |                                          ^~~
+./test/lua-test/../../src/lua-binders/./class-binder.hpp:111:78: error: no type named ‘isFunctional’ in ‘class APICore::FunctionBinder<APICore::Member<APICore::StringLiteral<10>{"className", 9}, &CustomObjectData2::className> >’
+  111 |                          if constexpr (FunctionBinder<Fields>::isFunctional::isMember || FunctionBinder<Fields>::isFunctional)
+      |                                                                              ^~~~~~~~
+./test/lua-test/../../src/lua-binders/./class-binder.hpp:111:78: error: no type named ‘isFunctional’ in ‘class APICore::FunctionBinder<APICore::Constructor<<lambda(double)>::_FUN, APICore::StringLiteral<98>{"An inline lambda function attached as a constructor function. Specifically for CustomObjectData2.", 97}, APICore::ParameterPack<APICore::Parameter<APICore::StringLiteral<2>{"d", 1}, APICore::StringLiteral<17>{"double parameter", 16}> > > >’
+./test/lua-test/../../src/lua-binders/./class-binder.hpp: In instantiation of ‘static void APICore::LuaBinderGenerator<T, InheritedType>::FieldBinders<APICore::ClassTyping<Name, Description, ClassType, InheritedFrom, Fields ...> >::bindMembers(sol::state&, sol::usertype<C>*) [with T = CustomObjectData2; StringLiteral<...auto...> Name = APICore::StringLiteral<17>{"CustomObjectData", 16}; StringLiteral<...auto...> Description = APICore::StringLiteral<31>{"A custom class to test typing.", 30}; Fields = {APICore::Static<APICore::StringLiteral<3>{"d1", 2}, (& CustomObjectData::d1), APICore::StringLiteral<23>{"A static double field.", 22}>, APICore::Member<APICore::StringLiteral<3>{"i1", 2}, &CustomObjectData::i1, APICore::StringLiteral<23>{"An instance int field.", 22}>, APICore::Member<APICore::StringLiteral<3>{"s1", 2}, &CustomObjectData::s1, APICore::StringLiteral<26>{"An instance string field.", 25}>, APICore::Member<APICore::StringLiteral<3>{"o1", 2}, &CustomObjectData::o1, APICore::StringLiteral<24>{"Sub class data pointer.", 23}>, APICore::Member<APICore::StringLiteral<3>{"o2", 2}, &CustomObjectData::o2, APICore::StringLiteral<31>{"Sub class data shared pointer.", 30}>, APICore::Member<APICore::StringLiteral<3>{"o3", 2}, &CustomObjectData::o3, APICore::StringLiteral<28>{"Sub class data non-pointer.", 27}>, APICore::Member<APICore::StringLiteral<3>{"o4", 2}, &CustomObjectData::o3, APICore::StringLiteral<28>{"Sub class data & reference.", 27}>, APICore::MemberFunction<APICore::StringLiteral<16>{"functionPointer", 15}, &CustomObjectData::functionPointer, APICore::StringLiteral<35>{"A function pointer to bind to lua.", 34}, APICore::ParameterPack<APICore::Parameter<APICore::StringLiteral<2>{"i", 1}, APICore::StringLiteral<49>{"int parameter to be used in the function passed.", 48}> > >, APICore::StaticFunction<APICore::StringLiteral<22>{"staticFunctionPointer", 21}, (& CustomObjectData::staticFunctionPointer), APICore::StringLiteral<35>{"A function pointer to bind to lua.", 34}, APICore::ParameterPack<APICore::Parameter<APICore::StringLiteral<2>{"i", 1}, APICore::StringLiteral<49>{"int parameter to be used in the function passed.", 48}> > >, APICore::MemberOverload<APICore::MemberFunction<APICore::StringLiteral<8>{"doStuff", 7}, &CustomObjectData::doStuff, APICore::StringLiteral<65>{"An instance function that does stuff. Takes an int and a string.", 64}, APICore::ParameterPack<APICore::Parameter<APICore::StringLiteral<2>{"i", 1}, APICore::StringLiteral<14>{"int parameter", 13}>, APICore::Parameter<APICore::StringLiteral<2>{"s", 1}, APICore::StringLiteral<17>{"string parameter", 16}> > >, APICore::MemberFunction<APICore::StringLiteral<8>{"doStuff", 7}, &CustomObjectData::doStuff, APICore::StringLiteral<52>{"An instance function that does stuff. Takes an int.", 51}, APICore::ParameterPack<APICore::Parameter<APICore::StringLiteral<2>{"i", 1}, APICore::StringLiteral<14>{"int parameter", 13}> > > >, APICore::StaticOverload<APICore::StaticFunction<APICore::StringLiteral<15>{"staticOverload", 14}, CustomObjectData::staticOverload, APICore::StringLiteral<53>{"A static function to test overloading. Takes an int.", 52}, APICore::ParameterPack<APICore::Parameter<APICore::StringLiteral<2>{"i", 1}, APICore::StringLiteral<49>{"int parameter to be used in the function passed.", 48}> > >, APICore::StaticFunction<APICore::StringLiteral<15>{"staticOverload", 14}, CustomObjectData::staticOverload, APICore::StringLiteral<55>{"A static function to test overloading. Takes a string.", 54}, APICore::ParameterPack<APICore::Parameter<APICore::StringLiteral<2>{"s", 1}, APICore::StringLiteral<52>{"string parameter to be used in the function passed.", 51}> > > >, APICore::MemberFunction<APICore::StringLiteral<19>{"testPassedFunction", 18}, &CustomObjectData::testPassedFunction, APICore::StringLiteral<87>{"A function to test how many invocations of the functionPointer can be done per second.", 86}, APICore::ParameterPack<APICore::Parameter<APICore::StringLiteral<2>{"i", 1}, APICore::StringLiteral<14>{"int parameter", 13}> > >, APICore::StaticFunction<APICore::StringLiteral<15>{"staticFunction", 14}, CustomObjectData::staticFunction, APICore::StringLiteral<36>{"An static function that does stuff.", 35}, APICore::ParameterPack<APICore::Parameter<APICore::StringLiteral<4>{"num", 3}, APICore::StringLiteral<14>{"int parameter", 13}> > >, APICore::StaticFunction<APICore::StringLiteral<12>{"staticAsync", 11}, CustomObjectData::staticAsync, APICore::StringLiteral<73>{"An static function that does stuff asynchronously and returns a promise.", 72}, APICore::ParameterPack<APICore::Parameter<APICore::StringLiteral<11>{"numSeconds", 10}, APICore::StringLiteral<27>{"Number of seconds to wait.", 26}> > >, APICore::MemberFunction<APICore::StringLiteral<12>{"memberAsync", 11}, &CustomObjectData::memberAsync, APICore::StringLiteral<73>{"An member function that does stuff asynchronously and returns a promise.", 72}, APICore::ParameterPack<APICore::Parameter<APICore::StringLiteral<11>{"numSeconds", 10}, APICore::StringLiteral<27>{"Number of seconds to wait.", 26}> > >, APICore::Member<APICore::StringLiteral<10>{"className", 9}, &CustomObjectData::className, APICore::StringLiteral<1>{"", 0}>, APICore::StaticOverload<APICore::Constructor<<lambda(int)>::_FUN, APICore::StringLiteral<62>{"An inline lambda function attached as a constructor function.", 61}, APICore::ParameterPack<APICore::Parameter<APICore::StringLiteral<4>{"num", 3}, APICore::StringLiteral<14>{"int parameter", 13}> > >, APICore::Constructor<<lambda(std::string)>::_FUN, APICore::StringLiteral<107>{"An overloaded inline lambda function attached as a constructor function. Takes a string instead of an int.", 106}, APICore::ParameterPack<APICore::Parameter<APICore::StringLiteral<4>{"str", 3}, APICore::StringLiteral<17>{"string parameter", 16}> > > >}; ClassType = CustomObjectData; InheritedFrom = void; sol::usertype<C> = sol::basic_usertype<CustomObjectData2, sol::basic_reference<false> >]’:
+./test/lua-test/../../src/lua-binders/./class-binder.hpp:220:86:   required from ‘static void APICore::LuaBinderGenerator<ClassType, InheritedFrom>::generateType(sol::state&, sol::usertype<Class>*) [with ChildType = CustomObjectData2; ClassType = CustomObjectData; InheritedFrom = void; sol::usertype<Class> = sol::basic_usertype<CustomObjectData2, sol::basic_reference<false> >]’
+./test/lua-test/../../src/lua-binders/./class-binder.hpp:217:92:   required from ‘static void APICore::LuaBinderGenerator<ClassType, InheritedFrom>::generateType(sol::state&, sol::usertype<Class>*) [with ChildType = CustomObjectData2; ClassType = CustomObjectData2; InheritedFrom = CustomObjectData; sol::usertype<Class> = sol::basic_usertype<CustomObjectData2, sol::basic_reference<false> >]’
+./test/lua-test/../../src/lua-binders/type-binder.hpp:47:63:   required from ‘static sol::usertype<Class>* APICore::LuaBinder<T>::declareType(sol::state&) [with T = CustomObjectData2; sol::usertype<Class> = sol::basic_usertype<CustomObjectData2, sol::basic_reference<false> >]’
+./test/lua-test/main.cpp:53:32:   required from here
+./test/lua-test/../../src/lua-binders/./class-binder.hpp:111:78: error: no type named ‘isFunctional’ in ‘class APICore::FunctionBinder<APICore::Static<APICore::StringLiteral<3>{"d1", 2}, (& CustomObjectData::d1), APICore::StringLiteral<23>{"A static double field.", 22}> >’
+./test/lua-test/../../src/lua-binders/./class-binder.hpp:111:78: error: no type named ‘isFunctional’ in ‘class APICore::FunctionBinder<APICore::Member<APICore::StringLiteral<3>{"i1", 2}, &CustomObjectData::i1, APICore::StringLiteral<23>{"An instance int field.", 22}> >’
+./test/lua-test/../../src/lua-binders/./class-binder.hpp:111:78: error: no type named ‘isFunctional’ in ‘class APICore::FunctionBinder<APICore::Member<APICore::StringLiteral<3>{"s1", 2}, &CustomObjectData::s1, APICore::StringLiteral<26>{"An instance string field.", 25}> >’
+./test/lua-test/../../src/lua-binders/./class-binder.hpp:111:78: error: no type named ‘isFunctional’ in ‘class APICore::FunctionBinder<APICore::Member<APICore::StringLiteral<3>{"o1", 2}, &CustomObjectData::o1, APICore::StringLiteral<24>{"Sub class data pointer.", 23}> >’
+./test/lua-test/../../src/lua-binders/./class-binder.hpp:111:78: error: no type named ‘isFunctional’ in ‘class APICore::FunctionBinder<APICore::Member<APICore::StringLiteral<3>{"o2", 2}, &CustomObjectData::o2, APICore::StringLiteral<31>{"Sub class data shared pointer.", 30}> >’
+./test/lua-test/../../src/lua-binders/./class-binder.hpp:111:78: error: no type named ‘isFunctional’ in ‘class APICore::FunctionBinder<APICore::Member<APICore::StringLiteral<3>{"o3", 2}, &CustomObjectData::o3, APICore::StringLiteral<28>{"Sub class data non-pointer.", 27}> >’
+./test/lua-test/../../src/lua-binders/./class-binder.hpp:111:78: error: no type named ‘isFunctional’ in ‘class APICore::FunctionBinder<APICore::Member<APICore::StringLiteral<3>{"o4", 2}, &CustomObjectData::o3, APICore::StringLiteral<28>{"Sub class data & reference.", 27}> >’
+./test/lua-test/../../src/lua-binders/./class-binder.hpp:111:78: error: no type named ‘isFunctional’ in ‘class APICore::FunctionBinder<APICore::MemberFunction<APICore::StringLiteral<16>{"functionPointer", 15}, &CustomObjectData::functionPointer, APICore::StringLiteral<35>{"A function pointer to bind to lua.", 34}, APICore::ParameterPack<APICore::Parameter<APICore::StringLiteral<2>{"i", 1}, APICore::StringLiteral<49>{"int parameter to be used in the function passed.", 48}> > > >’
+./test/lua-test/../../src/lua-binders/./class-binder.hpp:111:78: error: no type named ‘isFunctional’ in ‘class APICore::FunctionBinder<APICore::StaticFunction<APICore::StringLiteral<22>{"staticFunctionPointer", 21}, (& CustomObjectData::staticFunctionPointer), APICore::StringLiteral<35>{"A function pointer to bind to lua.", 34}, APICore::ParameterPack<APICore::Parameter<APICore::StringLiteral<2>{"i", 1}, APICore::StringLiteral<49>{"int parameter to be used in the function passed.", 48}> > > >’
+./test/lua-test/../../src/lua-binders/./class-binder.hpp:111:78: error: no type named ‘isFunctional’ in ‘class APICore::FunctionBinder<APICore::MemberOverload<APICore::MemberFunction<APICore::StringLiteral<8>{"doStuff", 7}, &CustomObjectData::doStuff, APICore::StringLiteral<65>{"An instance function that does stuff. Takes an int and a string.", 64}, APICore::ParameterPack<APICore::Parameter<APICore::StringLiteral<2>{"i", 1}, APICore::StringLiteral<14>{"int parameter", 13}>, APICore::Parameter<APICore::StringLiteral<2>{"s", 1}, APICore::StringLiteral<17>{"string parameter", 16}> > >, APICore::MemberFunction<APICore::StringLiteral<8>{"doStuff", 7}, &CustomObjectData::doStuff, APICore::StringLiteral<52>{"An instance function that does stuff. Takes an int.", 51}, APICore::ParameterPack<APICore::Parameter<APICore::StringLiteral<2>{"i", 1}, APICore::StringLiteral<14>{"int parameter", 13}> > > > >’
+./test/lua-test/../../src/lua-binders/./class-binder.hpp:111:78: error: no type named ‘isFunctional’ in ‘class APICore::FunctionBinder<APICore::StaticOverload<APICore::StaticFunction<APICore::StringLiteral<15>{"staticOverload", 14}, CustomObjectData::staticOverload, APICore::StringLiteral<53>{"A static function to test overloading. Takes an int.", 52}, APICore::ParameterPack<APICore::Parameter<APICore::StringLiteral<2>{"i", 1}, APICore::StringLiteral<49>{"int parameter to be used in the function passed.", 48}> > >, APICore::StaticFunction<APICore::StringLiteral<15>{"staticOverload", 14}, CustomObjectData::staticOverload, APICore::StringLiteral<55>{"A static function to test overloading. Takes a string.", 54}, APICore::ParameterPack<APICore::Parameter<APICore::StringLiteral<2>{"s", 1}, APICore::StringLiteral<52>{"string parameter to be used in the function passed.", 51}> > > > >’
+./test/lua-test/../../src/lua-binders/./class-binder.hpp:115:42: error: ‘key’ is not a member of ‘APICore::StaticOverload<APICore::StaticFunction<APICore::StringLiteral<15>{"staticOverload", 14}, CustomObjectData::staticOverload, APICore::StringLiteral<53>{"A static function to test overloading. Takes an int.", 52}, APICore::ParameterPack<APICore::Parameter<APICore::StringLiteral<2>{"i", 1}, APICore::StringLiteral<49>{"int parameter to be used in the function passed.", 48}> > >, APICore::StaticFunction<APICore::StringLiteral<15>{"staticOverload", 14}, CustomObjectData::staticOverload, APICore::StringLiteral<55>{"A static function to test overloading. Takes a string.", 54}, APICore::ParameterPack<APICore::Parameter<APICore::StringLiteral<2>{"s", 1}, APICore::StringLiteral<52>{"string parameter to be used in the function passed.", 51}> > > >’
+  115 |                                  Fields::key,
+      |                                          ^~~
+./test/lua-test/../../src/lua-binders/./class-binder.hpp:111:78: error: no type named ‘isFunctional’ in ‘class APICore::FunctionBinder<APICore::MemberFunction<APICore::StringLiteral<19>{"testPassedFunction", 18}, &CustomObjectData::testPassedFunction, APICore::StringLiteral<87>{"A function to test how many invocations of the functionPointer can be done per second.", 86}, APICore::ParameterPack<APICore::Parameter<APICore::StringLiteral<2>{"i", 1}, APICore::StringLiteral<14>{"int parameter", 13}> > > >’
+  111 |                          if constexpr (FunctionBinder<Fields>::isFunctional::isMember || FunctionBinder<Fields>::isFunctional)
+      |                                                                              ^~~~~~~~
+./test/lua-test/../../src/lua-binders/./class-binder.hpp:111:78: error: no type named ‘isFunctional’ in ‘class APICore::FunctionBinder<APICore::StaticFunction<APICore::StringLiteral<15>{"staticFunction", 14}, CustomObjectData::staticFunction, APICore::StringLiteral<36>{"An static function that does stuff.", 35}, APICore::ParameterPack<APICore::Parameter<APICore::StringLiteral<4>{"num", 3}, APICore::StringLiteral<14>{"int parameter", 13}> > > >’
+./test/lua-test/../../src/lua-binders/./class-binder.hpp:111:78: error: no type named ‘isFunctional’ in ‘class APICore::FunctionBinder<APICore::StaticFunction<APICore::StringLiteral<12>{"staticAsync", 11}, CustomObjectData::staticAsync, APICore::StringLiteral<73>{"An static function that does stuff asynchronously and returns a promise.", 72}, APICore::ParameterPack<APICore::Parameter<APICore::StringLiteral<11>{"numSeconds", 10}, APICore::StringLiteral<27>{"Number of seconds to wait.", 26}> > > >’
+./test/lua-test/../../src/lua-binders/./class-binder.hpp:111:78: error: no type named ‘isFunctional’ in ‘class APICore::FunctionBinder<APICore::MemberFunction<APICore::StringLiteral<12>{"memberAsync", 11}, &CustomObjectData::memberAsync, APICore::StringLiteral<73>{"An member function that does stuff asynchronously and returns a promise.", 72}, APICore::ParameterPack<APICore::Parameter<APICore::StringLiteral<11>{"numSeconds", 10}, APICore::StringLiteral<27>{"Number of seconds to wait.", 26}> > > >’
+./test/lua-test/../../src/lua-binders/./class-binder.hpp:111:78: error: no type named ‘isFunctional’ in ‘class APICore::FunctionBinder<APICore::Member<APICore::StringLiteral<10>{"className", 9}, &CustomObjectData::className> >’
+./test/lua-test/../../src/lua-binders/./class-binder.hpp:111:78: error: no type named ‘isFunctional’ in ‘class APICore::FunctionBinder<APICore::StaticOverload<APICore::Constructor<<lambda(int)>::_FUN, APICore::StringLiteral<62>{"An inline lambda function attached as a constructor function.", 61}, APICore::ParameterPack<APICore::Parameter<APICore::StringLiteral<4>{"num", 3}, APICore::StringLiteral<14>{"int parameter", 13}> > >, APICore::Constructor<<lambda(std::string)>::_FUN, APICore::StringLiteral<107>{"An overloaded inline lambda function attached as a constructor function. Takes a string instead of an int.", 106}, APICore::ParameterPack<APICore::Parameter<APICore::StringLiteral<4>{"str", 3}, APICore::StringLiteral<17>{"string parameter", 16}> > > > >’
+./test/lua-test/../../src/lua-binders/./class-binder.hpp:115:42: error: ‘key’ is not a member of ‘APICore::StaticOverload<APICore::Constructor<<lambda(int)>::_FUN, APICore::StringLiteral<62>{"An inline lambda function attached as a constructor function.", 61}, APICore::ParameterPack<APICore::Parameter<APICore::StringLiteral<4>{"num", 3}, APICore::StringLiteral<14>{"int parameter", 13}> > >, APICore::Constructor<<lambda(std::string)>::_FUN, APICore::StringLiteral<107>{"An overloaded inline lambda function attached as a constructor function. Takes a string instead of an int.", 106}, APICore::ParameterPack<APICore::Parameter<APICore::StringLiteral<4>{"str", 3}, APICore::StringLiteral<17>{"string parameter", 16}> > > >’
+  115 |                                  Fields::key,
+      |                                          ^~~
+./test/lua-test/../../src/lua-binders/./class-binder.hpp: In instantiation of ‘static void APICore::LuaBinderGenerator<T, InheritedType>::FieldBinders<APICore::ClassTyping<Name, Description, ClassType, InheritedFrom, Fields ...> >::bindMembers(sol::state&, sol::usertype<C>*) [with T = CustomObjectData; StringLiteral<...auto...> Name = APICore::StringLiteral<17>{"CustomObjectData", 16}; StringLiteral<...auto...> Description = APICore::StringLiteral<31>{"A custom class to test typing.", 30}; Fields = {APICore::Static<APICore::StringLiteral<3>{"d1", 2}, (& CustomObjectData::d1), APICore::StringLiteral<23>{"A static double field.", 22}>, APICore::Member<APICore::StringLiteral<3>{"i1", 2}, &CustomObjectData::i1, APICore::StringLiteral<23>{"An instance int field.", 22}>, APICore::Member<APICore::StringLiteral<3>{"s1", 2}, &CustomObjectData::s1, APICore::StringLiteral<26>{"An instance string field.", 25}>, APICore::Member<APICore::StringLiteral<3>{"o1", 2}, &CustomObjectData::o1, APICore::StringLiteral<24>{"Sub class data pointer.", 23}>, APICore::Member<APICore::StringLiteral<3>{"o2", 2}, &CustomObjectData::o2, APICore::StringLiteral<31>{"Sub class data shared pointer.", 30}>, APICore::Member<APICore::StringLiteral<3>{"o3", 2}, &CustomObjectData::o3, APICore::StringLiteral<28>{"Sub class data non-pointer.", 27}>, APICore::Member<APICore::StringLiteral<3>{"o4", 2}, &CustomObjectData::o3, APICore::StringLiteral<28>{"Sub class data & reference.", 27}>, APICore::MemberFunction<APICore::StringLiteral<16>{"functionPointer", 15}, &CustomObjectData::functionPointer, APICore::StringLiteral<35>{"A function pointer to bind to lua.", 34}, APICore::ParameterPack<APICore::Parameter<APICore::StringLiteral<2>{"i", 1}, APICore::StringLiteral<49>{"int parameter to be used in the function passed.", 48}> > >, APICore::StaticFunction<APICore::StringLiteral<22>{"staticFunctionPointer", 21}, (& CustomObjectData::staticFunctionPointer), APICore::StringLiteral<35>{"A function pointer to bind to lua.", 34}, APICore::ParameterPack<APICore::Parameter<APICore::StringLiteral<2>{"i", 1}, APICore::StringLiteral<49>{"int parameter to be used in the function passed.", 48}> > >, APICore::MemberOverload<APICore::MemberFunction<APICore::StringLiteral<8>{"doStuff", 7}, &CustomObjectData::doStuff, APICore::StringLiteral<65>{"An instance function that does stuff. Takes an int and a string.", 64}, APICore::ParameterPack<APICore::Parameter<APICore::StringLiteral<2>{"i", 1}, APICore::StringLiteral<14>{"int parameter", 13}>, APICore::Parameter<APICore::StringLiteral<2>{"s", 1}, APICore::StringLiteral<17>{"string parameter", 16}> > >, APICore::MemberFunction<APICore::StringLiteral<8>{"doStuff", 7}, &CustomObjectData::doStuff, APICore::StringLiteral<52>{"An instance function that does stuff. Takes an int.", 51}, APICore::ParameterPack<APICore::Parameter<APICore::StringLiteral<2>{"i", 1}, APICore::StringLiteral<14>{"int parameter", 13}> > > >, APICore::StaticOverload<APICore::StaticFunction<APICore::StringLiteral<15>{"staticOverload", 14}, CustomObjectData::staticOverload, APICore::StringLiteral<53>{"A static function to test overloading. Takes an int.", 52}, APICore::ParameterPack<APICore::Parameter<APICore::StringLiteral<2>{"i", 1}, APICore::StringLiteral<49>{"int parameter to be used in the function passed.", 48}> > >, APICore::StaticFunction<APICore::StringLiteral<15>{"staticOverload", 14}, CustomObjectData::staticOverload, APICore::StringLiteral<55>{"A static function to test overloading. Takes a string.", 54}, APICore::ParameterPack<APICore::Parameter<APICore::StringLiteral<2>{"s", 1}, APICore::StringLiteral<52>{"string parameter to be used in the function passed.", 51}> > > >, APICore::MemberFunction<APICore::StringLiteral<19>{"testPassedFunction", 18}, &CustomObjectData::testPassedFunction, APICore::StringLiteral<87>{"A function to test how many invocations of the functionPointer can be done per second.", 86}, APICore::ParameterPack<APICore::Parameter<APICore::StringLiteral<2>{"i", 1}, APICore::StringLiteral<14>{"int parameter", 13}> > >, APICore::StaticFunction<APICore::StringLiteral<15>{"staticFunction", 14}, CustomObjectData::staticFunction, APICore::StringLiteral<36>{"An static function that does stuff.", 35}, APICore::ParameterPack<APICore::Parameter<APICore::StringLiteral<4>{"num", 3}, APICore::StringLiteral<14>{"int parameter", 13}> > >, APICore::StaticFunction<APICore::StringLiteral<12>{"staticAsync", 11}, CustomObjectData::staticAsync, APICore::StringLiteral<73>{"An static function that does stuff asynchronously and returns a promise.", 72}, APICore::ParameterPack<APICore::Parameter<APICore::StringLiteral<11>{"numSeconds", 10}, APICore::StringLiteral<27>{"Number of seconds to wait.", 26}> > >, APICore::MemberFunction<APICore::StringLiteral<12>{"memberAsync", 11}, &CustomObjectData::memberAsync, APICore::StringLiteral<73>{"An member function that does stuff asynchronously and returns a promise.", 72}, APICore::ParameterPack<APICore::Parameter<APICore::StringLiteral<11>{"numSeconds", 10}, APICore::StringLiteral<27>{"Number of seconds to wait.", 26}> > >, APICore::Member<APICore::StringLiteral<10>{"className", 9}, &CustomObjectData::className, APICore::StringLiteral<1>{"", 0}>, APICore::StaticOverload<APICore::Constructor<<lambda(int)>::_FUN, APICore::StringLiteral<62>{"An inline lambda function attached as a constructor function.", 61}, APICore::ParameterPack<APICore::Parameter<APICore::StringLiteral<4>{"num", 3}, APICore::StringLiteral<14>{"int parameter", 13}> > >, APICore::Constructor<<lambda(std::string)>::_FUN, APICore::StringLiteral<107>{"An overloaded inline lambda function attached as a constructor function. Takes a string instead of an int.", 106}, APICore::ParameterPack<APICore::Parameter<APICore::StringLiteral<4>{"str", 3}, APICore::StringLiteral<17>{"string parameter", 16}> > > >}; ClassType = CustomObjectData; InheritedFrom = void; sol::usertype<C> = sol::basic_usertype<CustomObjectData, sol::basic_reference<false> >]’:
+./test/lua-test/../../src/lua-binders/./class-binder.hpp:220:86:   required from ‘static void APICore::LuaBinderGenerator<ClassType, InheritedFrom>::generateType(sol::state&, sol::usertype<Class>*) [with ChildType = CustomObjectData; ClassType = CustomObjectData; InheritedFrom = void; sol::usertype<Class> = sol::basic_usertype<CustomObjectData, sol::basic_reference<false> >]’
+./test/lua-test/../../src/lua-binders/type-binder.hpp:47:63:   required from ‘static sol::usertype<Class>* APICore::LuaBinder<T>::declareType(sol::state&) [with T = CustomObjectData; sol::usertype<Class> = sol::basic_usertype<CustomObjectData, sol::basic_reference<false> >]’
+./test/lua-test/../../src/lua-binders/./class-binder.hpp:214:54:   required from ‘static void APICore::LuaBinderGenerator<ClassType, InheritedFrom>::generateType(sol::state&, sol::usertype<Class>*) [with ChildType = CustomObjectData2; ClassType = CustomObjectData2; InheritedFrom = CustomObjectData; sol::usertype<Class> = sol::basic_usertype<CustomObjectData2, sol::basic_reference<false> >]’
+./test/lua-test/../../src/lua-binders/type-binder.hpp:47:63:   required from ‘static sol::usertype<Class>* APICore::LuaBinder<T>::declareType(sol::state&) [with T = CustomObjectData2; sol::usertype<Class> = sol::basic_usertype<CustomObjectData2, sol::basic_reference<false> >]’
+./test/lua-test/main.cpp:53:32:   required from here
+./test/lua-test/../../src/lua-binders/./class-binder.hpp:111:78: error: no type named ‘isFunctional’ in ‘class APICore::FunctionBinder<APICore::Static<APICore::StringLiteral<3>{"d1", 2}, (& CustomObjectData::d1), APICore::StringLiteral<23>{"A static double field.", 22}> >’
+  111 |                          if constexpr (FunctionBinder<Fields>::isFunctional::isMember || FunctionBinder<Fields>::isFunctional)
+      |                                                                              ^~~~~~~~
+./test/lua-test/../../src/lua-binders/./class-binder.hpp:111:78: error: no type named ‘isFunctional’ in ‘class APICore::FunctionBinder<APICore::Member<APICore::StringLiteral<3>{"i1", 2}, &CustomObjectData::i1, APICore::StringLiteral<23>{"An instance int field.", 22}> >’
+./test/lua-test/../../src/lua-binders/./class-binder.hpp:111:78: error: no type named ‘isFunctional’ in ‘class APICore::FunctionBinder<APICore::Member<APICore::StringLiteral<3>{"s1", 2}, &CustomObjectData::s1, APICore::StringLiteral<26>{"An instance string field.", 25}> >’
+./test/lua-test/../../src/lua-binders/./class-binder.hpp:111:78: error: no type named ‘isFunctional’ in ‘class APICore::FunctionBinder<APICore::Member<APICore::StringLiteral<3>{"o1", 2}, &CustomObjectData::o1, APICore::StringLiteral<24>{"Sub class data pointer.", 23}> >’
+./test/lua-test/../../src/lua-binders/./class-binder.hpp:111:78: error: no type named ‘isFunctional’ in ‘class APICore::FunctionBinder<APICore::Member<APICore::StringLiteral<3>{"o2", 2}, &CustomObjectData::o2, APICore::StringLiteral<31>{"Sub class data shared pointer.", 30}> >’
+./test/lua-test/../../src/lua-binders/./class-binder.hpp:111:78: error: no type named ‘isFunctional’ in ‘class APICore::FunctionBinder<APICore::Member<APICore::StringLiteral<3>{"o3", 2}, &CustomObjectData::o3, APICore::StringLiteral<28>{"Sub class data non-pointer.", 27}> >’
+./test/lua-test/../../src/lua-binders/./class-binder.hpp:111:78: error: no type named ‘isFunctional’ in ‘class APICore::FunctionBinder<APICore::Member<APICore::StringLiteral<3>{"o4", 2}, &CustomObjectData::o3, APICore::StringLiteral<28>{"Sub class data & reference.", 27}> >’
+./test/lua-test/../../src/lua-binders/./class-binder.hpp:111:78: error: no type named ‘isFunctional’ in ‘class APICore::FunctionBinder<APICore::MemberFunction<APICore::StringLiteral<16>{"functionPointer", 15}, &CustomObjectData::functionPointer, APICore::StringLiteral<35>{"A function pointer to bind to lua.", 34}, APICore::ParameterPack<APICore::Parameter<APICore::StringLiteral<2>{"i", 1}, APICore::StringLiteral<49>{"int parameter to be used in the function passed.", 48}> > > >’
+./test/lua-test/../../src/lua-binders/./class-binder.hpp:111:78: error: no type named ‘isFunctional’ in ‘class APICore::FunctionBinder<APICore::StaticFunction<APICore::StringLiteral<22>{"staticFunctionPointer", 21}, (& CustomObjectData::staticFunctionPointer), APICore::StringLiteral<35>{"A function pointer to bind to lua.", 34}, APICore::ParameterPack<APICore::Parameter<APICore::StringLiteral<2>{"i", 1}, APICore::StringLiteral<49>{"int parameter to be used in the function passed.", 48}> > > >’
+./test/lua-test/../../src/lua-binders/./class-binder.hpp:111:78: error: no type named ‘isFunctional’ in ‘class APICore::FunctionBinder<APICore::MemberOverload<APICore::MemberFunction<APICore::StringLiteral<8>{"doStuff", 7}, &CustomObjectData::doStuff, APICore::StringLiteral<65>{"An instance function that does stuff. Takes an int and a string.", 64}, APICore::ParameterPack<APICore::Parameter<APICore::StringLiteral<2>{"i", 1}, APICore::StringLiteral<14>{"int parameter", 13}>, APICore::Parameter<APICore::StringLiteral<2>{"s", 1}, APICore::StringLiteral<17>{"string parameter", 16}> > >, APICore::MemberFunction<APICore::StringLiteral<8>{"doStuff", 7}, &CustomObjectData::doStuff, APICore::StringLiteral<52>{"An instance function that does stuff. Takes an int.", 51}, APICore::ParameterPack<APICore::Parameter<APICore::StringLiteral<2>{"i", 1}, APICore::StringLiteral<14>{"int parameter", 13}> > > > >’
+./test/lua-test/../../src/lua-binders/./class-binder.hpp:111:78: error: no type named ‘isFunctional’ in ‘class APICore::FunctionBinder<APICore::StaticOverload<APICore::StaticFunction<APICore::StringLiteral<15>{"staticOverload", 14}, CustomObjectData::staticOverload, APICore::StringLiteral<53>{"A static function to test overloading. Takes an int.", 52}, APICore::ParameterPack<APICore::Parameter<APICore::StringLiteral<2>{"i", 1}, APICore::StringLiteral<49>{"int parameter to be used in the function passed.", 48}> > >, APICore::StaticFunction<APICore::StringLiteral<15>{"staticOverload", 14}, CustomObjectData::staticOverload, APICore::StringLiteral<55>{"A static function to test overloading. Takes a string.", 54}, APICore::ParameterPack<APICore::Parameter<APICore::StringLiteral<2>{"s", 1}, APICore::StringLiteral<52>{"string parameter to be used in the function passed.", 51}> > > > >’
+./test/lua-test/../../src/lua-binders/./class-binder.hpp:115:42: error: ‘key’ is not a member of ‘APICore::StaticOverload<APICore::StaticFunction<APICore::StringLiteral<15>{"staticOverload", 14}, CustomObjectData::staticOverload, APICore::StringLiteral<53>{"A static function to test overloading. Takes an int.", 52}, APICore::ParameterPack<APICore::Parameter<APICore::StringLiteral<2>{"i", 1}, APICore::StringLiteral<49>{"int parameter to be used in the function passed.", 48}> > >, APICore::StaticFunction<APICore::StringLiteral<15>{"staticOverload", 14}, CustomObjectData::staticOverload, APICore::StringLiteral<55>{"A static function to test overloading. Takes a string.", 54}, APICore::ParameterPack<APICore::Parameter<APICore::StringLiteral<2>{"s", 1}, APICore::StringLiteral<52>{"string parameter to be used in the function passed.", 51}> > > >’
+  115 |                                  Fields::key,
+      |                                          ^~~
+./test/lua-test/../../src/lua-binders/./class-binder.hpp:111:78: error: no type named ‘isFunctional’ in ‘class APICore::FunctionBinder<APICore::MemberFunction<APICore::StringLiteral<19>{"testPassedFunction", 18}, &CustomObjectData::testPassedFunction, APICore::StringLiteral<87>{"A function to test how many invocations of the functionPointer can be done per second.", 86}, APICore::ParameterPack<APICore::Parameter<APICore::StringLiteral<2>{"i", 1}, APICore::StringLiteral<14>{"int parameter", 13}> > > >’
+  111 |                          if constexpr (FunctionBinder<Fields>::isFunctional::isMember || FunctionBinder<Fields>::isFunctional)
+      |                                                                              ^~~~~~~~
+./test/lua-test/../../src/lua-binders/./class-binder.hpp:111:78: error: no type named ‘isFunctional’ in ‘class APICore::FunctionBinder<APICore::StaticFunction<APICore::StringLiteral<15>{"staticFunction", 14}, CustomObjectData::staticFunction, APICore::StringLiteral<36>{"An static function that does stuff.", 35}, APICore::ParameterPack<APICore::Parameter<APICore::StringLiteral<4>{"num", 3}, APICore::StringLiteral<14>{"int parameter", 13}> > > >’
+./test/lua-test/../../src/lua-binders/./class-binder.hpp:111:78: error: no type named ‘isFunctional’ in ‘class APICore::FunctionBinder<APICore::StaticFunction<APICore::StringLiteral<12>{"staticAsync", 11}, CustomObjectData::staticAsync, APICore::StringLiteral<73>{"An static function that does stuff asynchronously and returns a promise.", 72}, APICore::ParameterPack<APICore::Parameter<APICore::StringLiteral<11>{"numSeconds", 10}, APICore::StringLiteral<27>{"Number of seconds to wait.", 26}> > > >’
+./test/lua-test/../../src/lua-binders/./class-binder.hpp:111:78: error: no type named ‘isFunctional’ in ‘class APICore::FunctionBinder<APICore::MemberFunction<APICore::StringLiteral<12>{"memberAsync", 11}, &CustomObjectData::memberAsync, APICore::StringLiteral<73>{"An member function that does stuff asynchronously and returns a promise.", 72}, APICore::ParameterPack<APICore::Parameter<APICore::StringLiteral<11>{"numSeconds", 10}, APICore::StringLiteral<27>{"Number of seconds to wait.", 26}> > > >’
+./test/lua-test/../../src/lua-binders/./class-binder.hpp:111:78: error: no type named ‘isFunctional’ in ‘class APICore::FunctionBinder<APICore::Member<APICore::StringLiteral<10>{"className", 9}, &CustomObjectData::className> >’
+./test/lua-test/../../src/lua-binders/./class-binder.hpp:111:78: error: no type named ‘isFunctional’ in ‘class APICore::FunctionBinder<APICore::StaticOverload<APICore::Constructor<<lambda(int)>::_FUN, APICore::StringLiteral<62>{"An inline lambda function attached as a constructor function.", 61}, APICore::ParameterPack<APICore::Parameter<APICore::StringLiteral<4>{"num", 3}, APICore::StringLiteral<14>{"int parameter", 13}> > >, APICore::Constructor<<lambda(std::string)>::_FUN, APICore::StringLiteral<107>{"An overloaded inline lambda function attached as a constructor function. Takes a string instead of an int.", 106}, APICore::ParameterPack<APICore::Parameter<APICore::StringLiteral<4>{"str", 3}, APICore::StringLiteral<17>{"string parameter", 16}> > > > >’
+./test/lua-test/../../src/lua-binders/./class-binder.hpp:115:42: error: ‘key’ is not a member of ‘APICore::StaticOverload<APICore::Constructor<<lambda(int)>::_FUN, APICore::StringLiteral<62>{"An inline lambda function attached as a constructor function.", 61}, APICore::ParameterPack<APICore::Parameter<APICore::StringLiteral<4>{"num", 3}, APICore::StringLiteral<14>{"int parameter", 13}> > >, APICore::Constructor<<lambda(std::string)>::_FUN, APICore::StringLiteral<107>{"An overloaded inline lambda function attached as a constructor function. Takes a string instead of an int.", 106}, APICore::ParameterPack<APICore::Parameter<APICore::StringLiteral<4>{"str", 3}, APICore::StringLiteral<17>{"string parameter", 16}> > > >’
+  115 |                                  Fields::key,
+      |                                          ^~~
+In file included from ./test/lua-test/../../src/lua-binders/type-binder.hpp:6,
+                 from ./test/lua-test/main.cpp:3:
+./include/sol/sol.hpp:17935:3: error: ‘sol::property_wrapper<R, W>::property_wrapper(Rx&&, Wx&&) [with Rx = APICore::FunctionBinder<FunctionSpec>::makeGetter<CustomObjectData2, std::function<int(int)> CustomObjectData::*>::<lambda(CustomObjectData2&)>; Wx = APICore::FunctionBinder<FunctionSpec>::makeSetter<CustomObjectData2, std::function<int(int)> CustomObjectData::*>::<lambda(CustomObjectData2&, sol::object)>; R = APICore::FunctionBinder<FunctionSpec>::makeGetter<CustomObjectData2, std::function<int(int)> CustomObjectData::*>::<lambda(CustomObjectData2&)>; W = APICore::FunctionBinder<FunctionSpec>::makeSetter<CustomObjectData2, std::function<int(int)> CustomObjectData::*>::<lambda(CustomObjectData2&, sol::object)>]’, declared using local type ‘APICore::FunctionBinder<FunctionSpec>::makeGetter<CustomObjectData2, std::function<int(int)> CustomObjectData::*>::<lambda(CustomObjectData2&)>’, is used but never defined [-fpermissive]
+17935 |   property_wrapper(Rx&& r, Wx&& w) : read_base_t(std::forward<Rx>(r)), write_base_t(std::forward<Wx>(w)) {
+      |   ^~~~~~~~~~~~~~~~
+./include/sol/sol.hpp:17935:3: error: ‘sol::property_wrapper<R, W>::property_wrapper(Rx&&, Wx&&) [with Rx = APICore::FunctionBinder<FunctionSpec>::makeGetter<CustomObjectData2, std::function<int(int)>*>::<lambda()>; Wx = APICore::FunctionBinder<FunctionSpec>::makeSetter<CustomObjectData2, std::function<int(int)>*>::<lambda(sol::object)>; R = APICore::FunctionBinder<FunctionSpec>::makeGetter<CustomObjectData2, std::function<int(int)>*>::<lambda()>; W = APICore::FunctionBinder<FunctionSpec>::makeSetter<CustomObjectData2, std::function<int(int)>*>::<lambda(sol::object)>]’, declared using local type ‘APICore::FunctionBinder<FunctionSpec>::makeGetter<CustomObjectData2, std::function<int(int)>*>::<lambda()>’, is used but never defined [-fpermissive]
+./include/sol/sol.hpp:17935:3: error: ‘sol::property_wrapper<R, W>::property_wrapper(Rx&&, Wx&&) [with Rx = APICore::FunctionBinder<FunctionSpec>::makeGetter<CustomObjectData, std::function<int(int)> CustomObjectData::*>::<lambda(CustomObjectData&)>; Wx = APICore::FunctionBinder<FunctionSpec>::makeSetter<CustomObjectData, std::function<int(int)> CustomObjectData::*>::<lambda(CustomObjectData&, sol::object)>; R = APICore::FunctionBinder<FunctionSpec>::makeGetter<CustomObjectData, std::function<int(int)> CustomObjectData::*>::<lambda(CustomObjectData&)>; W = APICore::FunctionBinder<FunctionSpec>::makeSetter<CustomObjectData, std::function<int(int)> CustomObjectData::*>::<lambda(CustomObjectData&, sol::object)>]’, declared using local type ‘APICore::FunctionBinder<FunctionSpec>::makeGetter<CustomObjectData, std::function<int(int)> CustomObjectData::*>::<lambda(CustomObjectData&)>’, is used but never defined [-fpermissive]
+./include/sol/sol.hpp:17935:3: error: ‘sol::property_wrapper<R, W>::property_wrapper(Rx&&, Wx&&) [with Rx = APICore::FunctionBinder<FunctionSpec>::makeGetter<CustomObjectData, std::function<int(int)>*>::<lambda()>; Wx = APICore::FunctionBinder<FunctionSpec>::makeSetter<CustomObjectData, std::function<int(int)>*>::<lambda(sol::object)>; R = APICore::FunctionBinder<FunctionSpec>::makeGetter<CustomObjectData, std::function<int(int)>*>::<lambda()>; W = APICore::FunctionBinder<FunctionSpec>::makeSetter<CustomObjectData, std::function<int(int)>*>::<lambda(sol::object)>]’, declared using local type ‘APICore::FunctionBinder<FunctionSpec>::makeGetter<CustomObjectData, std::function<int(int)>*>::<lambda()>’, is used but never defined [-fpermissive]
+In file included from ./test/lua-test/../../src/lua-binders/type-binder.hpp:61,
+                 from ./test/lua-test/main.cpp:3:
+./test/lua-test/../../src/lua-binders/./class-binder.hpp: In lambda function:
+./test/lua-test/../../src/lua-binders/./class-binder.hpp:109:22: warning: control reaches end of non-void function [-Wreturn-type]
+  109 |                      [&state, &userType]()
+      |                      ^~~~~~~~~~~~~~~~~~~~~
+  110 |                      {
+      |                      ~
+  111 |                          if constexpr (FunctionBinder<Fields>::isFunctional::isMember || FunctionBinder<Fields>::isFunctional)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  112 |                          {
+      |                          ~
+  113 |                              FunctionBinder<Fields>::template generateLuaBinding<T>(
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  114 |                                  state,
+      |                                  ~~~~~~
+  115 |                                  Fields::key,
+      |                                  ~~~~~~~~~~~~
+  116 |                                  userType);
+      |                                  ~~~~~~~~~~
+  117 |                              return true;
+      |                              ~~~~~~~~~~~~
+  118 |                          }
+      |                          ~
+  119 |                          else if constexpr (MemberPtrSpec<Fields>)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  120 |                          {
+      |                          ~
+  121 |                              std::string key = Fields::key;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  122 |                              auto ptr = Fields::ptr;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~
+  123 | 
+      |                       
+  124 |                              LuaBinder<typename Fields::type>::declareType(state);
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  125 |                              (*userType)[Fields::key] = ptr;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  126 | 
+      |                       
+  127 |                              return true;
+      |                              ~~~~~~~~~~~~
+  128 |                          }
+      |                          ~
+  129 |                          else if constexpr (MemberOverloadSpec<Fields>)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  130 |                          {
+      |                          ~
+  131 |                              std::string key = Fields::getKey();
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  132 |                              using overloaders = typename LuaBinderGenerator::OverLoaders<T, Fields>;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  133 | 
+      |                       
+  134 |                              overloaders::bindOverloads(state, userType, key);
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  135 |                              return false;
+      |                              ~~~~~~~~~~~~~
+  136 |                          }
+      |                          ~
+  137 |                          else
+      |                          ~~~~
+  138 |                          {
+      |                          ~
+  139 |                              return false;
+      |                              ~~~~~~~~~~~~~
+  140 |                          }
+      |                          ~
+  141 |                      }()),
+      |                      ~
+./test/lua-test/../../src/lua-binders/./class-binder.hpp: In lambda function:
+./test/lua-test/../../src/lua-binders/./class-binder.hpp:109:22: warning: control reaches end of non-void function [-Wreturn-type]
+  109 |                      [&state, &userType]()
+      |                      ^~~~~~~~~~~~~~~~~~~~~
+  110 |                      {
+      |                      ~
+  111 |                          if constexpr (FunctionBinder<Fields>::isFunctional::isMember || FunctionBinder<Fields>::isFunctional)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  112 |                          {
+      |                          ~
+  113 |                              FunctionBinder<Fields>::template generateLuaBinding<T>(
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  114 |                                  state,
+      |                                  ~~~~~~
+  115 |                                  Fields::key,
+      |                                  ~~~~~~~~~~~~
+  116 |                                  userType);
+      |                                  ~~~~~~~~~~
+  117 |                              return true;
+      |                              ~~~~~~~~~~~~
+  118 |                          }
+      |                          ~
+  119 |                          else if constexpr (MemberPtrSpec<Fields>)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  120 |                          {
+      |                          ~
+  121 |                              std::string key = Fields::key;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  122 |                              auto ptr = Fields::ptr;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~
+  123 | 
+      |                       
+  124 |                              LuaBinder<typename Fields::type>::declareType(state);
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  125 |                              (*userType)[Fields::key] = ptr;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  126 | 
+      |                       
+  127 |                              return true;
+      |                              ~~~~~~~~~~~~
+  128 |                          }
+      |                          ~
+  129 |                          else if constexpr (MemberOverloadSpec<Fields>)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  130 |                          {
+      |                          ~
+  131 |                              std::string key = Fields::getKey();
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  132 |                              using overloaders = typename LuaBinderGenerator::OverLoaders<T, Fields>;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  133 | 
+      |                       
+  134 |                              overloaders::bindOverloads(state, userType, key);
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  135 |                              return false;
+      |                              ~~~~~~~~~~~~~
+  136 |                          }
+      |                          ~
+  137 |                          else
+      |                          ~~~~
+  138 |                          {
+      |                          ~
+  139 |                              return false;
+      |                              ~~~~~~~~~~~~~
+  140 |                          }
+      |                          ~
+  141 |                      }()),
+      |                      ~
+./test/lua-test/../../src/lua-binders/./class-binder.hpp: In lambda function:
+./test/lua-test/../../src/lua-binders/./class-binder.hpp:109:22: warning: control reaches end of non-void function [-Wreturn-type]
+  109 |                      [&state, &userType]()
+      |                      ^~~~~~~~~~~~~~~~~~~~~
+  110 |                      {
+      |                      ~
+  111 |                          if constexpr (FunctionBinder<Fields>::isFunctional::isMember || FunctionBinder<Fields>::isFunctional)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  112 |                          {
+      |                          ~
+  113 |                              FunctionBinder<Fields>::template generateLuaBinding<T>(
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  114 |                                  state,
+      |                                  ~~~~~~
+  115 |                                  Fields::key,
+      |                                  ~~~~~~~~~~~~
+  116 |                                  userType);
+      |                                  ~~~~~~~~~~
+  117 |                              return true;
+      |                              ~~~~~~~~~~~~
+  118 |                          }
+      |                          ~
+  119 |                          else if constexpr (MemberPtrSpec<Fields>)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  120 |                          {
+      |                          ~
+  121 |                              std::string key = Fields::key;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  122 |                              auto ptr = Fields::ptr;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~
+  123 | 
+      |                       
+  124 |                              LuaBinder<typename Fields::type>::declareType(state);
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  125 |                              (*userType)[Fields::key] = ptr;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  126 | 
+      |                       
+  127 |                              return true;
+      |                              ~~~~~~~~~~~~
+  128 |                          }
+      |                          ~
+  129 |                          else if constexpr (MemberOverloadSpec<Fields>)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  130 |                          {
+      |                          ~
+  131 |                              std::string key = Fields::getKey();
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  132 |                              using overloaders = typename LuaBinderGenerator::OverLoaders<T, Fields>;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  133 | 
+      |                       
+  134 |                              overloaders::bindOverloads(state, userType, key);
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  135 |                              return false;
+      |                              ~~~~~~~~~~~~~
+  136 |                          }
+      |                          ~
+  137 |                          else
+      |                          ~~~~
+  138 |                          {
+      |                          ~
+  139 |                              return false;
+      |                              ~~~~~~~~~~~~~
+  140 |                          }
+      |                          ~
+  141 |                      }()),
+      |                      ~
+./test/lua-test/../../src/lua-binders/./class-binder.hpp: In lambda function:
+./test/lua-test/../../src/lua-binders/./class-binder.hpp:109:22: warning: control reaches end of non-void function [-Wreturn-type]
+  109 |                      [&state, &userType]()
+      |                      ^~~~~~~~~~~~~~~~~~~~~
+  110 |                      {
+      |                      ~
+  111 |                          if constexpr (FunctionBinder<Fields>::isFunctional::isMember || FunctionBinder<Fields>::isFunctional)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  112 |                          {
+      |                          ~
+  113 |                              FunctionBinder<Fields>::template generateLuaBinding<T>(
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  114 |                                  state,
+      |                                  ~~~~~~
+  115 |                                  Fields::key,
+      |                                  ~~~~~~~~~~~~
+  116 |                                  userType);
+      |                                  ~~~~~~~~~~
+  117 |                              return true;
+      |                              ~~~~~~~~~~~~
+  118 |                          }
+      |                          ~
+  119 |                          else if constexpr (MemberPtrSpec<Fields>)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  120 |                          {
+      |                          ~
+  121 |                              std::string key = Fields::key;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  122 |                              auto ptr = Fields::ptr;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~
+  123 | 
+      |                       
+  124 |                              LuaBinder<typename Fields::type>::declareType(state);
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  125 |                              (*userType)[Fields::key] = ptr;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  126 | 
+      |                       
+  127 |                              return true;
+      |                              ~~~~~~~~~~~~
+  128 |                          }
+      |                          ~
+  129 |                          else if constexpr (MemberOverloadSpec<Fields>)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  130 |                          {
+      |                          ~
+  131 |                              std::string key = Fields::getKey();
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  132 |                              using overloaders = typename LuaBinderGenerator::OverLoaders<T, Fields>;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  133 | 
+      |                       
+  134 |                              overloaders::bindOverloads(state, userType, key);
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  135 |                              return false;
+      |                              ~~~~~~~~~~~~~
+  136 |                          }
+      |                          ~
+  137 |                          else
+      |                          ~~~~
+  138 |                          {
+      |                          ~
+  139 |                              return false;
+      |                              ~~~~~~~~~~~~~
+  140 |                          }
+      |                          ~
+  141 |                      }()),
+      |                      ~
+./test/lua-test/../../src/lua-binders/./class-binder.hpp: In lambda function:
+./test/lua-test/../../src/lua-binders/./class-binder.hpp:109:22: warning: control reaches end of non-void function [-Wreturn-type]
+  109 |                      [&state, &userType]()
+      |                      ^~~~~~~~~~~~~~~~~~~~~
+  110 |                      {
+      |                      ~
+  111 |                          if constexpr (FunctionBinder<Fields>::isFunctional::isMember || FunctionBinder<Fields>::isFunctional)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  112 |                          {
+      |                          ~
+  113 |                              FunctionBinder<Fields>::template generateLuaBinding<T>(
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  114 |                                  state,
+      |                                  ~~~~~~
+  115 |                                  Fields::key,
+      |                                  ~~~~~~~~~~~~
+  116 |                                  userType);
+      |                                  ~~~~~~~~~~
+  117 |                              return true;
+      |                              ~~~~~~~~~~~~
+  118 |                          }
+      |                          ~
+  119 |                          else if constexpr (MemberPtrSpec<Fields>)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  120 |                          {
+      |                          ~
+  121 |                              std::string key = Fields::key;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  122 |                              auto ptr = Fields::ptr;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~
+  123 | 
+      |                       
+  124 |                              LuaBinder<typename Fields::type>::declareType(state);
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  125 |                              (*userType)[Fields::key] = ptr;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  126 | 
+      |                       
+  127 |                              return true;
+      |                              ~~~~~~~~~~~~
+  128 |                          }
+      |                          ~
+  129 |                          else if constexpr (MemberOverloadSpec<Fields>)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  130 |                          {
+      |                          ~
+  131 |                              std::string key = Fields::getKey();
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  132 |                              using overloaders = typename LuaBinderGenerator::OverLoaders<T, Fields>;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  133 | 
+      |                       
+  134 |                              overloaders::bindOverloads(state, userType, key);
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  135 |                              return false;
+      |                              ~~~~~~~~~~~~~
+  136 |                          }
+      |                          ~
+  137 |                          else
+      |                          ~~~~
+  138 |                          {
+      |                          ~
+  139 |                              return false;
+      |                              ~~~~~~~~~~~~~
+  140 |                          }
+      |                          ~
+  141 |                      }()),
+      |                      ~
+./test/lua-test/../../src/lua-binders/./class-binder.hpp: In lambda function:
+./test/lua-test/../../src/lua-binders/./class-binder.hpp:109:22: warning: control reaches end of non-void function [-Wreturn-type]
+  109 |                      [&state, &userType]()
+      |                      ^~~~~~~~~~~~~~~~~~~~~
+  110 |                      {
+      |                      ~
+  111 |                          if constexpr (FunctionBinder<Fields>::isFunctional::isMember || FunctionBinder<Fields>::isFunctional)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  112 |                          {
+      |                          ~
+  113 |                              FunctionBinder<Fields>::template generateLuaBinding<T>(
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  114 |                                  state,
+      |                                  ~~~~~~
+  115 |                                  Fields::key,
+      |                                  ~~~~~~~~~~~~
+  116 |                                  userType);
+      |                                  ~~~~~~~~~~
+  117 |                              return true;
+      |                              ~~~~~~~~~~~~
+  118 |                          }
+      |                          ~
+  119 |                          else if constexpr (MemberPtrSpec<Fields>)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  120 |                          {
+      |                          ~
+  121 |                              std::string key = Fields::key;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  122 |                              auto ptr = Fields::ptr;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~
+  123 | 
+      |                       
+  124 |                              LuaBinder<typename Fields::type>::declareType(state);
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  125 |                              (*userType)[Fields::key] = ptr;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  126 | 
+      |                       
+  127 |                              return true;
+      |                              ~~~~~~~~~~~~
+  128 |                          }
+      |                          ~
+  129 |                          else if constexpr (MemberOverloadSpec<Fields>)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  130 |                          {
+      |                          ~
+  131 |                              std::string key = Fields::getKey();
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  132 |                              using overloaders = typename LuaBinderGenerator::OverLoaders<T, Fields>;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  133 | 
+      |                       
+  134 |                              overloaders::bindOverloads(state, userType, key);
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  135 |                              return false;
+      |                              ~~~~~~~~~~~~~
+  136 |                          }
+      |                          ~
+  137 |                          else
+      |                          ~~~~
+  138 |                          {
+      |                          ~
+  139 |                              return false;
+      |                              ~~~~~~~~~~~~~
+  140 |                          }
+      |                          ~
+  141 |                      }()),
+      |                      ~
+./test/lua-test/../../src/lua-binders/./class-binder.hpp: In lambda function:
+./test/lua-test/../../src/lua-binders/./class-binder.hpp:109:22: warning: control reaches end of non-void function [-Wreturn-type]
+  109 |                      [&state, &userType]()
+      |                      ^~~~~~~~~~~~~~~~~~~~~
+  110 |                      {
+      |                      ~
+  111 |                          if constexpr (FunctionBinder<Fields>::isFunctional::isMember || FunctionBinder<Fields>::isFunctional)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  112 |                          {
+      |                          ~
+  113 |                              FunctionBinder<Fields>::template generateLuaBinding<T>(
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  114 |                                  state,
+      |                                  ~~~~~~
+  115 |                                  Fields::key,
+      |                                  ~~~~~~~~~~~~
+  116 |                                  userType);
+      |                                  ~~~~~~~~~~
+  117 |                              return true;
+      |                              ~~~~~~~~~~~~
+  118 |                          }
+      |                          ~
+  119 |                          else if constexpr (MemberPtrSpec<Fields>)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  120 |                          {
+      |                          ~
+  121 |                              std::string key = Fields::key;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  122 |                              auto ptr = Fields::ptr;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~
+  123 | 
+      |                       
+  124 |                              LuaBinder<typename Fields::type>::declareType(state);
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  125 |                              (*userType)[Fields::key] = ptr;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  126 | 
+      |                       
+  127 |                              return true;
+      |                              ~~~~~~~~~~~~
+  128 |                          }
+      |                          ~
+  129 |                          else if constexpr (MemberOverloadSpec<Fields>)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  130 |                          {
+      |                          ~
+  131 |                              std::string key = Fields::getKey();
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  132 |                              using overloaders = typename LuaBinderGenerator::OverLoaders<T, Fields>;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  133 | 
+      |                       
+  134 |                              overloaders::bindOverloads(state, userType, key);
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  135 |                              return false;
+      |                              ~~~~~~~~~~~~~
+  136 |                          }
+      |                          ~
+  137 |                          else
+      |                          ~~~~
+  138 |                          {
+      |                          ~
+  139 |                              return false;
+      |                              ~~~~~~~~~~~~~
+  140 |                          }
+      |                          ~
+  141 |                      }()),
+      |                      ~
+./test/lua-test/../../src/lua-binders/./class-binder.hpp: In lambda function:
+./test/lua-test/../../src/lua-binders/./class-binder.hpp:109:22: warning: control reaches end of non-void function [-Wreturn-type]
+  109 |                      [&state, &userType]()
+      |                      ^~~~~~~~~~~~~~~~~~~~~
+  110 |                      {
+      |                      ~
+  111 |                          if constexpr (FunctionBinder<Fields>::isFunctional::isMember || FunctionBinder<Fields>::isFunctional)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  112 |                          {
+      |                          ~
+  113 |                              FunctionBinder<Fields>::template generateLuaBinding<T>(
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  114 |                                  state,
+      |                                  ~~~~~~
+  115 |                                  Fields::key,
+      |                                  ~~~~~~~~~~~~
+  116 |                                  userType);
+      |                                  ~~~~~~~~~~
+  117 |                              return true;
+      |                              ~~~~~~~~~~~~
+  118 |                          }
+      |                          ~
+  119 |                          else if constexpr (MemberPtrSpec<Fields>)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  120 |                          {
+      |                          ~
+  121 |                              std::string key = Fields::key;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  122 |                              auto ptr = Fields::ptr;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~
+  123 | 
+      |                       
+  124 |                              LuaBinder<typename Fields::type>::declareType(state);
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  125 |                              (*userType)[Fields::key] = ptr;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  126 | 
+      |                       
+  127 |                              return true;
+      |                              ~~~~~~~~~~~~
+  128 |                          }
+      |                          ~
+  129 |                          else if constexpr (MemberOverloadSpec<Fields>)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  130 |                          {
+      |                          ~
+  131 |                              std::string key = Fields::getKey();
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  132 |                              using overloaders = typename LuaBinderGenerator::OverLoaders<T, Fields>;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  133 | 
+      |                       
+  134 |                              overloaders::bindOverloads(state, userType, key);
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  135 |                              return false;
+      |                              ~~~~~~~~~~~~~
+  136 |                          }
+      |                          ~
+  137 |                          else
+      |                          ~~~~
+  138 |                          {
+      |                          ~
+  139 |                              return false;
+      |                              ~~~~~~~~~~~~~
+  140 |                          }
+      |                          ~
+  141 |                      }()),
+      |                      ~
+./test/lua-test/../../src/lua-binders/./class-binder.hpp: In lambda function:
+./test/lua-test/../../src/lua-binders/./class-binder.hpp:109:22: warning: control reaches end of non-void function [-Wreturn-type]
+  109 |                      [&state, &userType]()
+      |                      ^~~~~~~~~~~~~~~~~~~~~
+  110 |                      {
+      |                      ~
+  111 |                          if constexpr (FunctionBinder<Fields>::isFunctional::isMember || FunctionBinder<Fields>::isFunctional)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  112 |                          {
+      |                          ~
+  113 |                              FunctionBinder<Fields>::template generateLuaBinding<T>(
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  114 |                                  state,
+      |                                  ~~~~~~
+  115 |                                  Fields::key,
+      |                                  ~~~~~~~~~~~~
+  116 |                                  userType);
+      |                                  ~~~~~~~~~~
+  117 |                              return true;
+      |                              ~~~~~~~~~~~~
+  118 |                          }
+      |                          ~
+  119 |                          else if constexpr (MemberPtrSpec<Fields>)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  120 |                          {
+      |                          ~
+  121 |                              std::string key = Fields::key;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  122 |                              auto ptr = Fields::ptr;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~
+  123 | 
+      |                       
+  124 |                              LuaBinder<typename Fields::type>::declareType(state);
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  125 |                              (*userType)[Fields::key] = ptr;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  126 | 
+      |                       
+  127 |                              return true;
+      |                              ~~~~~~~~~~~~
+  128 |                          }
+      |                          ~
+  129 |                          else if constexpr (MemberOverloadSpec<Fields>)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  130 |                          {
+      |                          ~
+  131 |                              std::string key = Fields::getKey();
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  132 |                              using overloaders = typename LuaBinderGenerator::OverLoaders<T, Fields>;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  133 | 
+      |                       
+  134 |                              overloaders::bindOverloads(state, userType, key);
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  135 |                              return false;
+      |                              ~~~~~~~~~~~~~
+  136 |                          }
+      |                          ~
+  137 |                          else
+      |                          ~~~~
+  138 |                          {
+      |                          ~
+  139 |                              return false;
+      |                              ~~~~~~~~~~~~~
+  140 |                          }
+      |                          ~
+  141 |                      }()),
+      |                      ~
+./test/lua-test/../../src/lua-binders/./class-binder.hpp: In lambda function:
+./test/lua-test/../../src/lua-binders/./class-binder.hpp:109:22: warning: control reaches end of non-void function [-Wreturn-type]
+  109 |                      [&state, &userType]()
+      |                      ^~~~~~~~~~~~~~~~~~~~~
+  110 |                      {
+      |                      ~
+  111 |                          if constexpr (FunctionBinder<Fields>::isFunctional::isMember || FunctionBinder<Fields>::isFunctional)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  112 |                          {
+      |                          ~
+  113 |                              FunctionBinder<Fields>::template generateLuaBinding<T>(
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  114 |                                  state,
+      |                                  ~~~~~~
+  115 |                                  Fields::key,
+      |                                  ~~~~~~~~~~~~
+  116 |                                  userType);
+      |                                  ~~~~~~~~~~
+  117 |                              return true;
+      |                              ~~~~~~~~~~~~
+  118 |                          }
+      |                          ~
+  119 |                          else if constexpr (MemberPtrSpec<Fields>)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  120 |                          {
+      |                          ~
+  121 |                              std::string key = Fields::key;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  122 |                              auto ptr = Fields::ptr;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~
+  123 | 
+      |                       
+  124 |                              LuaBinder<typename Fields::type>::declareType(state);
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  125 |                              (*userType)[Fields::key] = ptr;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  126 | 
+      |                       
+  127 |                              return true;
+      |                              ~~~~~~~~~~~~
+  128 |                          }
+      |                          ~
+  129 |                          else if constexpr (MemberOverloadSpec<Fields>)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  130 |                          {
+      |                          ~
+  131 |                              std::string key = Fields::getKey();
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  132 |                              using overloaders = typename LuaBinderGenerator::OverLoaders<T, Fields>;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  133 | 
+      |                       
+  134 |                              overloaders::bindOverloads(state, userType, key);
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  135 |                              return false;
+      |                              ~~~~~~~~~~~~~
+  136 |                          }
+      |                          ~
+  137 |                          else
+      |                          ~~~~
+  138 |                          {
+      |                          ~
+  139 |                              return false;
+      |                              ~~~~~~~~~~~~~
+  140 |                          }
+      |                          ~
+  141 |                      }()),
+      |                      ~
+./test/lua-test/../../src/lua-binders/./class-binder.hpp: In lambda function:
+./test/lua-test/../../src/lua-binders/./class-binder.hpp:109:22: warning: control reaches end of non-void function [-Wreturn-type]
+  109 |                      [&state, &userType]()
+      |                      ^~~~~~~~~~~~~~~~~~~~~
+  110 |                      {
+      |                      ~
+  111 |                          if constexpr (FunctionBinder<Fields>::isFunctional::isMember || FunctionBinder<Fields>::isFunctional)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  112 |                          {
+      |                          ~
+  113 |                              FunctionBinder<Fields>::template generateLuaBinding<T>(
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  114 |                                  state,
+      |                                  ~~~~~~
+  115 |                                  Fields::key,
+      |                                  ~~~~~~~~~~~~
+  116 |                                  userType);
+      |                                  ~~~~~~~~~~
+  117 |                              return true;
+      |                              ~~~~~~~~~~~~
+  118 |                          }
+      |                          ~
+  119 |                          else if constexpr (MemberPtrSpec<Fields>)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  120 |                          {
+      |                          ~
+  121 |                              std::string key = Fields::key;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  122 |                              auto ptr = Fields::ptr;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~
+  123 | 
+      |                       
+  124 |                              LuaBinder<typename Fields::type>::declareType(state);
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  125 |                              (*userType)[Fields::key] = ptr;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  126 | 
+      |                       
+  127 |                              return true;
+      |                              ~~~~~~~~~~~~
+  128 |                          }
+      |                          ~
+  129 |                          else if constexpr (MemberOverloadSpec<Fields>)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  130 |                          {
+      |                          ~
+  131 |                              std::string key = Fields::getKey();
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  132 |                              using overloaders = typename LuaBinderGenerator::OverLoaders<T, Fields>;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  133 | 
+      |                       
+  134 |                              overloaders::bindOverloads(state, userType, key);
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  135 |                              return false;
+      |                              ~~~~~~~~~~~~~
+  136 |                          }
+      |                          ~
+  137 |                          else
+      |                          ~~~~
+  138 |                          {
+      |                          ~
+  139 |                              return false;
+      |                              ~~~~~~~~~~~~~
+  140 |                          }
+      |                          ~
+  141 |                      }()),
+      |                      ~
+./test/lua-test/../../src/lua-binders/./class-binder.hpp: In lambda function:
+./test/lua-test/../../src/lua-binders/./class-binder.hpp:109:22: warning: control reaches end of non-void function [-Wreturn-type]
+  109 |                      [&state, &userType]()
+      |                      ^~~~~~~~~~~~~~~~~~~~~
+  110 |                      {
+      |                      ~
+  111 |                          if constexpr (FunctionBinder<Fields>::isFunctional::isMember || FunctionBinder<Fields>::isFunctional)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  112 |                          {
+      |                          ~
+  113 |                              FunctionBinder<Fields>::template generateLuaBinding<T>(
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  114 |                                  state,
+      |                                  ~~~~~~
+  115 |                                  Fields::key,
+      |                                  ~~~~~~~~~~~~
+  116 |                                  userType);
+      |                                  ~~~~~~~~~~
+  117 |                              return true;
+      |                              ~~~~~~~~~~~~
+  118 |                          }
+      |                          ~
+  119 |                          else if constexpr (MemberPtrSpec<Fields>)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  120 |                          {
+      |                          ~
+  121 |                              std::string key = Fields::key;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  122 |                              auto ptr = Fields::ptr;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~
+  123 | 
+      |                       
+  124 |                              LuaBinder<typename Fields::type>::declareType(state);
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  125 |                              (*userType)[Fields::key] = ptr;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  126 | 
+      |                       
+  127 |                              return true;
+      |                              ~~~~~~~~~~~~
+  128 |                          }
+      |                          ~
+  129 |                          else if constexpr (MemberOverloadSpec<Fields>)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  130 |                          {
+      |                          ~
+  131 |                              std::string key = Fields::getKey();
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  132 |                              using overloaders = typename LuaBinderGenerator::OverLoaders<T, Fields>;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  133 | 
+      |                       
+  134 |                              overloaders::bindOverloads(state, userType, key);
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  135 |                              return false;
+      |                              ~~~~~~~~~~~~~
+  136 |                          }
+      |                          ~
+  137 |                          else
+      |                          ~~~~
+  138 |                          {
+      |                          ~
+  139 |                              return false;
+      |                              ~~~~~~~~~~~~~
+  140 |                          }
+      |                          ~
+  141 |                      }()),
+      |                      ~
+./test/lua-test/../../src/lua-binders/./class-binder.hpp: In lambda function:
+./test/lua-test/../../src/lua-binders/./class-binder.hpp:109:22: warning: control reaches end of non-void function [-Wreturn-type]
+  109 |                      [&state, &userType]()
+      |                      ^~~~~~~~~~~~~~~~~~~~~
+  110 |                      {
+      |                      ~
+  111 |                          if constexpr (FunctionBinder<Fields>::isFunctional::isMember || FunctionBinder<Fields>::isFunctional)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  112 |                          {
+      |                          ~
+  113 |                              FunctionBinder<Fields>::template generateLuaBinding<T>(
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  114 |                                  state,
+      |                                  ~~~~~~
+  115 |                                  Fields::key,
+      |                                  ~~~~~~~~~~~~
+  116 |                                  userType);
+      |                                  ~~~~~~~~~~
+  117 |                              return true;
+      |                              ~~~~~~~~~~~~
+  118 |                          }
+      |                          ~
+  119 |                          else if constexpr (MemberPtrSpec<Fields>)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  120 |                          {
+      |                          ~
+  121 |                              std::string key = Fields::key;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  122 |                              auto ptr = Fields::ptr;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~
+  123 | 
+      |                       
+  124 |                              LuaBinder<typename Fields::type>::declareType(state);
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  125 |                              (*userType)[Fields::key] = ptr;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  126 | 
+      |                       
+  127 |                              return true;
+      |                              ~~~~~~~~~~~~
+  128 |                          }
+      |                          ~
+  129 |                          else if constexpr (MemberOverloadSpec<Fields>)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  130 |                          {
+      |                          ~
+  131 |                              std::string key = Fields::getKey();
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  132 |                              using overloaders = typename LuaBinderGenerator::OverLoaders<T, Fields>;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  133 | 
+      |                       
+  134 |                              overloaders::bindOverloads(state, userType, key);
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  135 |                              return false;
+      |                              ~~~~~~~~~~~~~
+  136 |                          }
+      |                          ~
+  137 |                          else
+      |                          ~~~~
+  138 |                          {
+      |                          ~
+  139 |                              return false;
+      |                              ~~~~~~~~~~~~~
+  140 |                          }
+      |                          ~
+  141 |                      }()),
+      |                      ~
+./test/lua-test/../../src/lua-binders/./class-binder.hpp: In lambda function:
+./test/lua-test/../../src/lua-binders/./class-binder.hpp:109:22: warning: control reaches end of non-void function [-Wreturn-type]
+  109 |                      [&state, &userType]()
+      |                      ^~~~~~~~~~~~~~~~~~~~~
+  110 |                      {
+      |                      ~
+  111 |                          if constexpr (FunctionBinder<Fields>::isFunctional::isMember || FunctionBinder<Fields>::isFunctional)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  112 |                          {
+      |                          ~
+  113 |                              FunctionBinder<Fields>::template generateLuaBinding<T>(
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  114 |                                  state,
+      |                                  ~~~~~~
+  115 |                                  Fields::key,
+      |                                  ~~~~~~~~~~~~
+  116 |                                  userType);
+      |                                  ~~~~~~~~~~
+  117 |                              return true;
+      |                              ~~~~~~~~~~~~
+  118 |                          }
+      |                          ~
+  119 |                          else if constexpr (MemberPtrSpec<Fields>)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  120 |                          {
+      |                          ~
+  121 |                              std::string key = Fields::key;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  122 |                              auto ptr = Fields::ptr;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~
+  123 | 
+      |                       
+  124 |                              LuaBinder<typename Fields::type>::declareType(state);
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  125 |                              (*userType)[Fields::key] = ptr;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  126 | 
+      |                       
+  127 |                              return true;
+      |                              ~~~~~~~~~~~~
+  128 |                          }
+      |                          ~
+  129 |                          else if constexpr (MemberOverloadSpec<Fields>)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  130 |                          {
+      |                          ~
+  131 |                              std::string key = Fields::getKey();
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  132 |                              using overloaders = typename LuaBinderGenerator::OverLoaders<T, Fields>;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  133 | 
+      |                       
+  134 |                              overloaders::bindOverloads(state, userType, key);
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  135 |                              return false;
+      |                              ~~~~~~~~~~~~~
+  136 |                          }
+      |                          ~
+  137 |                          else
+      |                          ~~~~
+  138 |                          {
+      |                          ~
+  139 |                              return false;
+      |                              ~~~~~~~~~~~~~
+  140 |                          }
+      |                          ~
+  141 |                      }()),
+      |                      ~
+./test/lua-test/../../src/lua-binders/./class-binder.hpp: In lambda function:
+./test/lua-test/../../src/lua-binders/./class-binder.hpp:109:22: warning: control reaches end of non-void function [-Wreturn-type]
+  109 |                      [&state, &userType]()
+      |                      ^~~~~~~~~~~~~~~~~~~~~
+  110 |                      {
+      |                      ~
+  111 |                          if constexpr (FunctionBinder<Fields>::isFunctional::isMember || FunctionBinder<Fields>::isFunctional)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  112 |                          {
+      |                          ~
+  113 |                              FunctionBinder<Fields>::template generateLuaBinding<T>(
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  114 |                                  state,
+      |                                  ~~~~~~
+  115 |                                  Fields::key,
+      |                                  ~~~~~~~~~~~~
+  116 |                                  userType);
+      |                                  ~~~~~~~~~~
+  117 |                              return true;
+      |                              ~~~~~~~~~~~~
+  118 |                          }
+      |                          ~
+  119 |                          else if constexpr (MemberPtrSpec<Fields>)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  120 |                          {
+      |                          ~
+  121 |                              std::string key = Fields::key;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  122 |                              auto ptr = Fields::ptr;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~
+  123 | 
+      |                       
+  124 |                              LuaBinder<typename Fields::type>::declareType(state);
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  125 |                              (*userType)[Fields::key] = ptr;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  126 | 
+      |                       
+  127 |                              return true;
+      |                              ~~~~~~~~~~~~
+  128 |                          }
+      |                          ~
+  129 |                          else if constexpr (MemberOverloadSpec<Fields>)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  130 |                          {
+      |                          ~
+  131 |                              std::string key = Fields::getKey();
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  132 |                              using overloaders = typename LuaBinderGenerator::OverLoaders<T, Fields>;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  133 | 
+      |                       
+  134 |                              overloaders::bindOverloads(state, userType, key);
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  135 |                              return false;
+      |                              ~~~~~~~~~~~~~
+  136 |                          }
+      |                          ~
+  137 |                          else
+      |                          ~~~~
+  138 |                          {
+      |                          ~
+  139 |                              return false;
+      |                              ~~~~~~~~~~~~~
+  140 |                          }
+      |                          ~
+  141 |                      }()),
+      |                      ~
+./test/lua-test/../../src/lua-binders/./class-binder.hpp: In lambda function:
+./test/lua-test/../../src/lua-binders/./class-binder.hpp:109:22: warning: control reaches end of non-void function [-Wreturn-type]
+  109 |                      [&state, &userType]()
+      |                      ^~~~~~~~~~~~~~~~~~~~~
+  110 |                      {
+      |                      ~
+  111 |                          if constexpr (FunctionBinder<Fields>::isFunctional::isMember || FunctionBinder<Fields>::isFunctional)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  112 |                          {
+      |                          ~
+  113 |                              FunctionBinder<Fields>::template generateLuaBinding<T>(
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  114 |                                  state,
+      |                                  ~~~~~~
+  115 |                                  Fields::key,
+      |                                  ~~~~~~~~~~~~
+  116 |                                  userType);
+      |                                  ~~~~~~~~~~
+  117 |                              return true;
+      |                              ~~~~~~~~~~~~
+  118 |                          }
+      |                          ~
+  119 |                          else if constexpr (MemberPtrSpec<Fields>)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  120 |                          {
+      |                          ~
+  121 |                              std::string key = Fields::key;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  122 |                              auto ptr = Fields::ptr;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~
+  123 | 
+      |                       
+  124 |                              LuaBinder<typename Fields::type>::declareType(state);
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  125 |                              (*userType)[Fields::key] = ptr;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  126 | 
+      |                       
+  127 |                              return true;
+      |                              ~~~~~~~~~~~~
+  128 |                          }
+      |                          ~
+  129 |                          else if constexpr (MemberOverloadSpec<Fields>)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  130 |                          {
+      |                          ~
+  131 |                              std::string key = Fields::getKey();
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  132 |                              using overloaders = typename LuaBinderGenerator::OverLoaders<T, Fields>;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  133 | 
+      |                       
+  134 |                              overloaders::bindOverloads(state, userType, key);
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  135 |                              return false;
+      |                              ~~~~~~~~~~~~~
+  136 |                          }
+      |                          ~
+  137 |                          else
+      |                          ~~~~
+  138 |                          {
+      |                          ~
+  139 |                              return false;
+      |                              ~~~~~~~~~~~~~
+  140 |                          }
+      |                          ~
+  141 |                      }()),
+      |                      ~
+./test/lua-test/../../src/lua-binders/./class-binder.hpp: In lambda function:
+./test/lua-test/../../src/lua-binders/./class-binder.hpp:109:22: warning: control reaches end of non-void function [-Wreturn-type]
+  109 |                      [&state, &userType]()
+      |                      ^~~~~~~~~~~~~~~~~~~~~
+  110 |                      {
+      |                      ~
+  111 |                          if constexpr (FunctionBinder<Fields>::isFunctional::isMember || FunctionBinder<Fields>::isFunctional)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  112 |                          {
+      |                          ~
+  113 |                              FunctionBinder<Fields>::template generateLuaBinding<T>(
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  114 |                                  state,
+      |                                  ~~~~~~
+  115 |                                  Fields::key,
+      |                                  ~~~~~~~~~~~~
+  116 |                                  userType);
+      |                                  ~~~~~~~~~~
+  117 |                              return true;
+      |                              ~~~~~~~~~~~~
+  118 |                          }
+      |                          ~
+  119 |                          else if constexpr (MemberPtrSpec<Fields>)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  120 |                          {
+      |                          ~
+  121 |                              std::string key = Fields::key;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  122 |                              auto ptr = Fields::ptr;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~
+  123 | 
+      |                       
+  124 |                              LuaBinder<typename Fields::type>::declareType(state);
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  125 |                              (*userType)[Fields::key] = ptr;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  126 | 
+      |                       
+  127 |                              return true;
+      |                              ~~~~~~~~~~~~
+  128 |                          }
+      |                          ~
+  129 |                          else if constexpr (MemberOverloadSpec<Fields>)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  130 |                          {
+      |                          ~
+  131 |                              std::string key = Fields::getKey();
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  132 |                              using overloaders = typename LuaBinderGenerator::OverLoaders<T, Fields>;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  133 | 
+      |                       
+  134 |                              overloaders::bindOverloads(state, userType, key);
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  135 |                              return false;
+      |                              ~~~~~~~~~~~~~
+  136 |                          }
+      |                          ~
+  137 |                          else
+      |                          ~~~~
+  138 |                          {
+      |                          ~
+  139 |                              return false;
+      |                              ~~~~~~~~~~~~~
+  140 |                          }
+      |                          ~
+  141 |                      }()),
+      |                      ~
+./test/lua-test/../../src/lua-binders/./class-binder.hpp: In lambda function:
+./test/lua-test/../../src/lua-binders/./class-binder.hpp:109:22: warning: control reaches end of non-void function [-Wreturn-type]
+  109 |                      [&state, &userType]()
+      |                      ^~~~~~~~~~~~~~~~~~~~~
+  110 |                      {
+      |                      ~
+  111 |                          if constexpr (FunctionBinder<Fields>::isFunctional::isMember || FunctionBinder<Fields>::isFunctional)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  112 |                          {
+      |                          ~
+  113 |                              FunctionBinder<Fields>::template generateLuaBinding<T>(
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  114 |                                  state,
+      |                                  ~~~~~~
+  115 |                                  Fields::key,
+      |                                  ~~~~~~~~~~~~
+  116 |                                  userType);
+      |                                  ~~~~~~~~~~
+  117 |                              return true;
+      |                              ~~~~~~~~~~~~
+  118 |                          }
+      |                          ~
+  119 |                          else if constexpr (MemberPtrSpec<Fields>)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  120 |                          {
+      |                          ~
+  121 |                              std::string key = Fields::key;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  122 |                              auto ptr = Fields::ptr;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~
+  123 | 
+      |                       
+  124 |                              LuaBinder<typename Fields::type>::declareType(state);
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  125 |                              (*userType)[Fields::key] = ptr;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  126 | 
+      |                       
+  127 |                              return true;
+      |                              ~~~~~~~~~~~~
+  128 |                          }
+      |                          ~
+  129 |                          else if constexpr (MemberOverloadSpec<Fields>)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  130 |                          {
+      |                          ~
+  131 |                              std::string key = Fields::getKey();
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  132 |                              using overloaders = typename LuaBinderGenerator::OverLoaders<T, Fields>;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  133 | 
+      |                       
+  134 |                              overloaders::bindOverloads(state, userType, key);
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  135 |                              return false;
+      |                              ~~~~~~~~~~~~~
+  136 |                          }
+      |                          ~
+  137 |                          else
+      |                          ~~~~
+  138 |                          {
+      |                          ~
+  139 |                              return false;
+      |                              ~~~~~~~~~~~~~
+  140 |                          }
+      |                          ~
+  141 |                      }()),
+      |                      ~
+./test/lua-test/../../src/lua-binders/./class-binder.hpp: In lambda function:
+./test/lua-test/../../src/lua-binders/./class-binder.hpp:109:22: warning: control reaches end of non-void function [-Wreturn-type]
+  109 |                      [&state, &userType]()
+      |                      ^~~~~~~~~~~~~~~~~~~~~
+  110 |                      {
+      |                      ~
+  111 |                          if constexpr (FunctionBinder<Fields>::isFunctional::isMember || FunctionBinder<Fields>::isFunctional)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  112 |                          {
+      |                          ~
+  113 |                              FunctionBinder<Fields>::template generateLuaBinding<T>(
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  114 |                                  state,
+      |                                  ~~~~~~
+  115 |                                  Fields::key,
+      |                                  ~~~~~~~~~~~~
+  116 |                                  userType);
+      |                                  ~~~~~~~~~~
+  117 |                              return true;
+      |                              ~~~~~~~~~~~~
+  118 |                          }
+      |                          ~
+  119 |                          else if constexpr (MemberPtrSpec<Fields>)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  120 |                          {
+      |                          ~
+  121 |                              std::string key = Fields::key;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  122 |                              auto ptr = Fields::ptr;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~
+  123 | 
+      |                       
+  124 |                              LuaBinder<typename Fields::type>::declareType(state);
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  125 |                              (*userType)[Fields::key] = ptr;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  126 | 
+      |                       
+  127 |                              return true;
+      |                              ~~~~~~~~~~~~
+  128 |                          }
+      |                          ~
+  129 |                          else if constexpr (MemberOverloadSpec<Fields>)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  130 |                          {
+      |                          ~
+  131 |                              std::string key = Fields::getKey();
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  132 |                              using overloaders = typename LuaBinderGenerator::OverLoaders<T, Fields>;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  133 | 
+      |                       
+  134 |                              overloaders::bindOverloads(state, userType, key);
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  135 |                              return false;
+      |                              ~~~~~~~~~~~~~
+  136 |                          }
+      |                          ~
+  137 |                          else
+      |                          ~~~~
+  138 |                          {
+      |                          ~
+  139 |                              return false;
+      |                              ~~~~~~~~~~~~~
+  140 |                          }
+      |                          ~
+  141 |                      }()),
+      |                      ~
+./test/lua-test/../../src/lua-binders/./class-binder.hpp: In lambda function:
+./test/lua-test/../../src/lua-binders/./class-binder.hpp:109:22: warning: control reaches end of non-void function [-Wreturn-type]
+  109 |                      [&state, &userType]()
+      |                      ^~~~~~~~~~~~~~~~~~~~~
+  110 |                      {
+      |                      ~
+  111 |                          if constexpr (FunctionBinder<Fields>::isFunctional::isMember || FunctionBinder<Fields>::isFunctional)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  112 |                          {
+      |                          ~
+  113 |                              FunctionBinder<Fields>::template generateLuaBinding<T>(
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  114 |                                  state,
+      |                                  ~~~~~~
+  115 |                                  Fields::key,
+      |                                  ~~~~~~~~~~~~
+  116 |                                  userType);
+      |                                  ~~~~~~~~~~
+  117 |                              return true;
+      |                              ~~~~~~~~~~~~
+  118 |                          }
+      |                          ~
+  119 |                          else if constexpr (MemberPtrSpec<Fields>)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  120 |                          {
+      |                          ~
+  121 |                              std::string key = Fields::key;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  122 |                              auto ptr = Fields::ptr;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~
+  123 | 
+      |                       
+  124 |                              LuaBinder<typename Fields::type>::declareType(state);
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  125 |                              (*userType)[Fields::key] = ptr;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  126 | 
+      |                       
+  127 |                              return true;
+      |                              ~~~~~~~~~~~~
+  128 |                          }
+      |                          ~
+  129 |                          else if constexpr (MemberOverloadSpec<Fields>)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  130 |                          {
+      |                          ~
+  131 |                              std::string key = Fields::getKey();
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  132 |                              using overloaders = typename LuaBinderGenerator::OverLoaders<T, Fields>;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  133 | 
+      |                       
+  134 |                              overloaders::bindOverloads(state, userType, key);
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  135 |                              return false;
+      |                              ~~~~~~~~~~~~~
+  136 |                          }
+      |                          ~
+  137 |                          else
+      |                          ~~~~
+  138 |                          {
+      |                          ~
+  139 |                              return false;
+      |                              ~~~~~~~~~~~~~
+  140 |                          }
+      |                          ~
+  141 |                      }()),
+      |                      ~
+./test/lua-test/../../src/lua-binders/./class-binder.hpp: In lambda function:
+./test/lua-test/../../src/lua-binders/./class-binder.hpp:109:22: warning: control reaches end of non-void function [-Wreturn-type]
+  109 |                      [&state, &userType]()
+      |                      ^~~~~~~~~~~~~~~~~~~~~
+  110 |                      {
+      |                      ~
+  111 |                          if constexpr (FunctionBinder<Fields>::isFunctional::isMember || FunctionBinder<Fields>::isFunctional)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  112 |                          {
+      |                          ~
+  113 |                              FunctionBinder<Fields>::template generateLuaBinding<T>(
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  114 |                                  state,
+      |                                  ~~~~~~
+  115 |                                  Fields::key,
+      |                                  ~~~~~~~~~~~~
+  116 |                                  userType);
+      |                                  ~~~~~~~~~~
+  117 |                              return true;
+      |                              ~~~~~~~~~~~~
+  118 |                          }
+      |                          ~
+  119 |                          else if constexpr (MemberPtrSpec<Fields>)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  120 |                          {
+      |                          ~
+  121 |                              std::string key = Fields::key;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  122 |                              auto ptr = Fields::ptr;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~
+  123 | 
+      |                       
+  124 |                              LuaBinder<typename Fields::type>::declareType(state);
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  125 |                              (*userType)[Fields::key] = ptr;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  126 | 
+      |                       
+  127 |                              return true;
+      |                              ~~~~~~~~~~~~
+  128 |                          }
+      |                          ~
+  129 |                          else if constexpr (MemberOverloadSpec<Fields>)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  130 |                          {
+      |                          ~
+  131 |                              std::string key = Fields::getKey();
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  132 |                              using overloaders = typename LuaBinderGenerator::OverLoaders<T, Fields>;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  133 | 
+      |                       
+  134 |                              overloaders::bindOverloads(state, userType, key);
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  135 |                              return false;
+      |                              ~~~~~~~~~~~~~
+  136 |                          }
+      |                          ~
+  137 |                          else
+      |                          ~~~~
+  138 |                          {
+      |                          ~
+  139 |                              return false;
+      |                              ~~~~~~~~~~~~~
+  140 |                          }
+      |                          ~
+  141 |                      }()),
+      |                      ~
+./test/lua-test/../../src/lua-binders/./class-binder.hpp: In lambda function:
+./test/lua-test/../../src/lua-binders/./class-binder.hpp:109:22: warning: control reaches end of non-void function [-Wreturn-type]
+  109 |                      [&state, &userType]()
+      |                      ^~~~~~~~~~~~~~~~~~~~~
+  110 |                      {
+      |                      ~
+  111 |                          if constexpr (FunctionBinder<Fields>::isFunctional::isMember || FunctionBinder<Fields>::isFunctional)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  112 |                          {
+      |                          ~
+  113 |                              FunctionBinder<Fields>::template generateLuaBinding<T>(
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  114 |                                  state,
+      |                                  ~~~~~~
+  115 |                                  Fields::key,
+      |                                  ~~~~~~~~~~~~
+  116 |                                  userType);
+      |                                  ~~~~~~~~~~
+  117 |                              return true;
+      |                              ~~~~~~~~~~~~
+  118 |                          }
+      |                          ~
+  119 |                          else if constexpr (MemberPtrSpec<Fields>)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  120 |                          {
+      |                          ~
+  121 |                              std::string key = Fields::key;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  122 |                              auto ptr = Fields::ptr;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~
+  123 | 
+      |                       
+  124 |                              LuaBinder<typename Fields::type>::declareType(state);
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  125 |                              (*userType)[Fields::key] = ptr;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  126 | 
+      |                       
+  127 |                              return true;
+      |                              ~~~~~~~~~~~~
+  128 |                          }
+      |                          ~
+  129 |                          else if constexpr (MemberOverloadSpec<Fields>)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  130 |                          {
+      |                          ~
+  131 |                              std::string key = Fields::getKey();
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  132 |                              using overloaders = typename LuaBinderGenerator::OverLoaders<T, Fields>;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  133 | 
+      |                       
+  134 |                              overloaders::bindOverloads(state, userType, key);
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  135 |                              return false;
+      |                              ~~~~~~~~~~~~~
+  136 |                          }
+      |                          ~
+  137 |                          else
+      |                          ~~~~
+  138 |                          {
+      |                          ~
+  139 |                              return false;
+      |                              ~~~~~~~~~~~~~
+  140 |                          }
+      |                          ~
+  141 |                      }()),
+      |                      ~
+./test/lua-test/../../src/lua-binders/./class-binder.hpp: In lambda function:
+./test/lua-test/../../src/lua-binders/./class-binder.hpp:109:22: warning: control reaches end of non-void function [-Wreturn-type]
+  109 |                      [&state, &userType]()
+      |                      ^~~~~~~~~~~~~~~~~~~~~
+  110 |                      {
+      |                      ~
+  111 |                          if constexpr (FunctionBinder<Fields>::isFunctional::isMember || FunctionBinder<Fields>::isFunctional)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  112 |                          {
+      |                          ~
+  113 |                              FunctionBinder<Fields>::template generateLuaBinding<T>(
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  114 |                                  state,
+      |                                  ~~~~~~
+  115 |                                  Fields::key,
+      |                                  ~~~~~~~~~~~~
+  116 |                                  userType);
+      |                                  ~~~~~~~~~~
+  117 |                              return true;
+      |                              ~~~~~~~~~~~~
+  118 |                          }
+      |                          ~
+  119 |                          else if constexpr (MemberPtrSpec<Fields>)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  120 |                          {
+      |                          ~
+  121 |                              std::string key = Fields::key;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  122 |                              auto ptr = Fields::ptr;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~
+  123 | 
+      |                       
+  124 |                              LuaBinder<typename Fields::type>::declareType(state);
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  125 |                              (*userType)[Fields::key] = ptr;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  126 | 
+      |                       
+  127 |                              return true;
+      |                              ~~~~~~~~~~~~
+  128 |                          }
+      |                          ~
+  129 |                          else if constexpr (MemberOverloadSpec<Fields>)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  130 |                          {
+      |                          ~
+  131 |                              std::string key = Fields::getKey();
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  132 |                              using overloaders = typename LuaBinderGenerator::OverLoaders<T, Fields>;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  133 | 
+      |                       
+  134 |                              overloaders::bindOverloads(state, userType, key);
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  135 |                              return false;
+      |                              ~~~~~~~~~~~~~
+  136 |                          }
+      |                          ~
+  137 |                          else
+      |                          ~~~~
+  138 |                          {
+      |                          ~
+  139 |                              return false;
+      |                              ~~~~~~~~~~~~~
+  140 |                          }
+      |                          ~
+  141 |                      }()),
+      |                      ~
+./test/lua-test/../../src/lua-binders/./class-binder.hpp: In lambda function:
+./test/lua-test/../../src/lua-binders/./class-binder.hpp:109:22: warning: control reaches end of non-void function [-Wreturn-type]
+  109 |                      [&state, &userType]()
+      |                      ^~~~~~~~~~~~~~~~~~~~~
+  110 |                      {
+      |                      ~
+  111 |                          if constexpr (FunctionBinder<Fields>::isFunctional::isMember || FunctionBinder<Fields>::isFunctional)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  112 |                          {
+      |                          ~
+  113 |                              FunctionBinder<Fields>::template generateLuaBinding<T>(
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  114 |                                  state,
+      |                                  ~~~~~~
+  115 |                                  Fields::key,
+      |                                  ~~~~~~~~~~~~
+  116 |                                  userType);
+      |                                  ~~~~~~~~~~
+  117 |                              return true;
+      |                              ~~~~~~~~~~~~
+  118 |                          }
+      |                          ~
+  119 |                          else if constexpr (MemberPtrSpec<Fields>)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  120 |                          {
+      |                          ~
+  121 |                              std::string key = Fields::key;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  122 |                              auto ptr = Fields::ptr;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~
+  123 | 
+      |                       
+  124 |                              LuaBinder<typename Fields::type>::declareType(state);
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  125 |                              (*userType)[Fields::key] = ptr;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  126 | 
+      |                       
+  127 |                              return true;
+      |                              ~~~~~~~~~~~~
+  128 |                          }
+      |                          ~
+  129 |                          else if constexpr (MemberOverloadSpec<Fields>)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  130 |                          {
+      |                          ~
+  131 |                              std::string key = Fields::getKey();
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  132 |                              using overloaders = typename LuaBinderGenerator::OverLoaders<T, Fields>;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  133 | 
+      |                       
+  134 |                              overloaders::bindOverloads(state, userType, key);
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  135 |                              return false;
+      |                              ~~~~~~~~~~~~~
+  136 |                          }
+      |                          ~
+  137 |                          else
+      |                          ~~~~
+  138 |                          {
+      |                          ~
+  139 |                              return false;
+      |                              ~~~~~~~~~~~~~
+  140 |                          }
+      |                          ~
+  141 |                      }()),
+      |                      ~
+./test/lua-test/../../src/lua-binders/./class-binder.hpp: In lambda function:
+./test/lua-test/../../src/lua-binders/./class-binder.hpp:109:22: warning: control reaches end of non-void function [-Wreturn-type]
+  109 |                      [&state, &userType]()
+      |                      ^~~~~~~~~~~~~~~~~~~~~
+  110 |                      {
+      |                      ~
+  111 |                          if constexpr (FunctionBinder<Fields>::isFunctional::isMember || FunctionBinder<Fields>::isFunctional)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  112 |                          {
+      |                          ~
+  113 |                              FunctionBinder<Fields>::template generateLuaBinding<T>(
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  114 |                                  state,
+      |                                  ~~~~~~
+  115 |                                  Fields::key,
+      |                                  ~~~~~~~~~~~~
+  116 |                                  userType);
+      |                                  ~~~~~~~~~~
+  117 |                              return true;
+      |                              ~~~~~~~~~~~~
+  118 |                          }
+      |                          ~
+  119 |                          else if constexpr (MemberPtrSpec<Fields>)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  120 |                          {
+      |                          ~
+  121 |                              std::string key = Fields::key;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  122 |                              auto ptr = Fields::ptr;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~
+  123 | 
+      |                       
+  124 |                              LuaBinder<typename Fields::type>::declareType(state);
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  125 |                              (*userType)[Fields::key] = ptr;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  126 | 
+      |                       
+  127 |                              return true;
+      |                              ~~~~~~~~~~~~
+  128 |                          }
+      |                          ~
+  129 |                          else if constexpr (MemberOverloadSpec<Fields>)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  130 |                          {
+      |                          ~
+  131 |                              std::string key = Fields::getKey();
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  132 |                              using overloaders = typename LuaBinderGenerator::OverLoaders<T, Fields>;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  133 | 
+      |                       
+  134 |                              overloaders::bindOverloads(state, userType, key);
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  135 |                              return false;
+      |                              ~~~~~~~~~~~~~
+  136 |                          }
+      |                          ~
+  137 |                          else
+      |                          ~~~~
+  138 |                          {
+      |                          ~
+  139 |                              return false;
+      |                              ~~~~~~~~~~~~~
+  140 |                          }
+      |                          ~
+  141 |                      }()),
+      |                      ~
+./test/lua-test/../../src/lua-binders/./class-binder.hpp: In lambda function:
+./test/lua-test/../../src/lua-binders/./class-binder.hpp:109:22: warning: control reaches end of non-void function [-Wreturn-type]
+  109 |                      [&state, &userType]()
+      |                      ^~~~~~~~~~~~~~~~~~~~~
+  110 |                      {
+      |                      ~
+  111 |                          if constexpr (FunctionBinder<Fields>::isFunctional::isMember || FunctionBinder<Fields>::isFunctional)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  112 |                          {
+      |                          ~
+  113 |                              FunctionBinder<Fields>::template generateLuaBinding<T>(
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  114 |                                  state,
+      |                                  ~~~~~~
+  115 |                                  Fields::key,
+      |                                  ~~~~~~~~~~~~
+  116 |                                  userType);
+      |                                  ~~~~~~~~~~
+  117 |                              return true;
+      |                              ~~~~~~~~~~~~
+  118 |                          }
+      |                          ~
+  119 |                          else if constexpr (MemberPtrSpec<Fields>)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  120 |                          {
+      |                          ~
+  121 |                              std::string key = Fields::key;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  122 |                              auto ptr = Fields::ptr;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~
+  123 | 
+      |                       
+  124 |                              LuaBinder<typename Fields::type>::declareType(state);
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  125 |                              (*userType)[Fields::key] = ptr;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  126 | 
+      |                       
+  127 |                              return true;
+      |                              ~~~~~~~~~~~~
+  128 |                          }
+      |                          ~
+  129 |                          else if constexpr (MemberOverloadSpec<Fields>)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  130 |                          {
+      |                          ~
+  131 |                              std::string key = Fields::getKey();
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  132 |                              using overloaders = typename LuaBinderGenerator::OverLoaders<T, Fields>;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  133 | 
+      |                       
+  134 |                              overloaders::bindOverloads(state, userType, key);
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  135 |                              return false;
+      |                              ~~~~~~~~~~~~~
+  136 |                          }
+      |                          ~
+  137 |                          else
+      |                          ~~~~
+  138 |                          {
+      |                          ~
+  139 |                              return false;
+      |                              ~~~~~~~~~~~~~
+  140 |                          }
+      |                          ~
+  141 |                      }()),
+      |                      ~
+./test/lua-test/../../src/lua-binders/./class-binder.hpp: In lambda function:
+./test/lua-test/../../src/lua-binders/./class-binder.hpp:109:22: warning: control reaches end of non-void function [-Wreturn-type]
+  109 |                      [&state, &userType]()
+      |                      ^~~~~~~~~~~~~~~~~~~~~
+  110 |                      {
+      |                      ~
+  111 |                          if constexpr (FunctionBinder<Fields>::isFunctional::isMember || FunctionBinder<Fields>::isFunctional)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  112 |                          {
+      |                          ~
+  113 |                              FunctionBinder<Fields>::template generateLuaBinding<T>(
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  114 |                                  state,
+      |                                  ~~~~~~
+  115 |                                  Fields::key,
+      |                                  ~~~~~~~~~~~~
+  116 |                                  userType);
+      |                                  ~~~~~~~~~~
+  117 |                              return true;
+      |                              ~~~~~~~~~~~~
+  118 |                          }
+      |                          ~
+  119 |                          else if constexpr (MemberPtrSpec<Fields>)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  120 |                          {
+      |                          ~
+  121 |                              std::string key = Fields::key;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  122 |                              auto ptr = Fields::ptr;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~
+  123 | 
+      |                       
+  124 |                              LuaBinder<typename Fields::type>::declareType(state);
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  125 |                              (*userType)[Fields::key] = ptr;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  126 | 
+      |                       
+  127 |                              return true;
+      |                              ~~~~~~~~~~~~
+  128 |                          }
+      |                          ~
+  129 |                          else if constexpr (MemberOverloadSpec<Fields>)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  130 |                          {
+      |                          ~
+  131 |                              std::string key = Fields::getKey();
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  132 |                              using overloaders = typename LuaBinderGenerator::OverLoaders<T, Fields>;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  133 | 
+      |                       
+  134 |                              overloaders::bindOverloads(state, userType, key);
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  135 |                              return false;
+      |                              ~~~~~~~~~~~~~
+  136 |                          }
+      |                          ~
+  137 |                          else
+      |                          ~~~~
+  138 |                          {
+      |                          ~
+  139 |                              return false;
+      |                              ~~~~~~~~~~~~~
+  140 |                          }
+      |                          ~
+  141 |                      }()),
+      |                      ~
+./test/lua-test/../../src/lua-binders/./class-binder.hpp: In lambda function:
+./test/lua-test/../../src/lua-binders/./class-binder.hpp:109:22: warning: control reaches end of non-void function [-Wreturn-type]
+  109 |                      [&state, &userType]()
+      |                      ^~~~~~~~~~~~~~~~~~~~~
+  110 |                      {
+      |                      ~
+  111 |                          if constexpr (FunctionBinder<Fields>::isFunctional::isMember || FunctionBinder<Fields>::isFunctional)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  112 |                          {
+      |                          ~
+  113 |                              FunctionBinder<Fields>::template generateLuaBinding<T>(
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  114 |                                  state,
+      |                                  ~~~~~~
+  115 |                                  Fields::key,
+      |                                  ~~~~~~~~~~~~
+  116 |                                  userType);
+      |                                  ~~~~~~~~~~
+  117 |                              return true;
+      |                              ~~~~~~~~~~~~
+  118 |                          }
+      |                          ~
+  119 |                          else if constexpr (MemberPtrSpec<Fields>)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  120 |                          {
+      |                          ~
+  121 |                              std::string key = Fields::key;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  122 |                              auto ptr = Fields::ptr;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~
+  123 | 
+      |                       
+  124 |                              LuaBinder<typename Fields::type>::declareType(state);
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  125 |                              (*userType)[Fields::key] = ptr;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  126 | 
+      |                       
+  127 |                              return true;
+      |                              ~~~~~~~~~~~~
+  128 |                          }
+      |                          ~
+  129 |                          else if constexpr (MemberOverloadSpec<Fields>)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  130 |                          {
+      |                          ~
+  131 |                              std::string key = Fields::getKey();
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  132 |                              using overloaders = typename LuaBinderGenerator::OverLoaders<T, Fields>;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  133 | 
+      |                       
+  134 |                              overloaders::bindOverloads(state, userType, key);
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  135 |                              return false;
+      |                              ~~~~~~~~~~~~~
+  136 |                          }
+      |                          ~
+  137 |                          else
+      |                          ~~~~
+  138 |                          {
+      |                          ~
+  139 |                              return false;
+      |                              ~~~~~~~~~~~~~
+  140 |                          }
+      |                          ~
+  141 |                      }()),
+      |                      ~
+./test/lua-test/../../src/lua-binders/./class-binder.hpp: In lambda function:
+./test/lua-test/../../src/lua-binders/./class-binder.hpp:109:22: warning: control reaches end of non-void function [-Wreturn-type]
+  109 |                      [&state, &userType]()
+      |                      ^~~~~~~~~~~~~~~~~~~~~
+  110 |                      {
+      |                      ~
+  111 |                          if constexpr (FunctionBinder<Fields>::isFunctional::isMember || FunctionBinder<Fields>::isFunctional)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  112 |                          {
+      |                          ~
+  113 |                              FunctionBinder<Fields>::template generateLuaBinding<T>(
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  114 |                                  state,
+      |                                  ~~~~~~
+  115 |                                  Fields::key,
+      |                                  ~~~~~~~~~~~~
+  116 |                                  userType);
+      |                                  ~~~~~~~~~~
+  117 |                              return true;
+      |                              ~~~~~~~~~~~~
+  118 |                          }
+      |                          ~
+  119 |                          else if constexpr (MemberPtrSpec<Fields>)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  120 |                          {
+      |                          ~
+  121 |                              std::string key = Fields::key;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  122 |                              auto ptr = Fields::ptr;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~
+  123 | 
+      |                       
+  124 |                              LuaBinder<typename Fields::type>::declareType(state);
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  125 |                              (*userType)[Fields::key] = ptr;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  126 | 
+      |                       
+  127 |                              return true;
+      |                              ~~~~~~~~~~~~
+  128 |                          }
+      |                          ~
+  129 |                          else if constexpr (MemberOverloadSpec<Fields>)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  130 |                          {
+      |                          ~
+  131 |                              std::string key = Fields::getKey();
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  132 |                              using overloaders = typename LuaBinderGenerator::OverLoaders<T, Fields>;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  133 | 
+      |                       
+  134 |                              overloaders::bindOverloads(state, userType, key);
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  135 |                              return false;
+      |                              ~~~~~~~~~~~~~
+  136 |                          }
+      |                          ~
+  137 |                          else
+      |                          ~~~~
+  138 |                          {
+      |                          ~
+  139 |                              return false;
+      |                              ~~~~~~~~~~~~~
+  140 |                          }
+      |                          ~
+  141 |                      }()),
+      |                      ~
+./test/lua-test/../../src/lua-binders/./class-binder.hpp: In lambda function:
+./test/lua-test/../../src/lua-binders/./class-binder.hpp:109:22: warning: control reaches end of non-void function [-Wreturn-type]
+  109 |                      [&state, &userType]()
+      |                      ^~~~~~~~~~~~~~~~~~~~~
+  110 |                      {
+      |                      ~
+  111 |                          if constexpr (FunctionBinder<Fields>::isFunctional::isMember || FunctionBinder<Fields>::isFunctional)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  112 |                          {
+      |                          ~
+  113 |                              FunctionBinder<Fields>::template generateLuaBinding<T>(
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  114 |                                  state,
+      |                                  ~~~~~~
+  115 |                                  Fields::key,
+      |                                  ~~~~~~~~~~~~
+  116 |                                  userType);
+      |                                  ~~~~~~~~~~
+  117 |                              return true;
+      |                              ~~~~~~~~~~~~
+  118 |                          }
+      |                          ~
+  119 |                          else if constexpr (MemberPtrSpec<Fields>)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  120 |                          {
+      |                          ~
+  121 |                              std::string key = Fields::key;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  122 |                              auto ptr = Fields::ptr;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~
+  123 | 
+      |                       
+  124 |                              LuaBinder<typename Fields::type>::declareType(state);
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  125 |                              (*userType)[Fields::key] = ptr;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  126 | 
+      |                       
+  127 |                              return true;
+      |                              ~~~~~~~~~~~~
+  128 |                          }
+      |                          ~
+  129 |                          else if constexpr (MemberOverloadSpec<Fields>)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  130 |                          {
+      |                          ~
+  131 |                              std::string key = Fields::getKey();
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  132 |                              using overloaders = typename LuaBinderGenerator::OverLoaders<T, Fields>;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  133 | 
+      |                       
+  134 |                              overloaders::bindOverloads(state, userType, key);
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  135 |                              return false;
+      |                              ~~~~~~~~~~~~~
+  136 |                          }
+      |                          ~
+  137 |                          else
+      |                          ~~~~
+  138 |                          {
+      |                          ~
+  139 |                              return false;
+      |                              ~~~~~~~~~~~~~
+  140 |                          }
+      |                          ~
+  141 |                      }()),
+      |                      ~
+./test/lua-test/../../src/lua-binders/./class-binder.hpp: In lambda function:
+./test/lua-test/../../src/lua-binders/./class-binder.hpp:109:22: warning: control reaches end of non-void function [-Wreturn-type]
+  109 |                      [&state, &userType]()
+      |                      ^~~~~~~~~~~~~~~~~~~~~
+  110 |                      {
+      |                      ~
+  111 |                          if constexpr (FunctionBinder<Fields>::isFunctional::isMember || FunctionBinder<Fields>::isFunctional)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  112 |                          {
+      |                          ~
+  113 |                              FunctionBinder<Fields>::template generateLuaBinding<T>(
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  114 |                                  state,
+      |                                  ~~~~~~
+  115 |                                  Fields::key,
+      |                                  ~~~~~~~~~~~~
+  116 |                                  userType);
+      |                                  ~~~~~~~~~~
+  117 |                              return true;
+      |                              ~~~~~~~~~~~~
+  118 |                          }
+      |                          ~
+  119 |                          else if constexpr (MemberPtrSpec<Fields>)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  120 |                          {
+      |                          ~
+  121 |                              std::string key = Fields::key;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  122 |                              auto ptr = Fields::ptr;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~
+  123 | 
+      |                       
+  124 |                              LuaBinder<typename Fields::type>::declareType(state);
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  125 |                              (*userType)[Fields::key] = ptr;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  126 | 
+      |                       
+  127 |                              return true;
+      |                              ~~~~~~~~~~~~
+  128 |                          }
+      |                          ~
+  129 |                          else if constexpr (MemberOverloadSpec<Fields>)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  130 |                          {
+      |                          ~
+  131 |                              std::string key = Fields::getKey();
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  132 |                              using overloaders = typename LuaBinderGenerator::OverLoaders<T, Fields>;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  133 | 
+      |                       
+  134 |                              overloaders::bindOverloads(state, userType, key);
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  135 |                              return false;
+      |                              ~~~~~~~~~~~~~
+  136 |                          }
+      |                          ~
+  137 |                          else
+      |                          ~~~~
+  138 |                          {
+      |                          ~
+  139 |                              return false;
+      |                              ~~~~~~~~~~~~~
+  140 |                          }
+      |                          ~
+  141 |                      }()),
+      |                      ~
+./test/lua-test/../../src/lua-binders/./class-binder.hpp: In lambda function:
+./test/lua-test/../../src/lua-binders/./class-binder.hpp:109:22: warning: control reaches end of non-void function [-Wreturn-type]
+  109 |                      [&state, &userType]()
+      |                      ^~~~~~~~~~~~~~~~~~~~~
+  110 |                      {
+      |                      ~
+  111 |                          if constexpr (FunctionBinder<Fields>::isFunctional::isMember || FunctionBinder<Fields>::isFunctional)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  112 |                          {
+      |                          ~
+  113 |                              FunctionBinder<Fields>::template generateLuaBinding<T>(
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  114 |                                  state,
+      |                                  ~~~~~~
+  115 |                                  Fields::key,
+      |                                  ~~~~~~~~~~~~
+  116 |                                  userType);
+      |                                  ~~~~~~~~~~
+  117 |                              return true;
+      |                              ~~~~~~~~~~~~
+  118 |                          }
+      |                          ~
+  119 |                          else if constexpr (MemberPtrSpec<Fields>)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  120 |                          {
+      |                          ~
+  121 |                              std::string key = Fields::key;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  122 |                              auto ptr = Fields::ptr;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~
+  123 | 
+      |                       
+  124 |                              LuaBinder<typename Fields::type>::declareType(state);
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  125 |                              (*userType)[Fields::key] = ptr;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  126 | 
+      |                       
+  127 |                              return true;
+      |                              ~~~~~~~~~~~~
+  128 |                          }
+      |                          ~
+  129 |                          else if constexpr (MemberOverloadSpec<Fields>)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  130 |                          {
+      |                          ~
+  131 |                              std::string key = Fields::getKey();
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  132 |                              using overloaders = typename LuaBinderGenerator::OverLoaders<T, Fields>;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  133 | 
+      |                       
+  134 |                              overloaders::bindOverloads(state, userType, key);
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  135 |                              return false;
+      |                              ~~~~~~~~~~~~~
+  136 |                          }
+      |                          ~
+  137 |                          else
+      |                          ~~~~
+  138 |                          {
+      |                          ~
+  139 |                              return false;
+      |                              ~~~~~~~~~~~~~
+  140 |                          }
+      |                          ~
+  141 |                      }()),
+      |                      ~
+./test/lua-test/../../src/lua-binders/./class-binder.hpp: In lambda function:
+./test/lua-test/../../src/lua-binders/./class-binder.hpp:109:22: warning: control reaches end of non-void function [-Wreturn-type]
+  109 |                      [&state, &userType]()
+      |                      ^~~~~~~~~~~~~~~~~~~~~
+  110 |                      {
+      |                      ~
+  111 |                          if constexpr (FunctionBinder<Fields>::isFunctional::isMember || FunctionBinder<Fields>::isFunctional)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  112 |                          {
+      |                          ~
+  113 |                              FunctionBinder<Fields>::template generateLuaBinding<T>(
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  114 |                                  state,
+      |                                  ~~~~~~
+  115 |                                  Fields::key,
+      |                                  ~~~~~~~~~~~~
+  116 |                                  userType);
+      |                                  ~~~~~~~~~~
+  117 |                              return true;
+      |                              ~~~~~~~~~~~~
+  118 |                          }
+      |                          ~
+  119 |                          else if constexpr (MemberPtrSpec<Fields>)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  120 |                          {
+      |                          ~
+  121 |                              std::string key = Fields::key;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  122 |                              auto ptr = Fields::ptr;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~
+  123 | 
+      |                       
+  124 |                              LuaBinder<typename Fields::type>::declareType(state);
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  125 |                              (*userType)[Fields::key] = ptr;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  126 | 
+      |                       
+  127 |                              return true;
+      |                              ~~~~~~~~~~~~
+  128 |                          }
+      |                          ~
+  129 |                          else if constexpr (MemberOverloadSpec<Fields>)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  130 |                          {
+      |                          ~
+  131 |                              std::string key = Fields::getKey();
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  132 |                              using overloaders = typename LuaBinderGenerator::OverLoaders<T, Fields>;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  133 | 
+      |                       
+  134 |                              overloaders::bindOverloads(state, userType, key);
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  135 |                              return false;
+      |                              ~~~~~~~~~~~~~
+  136 |                          }
+      |                          ~
+  137 |                          else
+      |                          ~~~~
+  138 |                          {
+      |                          ~
+  139 |                              return false;
+      |                              ~~~~~~~~~~~~~
+  140 |                          }
+      |                          ~
+  141 |                      }()),
+      |                      ~
+./test/lua-test/../../src/lua-binders/./class-binder.hpp: In lambda function:
+./test/lua-test/../../src/lua-binders/./class-binder.hpp:109:22: warning: control reaches end of non-void function [-Wreturn-type]
+  109 |                      [&state, &userType]()
+      |                      ^~~~~~~~~~~~~~~~~~~~~
+  110 |                      {
+      |                      ~
+  111 |                          if constexpr (FunctionBinder<Fields>::isFunctional::isMember || FunctionBinder<Fields>::isFunctional)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  112 |                          {
+      |                          ~
+  113 |                              FunctionBinder<Fields>::template generateLuaBinding<T>(
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  114 |                                  state,
+      |                                  ~~~~~~
+  115 |                                  Fields::key,
+      |                                  ~~~~~~~~~~~~
+  116 |                                  userType);
+      |                                  ~~~~~~~~~~
+  117 |                              return true;
+      |                              ~~~~~~~~~~~~
+  118 |                          }
+      |                          ~
+  119 |                          else if constexpr (MemberPtrSpec<Fields>)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  120 |                          {
+      |                          ~
+  121 |                              std::string key = Fields::key;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  122 |                              auto ptr = Fields::ptr;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~
+  123 | 
+      |                       
+  124 |                              LuaBinder<typename Fields::type>::declareType(state);
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  125 |                              (*userType)[Fields::key] = ptr;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  126 | 
+      |                       
+  127 |                              return true;
+      |                              ~~~~~~~~~~~~
+  128 |                          }
+      |                          ~
+  129 |                          else if constexpr (MemberOverloadSpec<Fields>)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  130 |                          {
+      |                          ~
+  131 |                              std::string key = Fields::getKey();
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  132 |                              using overloaders = typename LuaBinderGenerator::OverLoaders<T, Fields>;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  133 | 
+      |                       
+  134 |                              overloaders::bindOverloads(state, userType, key);
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  135 |                              return false;
+      |                              ~~~~~~~~~~~~~
+  136 |                          }
+      |                          ~
+  137 |                          else
+      |                          ~~~~
+  138 |                          {
+      |                          ~
+  139 |                              return false;
+      |                              ~~~~~~~~~~~~~
+  140 |                          }
+      |                          ~
+  141 |                      }()),
+      |                      ~
+./test/lua-test/../../src/lua-binders/./class-binder.hpp: In lambda function:
+./test/lua-test/../../src/lua-binders/./class-binder.hpp:109:22: warning: control reaches end of non-void function [-Wreturn-type]
+  109 |                      [&state, &userType]()
+      |                      ^~~~~~~~~~~~~~~~~~~~~
+  110 |                      {
+      |                      ~
+  111 |                          if constexpr (FunctionBinder<Fields>::isFunctional::isMember || FunctionBinder<Fields>::isFunctional)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  112 |                          {
+      |                          ~
+  113 |                              FunctionBinder<Fields>::template generateLuaBinding<T>(
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  114 |                                  state,
+      |                                  ~~~~~~
+  115 |                                  Fields::key,
+      |                                  ~~~~~~~~~~~~
+  116 |                                  userType);
+      |                                  ~~~~~~~~~~
+  117 |                              return true;
+      |                              ~~~~~~~~~~~~
+  118 |                          }
+      |                          ~
+  119 |                          else if constexpr (MemberPtrSpec<Fields>)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  120 |                          {
+      |                          ~
+  121 |                              std::string key = Fields::key;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  122 |                              auto ptr = Fields::ptr;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~
+  123 | 
+      |                       
+  124 |                              LuaBinder<typename Fields::type>::declareType(state);
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  125 |                              (*userType)[Fields::key] = ptr;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  126 | 
+      |                       
+  127 |                              return true;
+      |                              ~~~~~~~~~~~~
+  128 |                          }
+      |                          ~
+  129 |                          else if constexpr (MemberOverloadSpec<Fields>)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  130 |                          {
+      |                          ~
+  131 |                              std::string key = Fields::getKey();
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  132 |                              using overloaders = typename LuaBinderGenerator::OverLoaders<T, Fields>;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  133 | 
+      |                       
+  134 |                              overloaders::bindOverloads(state, userType, key);
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  135 |                              return false;
+      |                              ~~~~~~~~~~~~~
+  136 |                          }
+      |                          ~
+  137 |                          else
+      |                          ~~~~
+  138 |                          {
+      |                          ~
+  139 |                              return false;
+      |                              ~~~~~~~~~~~~~
+  140 |                          }
+      |                          ~
+  141 |                      }()),
+      |                      ~
+./test/lua-test/../../src/lua-binders/./class-binder.hpp: In lambda function:
+./test/lua-test/../../src/lua-binders/./class-binder.hpp:109:22: warning: control reaches end of non-void function [-Wreturn-type]
+  109 |                      [&state, &userType]()
+      |                      ^~~~~~~~~~~~~~~~~~~~~
+  110 |                      {
+      |                      ~
+  111 |                          if constexpr (FunctionBinder<Fields>::isFunctional::isMember || FunctionBinder<Fields>::isFunctional)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  112 |                          {
+      |                          ~
+  113 |                              FunctionBinder<Fields>::template generateLuaBinding<T>(
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  114 |                                  state,
+      |                                  ~~~~~~
+  115 |                                  Fields::key,
+      |                                  ~~~~~~~~~~~~
+  116 |                                  userType);
+      |                                  ~~~~~~~~~~
+  117 |                              return true;
+      |                              ~~~~~~~~~~~~
+  118 |                          }
+      |                          ~
+  119 |                          else if constexpr (MemberPtrSpec<Fields>)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  120 |                          {
+      |                          ~
+  121 |                              std::string key = Fields::key;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  122 |                              auto ptr = Fields::ptr;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~
+  123 | 
+      |                       
+  124 |                              LuaBinder<typename Fields::type>::declareType(state);
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  125 |                              (*userType)[Fields::key] = ptr;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  126 | 
+      |                       
+  127 |                              return true;
+      |                              ~~~~~~~~~~~~
+  128 |                          }
+      |                          ~
+  129 |                          else if constexpr (MemberOverloadSpec<Fields>)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  130 |                          {
+      |                          ~
+  131 |                              std::string key = Fields::getKey();
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  132 |                              using overloaders = typename LuaBinderGenerator::OverLoaders<T, Fields>;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  133 | 
+      |                       
+  134 |                              overloaders::bindOverloads(state, userType, key);
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  135 |                              return false;
+      |                              ~~~~~~~~~~~~~
+  136 |                          }
+      |                          ~
+  137 |                          else
+      |                          ~~~~
+  138 |                          {
+      |                          ~
+  139 |                              return false;
+      |                              ~~~~~~~~~~~~~
+  140 |                          }
+      |                          ~
+  141 |                      }()),
+      |                      ~
+./test/lua-test/../../src/lua-binders/./class-binder.hpp: In lambda function:
+./test/lua-test/../../src/lua-binders/./class-binder.hpp:109:22: warning: control reaches end of non-void function [-Wreturn-type]
+  109 |                      [&state, &userType]()
+      |                      ^~~~~~~~~~~~~~~~~~~~~
+  110 |                      {
+      |                      ~
+  111 |                          if constexpr (FunctionBinder<Fields>::isFunctional::isMember || FunctionBinder<Fields>::isFunctional)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  112 |                          {
+      |                          ~
+  113 |                              FunctionBinder<Fields>::template generateLuaBinding<T>(
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  114 |                                  state,
+      |                                  ~~~~~~
+  115 |                                  Fields::key,
+      |                                  ~~~~~~~~~~~~
+  116 |                                  userType);
+      |                                  ~~~~~~~~~~
+  117 |                              return true;
+      |                              ~~~~~~~~~~~~
+  118 |                          }
+      |                          ~
+  119 |                          else if constexpr (MemberPtrSpec<Fields>)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  120 |                          {
+      |                          ~
+  121 |                              std::string key = Fields::key;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  122 |                              auto ptr = Fields::ptr;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~
+  123 | 
+      |                       
+  124 |                              LuaBinder<typename Fields::type>::declareType(state);
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  125 |                              (*userType)[Fields::key] = ptr;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  126 | 
+      |                       
+  127 |                              return true;
+      |                              ~~~~~~~~~~~~
+  128 |                          }
+      |                          ~
+  129 |                          else if constexpr (MemberOverloadSpec<Fields>)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  130 |                          {
+      |                          ~
+  131 |                              std::string key = Fields::getKey();
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  132 |                              using overloaders = typename LuaBinderGenerator::OverLoaders<T, Fields>;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  133 | 
+      |                       
+  134 |                              overloaders::bindOverloads(state, userType, key);
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  135 |                              return false;
+      |                              ~~~~~~~~~~~~~
+  136 |                          }
+      |                          ~
+  137 |                          else
+      |                          ~~~~
+  138 |                          {
+      |                          ~
+  139 |                              return false;
+      |                              ~~~~~~~~~~~~~
+  140 |                          }
+      |                          ~
+  141 |                      }()),
+      |                      ~
+./test/lua-test/../../src/lua-binders/./class-binder.hpp: In lambda function:
+./test/lua-test/../../src/lua-binders/./class-binder.hpp:109:22: warning: control reaches end of non-void function [-Wreturn-type]
+  109 |                      [&state, &userType]()
+      |                      ^~~~~~~~~~~~~~~~~~~~~
+  110 |                      {
+      |                      ~
+  111 |                          if constexpr (FunctionBinder<Fields>::isFunctional::isMember || FunctionBinder<Fields>::isFunctional)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  112 |                          {
+      |                          ~
+  113 |                              FunctionBinder<Fields>::template generateLuaBinding<T>(
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  114 |                                  state,
+      |                                  ~~~~~~
+  115 |                                  Fields::key,
+      |                                  ~~~~~~~~~~~~
+  116 |                                  userType);
+      |                                  ~~~~~~~~~~
+  117 |                              return true;
+      |                              ~~~~~~~~~~~~
+  118 |                          }
+      |                          ~
+  119 |                          else if constexpr (MemberPtrSpec<Fields>)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  120 |                          {
+      |                          ~
+  121 |                              std::string key = Fields::key;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  122 |                              auto ptr = Fields::ptr;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~
+  123 | 
+      |                       
+  124 |                              LuaBinder<typename Fields::type>::declareType(state);
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  125 |                              (*userType)[Fields::key] = ptr;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  126 | 
+      |                       
+  127 |                              return true;
+      |                              ~~~~~~~~~~~~
+  128 |                          }
+      |                          ~
+  129 |                          else if constexpr (MemberOverloadSpec<Fields>)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  130 |                          {
+      |                          ~
+  131 |                              std::string key = Fields::getKey();
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  132 |                              using overloaders = typename LuaBinderGenerator::OverLoaders<T, Fields>;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  133 | 
+      |                       
+  134 |                              overloaders::bindOverloads(state, userType, key);
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  135 |                              return false;
+      |                              ~~~~~~~~~~~~~
+  136 |                          }
+      |                          ~
+  137 |                          else
+      |                          ~~~~
+  138 |                          {
+      |                          ~
+  139 |                              return false;
+      |                              ~~~~~~~~~~~~~
+  140 |                          }
+      |                          ~
+  141 |                      }()),
+      |                      ~
+./test/lua-test/../../src/lua-binders/./class-binder.hpp: In lambda function:
+./test/lua-test/../../src/lua-binders/./class-binder.hpp:109:22: warning: control reaches end of non-void function [-Wreturn-type]
+  109 |                      [&state, &userType]()
+      |                      ^~~~~~~~~~~~~~~~~~~~~
+  110 |                      {
+      |                      ~
+  111 |                          if constexpr (FunctionBinder<Fields>::isFunctional::isMember || FunctionBinder<Fields>::isFunctional)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  112 |                          {
+      |                          ~
+  113 |                              FunctionBinder<Fields>::template generateLuaBinding<T>(
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  114 |                                  state,
+      |                                  ~~~~~~
+  115 |                                  Fields::key,
+      |                                  ~~~~~~~~~~~~
+  116 |                                  userType);
+      |                                  ~~~~~~~~~~
+  117 |                              return true;
+      |                              ~~~~~~~~~~~~
+  118 |                          }
+      |                          ~
+  119 |                          else if constexpr (MemberPtrSpec<Fields>)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  120 |                          {
+      |                          ~
+  121 |                              std::string key = Fields::key;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  122 |                              auto ptr = Fields::ptr;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~
+  123 | 
+      |                       
+  124 |                              LuaBinder<typename Fields::type>::declareType(state);
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  125 |                              (*userType)[Fields::key] = ptr;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  126 | 
+      |                       
+  127 |                              return true;
+      |                              ~~~~~~~~~~~~
+  128 |                          }
+      |                          ~
+  129 |                          else if constexpr (MemberOverloadSpec<Fields>)
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  130 |                          {
+      |                          ~
+  131 |                              std::string key = Fields::getKey();
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  132 |                              using overloaders = typename LuaBinderGenerator::OverLoaders<T, Fields>;
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  133 | 
+      |                       
+  134 |                              overloaders::bindOverloads(state, userType, key);
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  135 |                              return false;
+      |                              ~~~~~~~~~~~~~
+  136 |                          }
+      |                          ~
+  137 |                          else
+      |                          ~~~~
+  138 |                          {
+      |                          ~
+  139 |                              return false;
+      |                              ~~~~~~~~~~~~~
+  140 |                          }
+      |                          ~
+  141 |                      }()),
+      |                      ~
+make: *** [Makefile:21: dist/engine] Error 1

@@ -47,6 +47,10 @@ namespace APICore
             functionDescription["returnTypeId"] = (*JsonTyper<ReturnType>::declareType())["typeId"];
 
             (*type)["functionDescription"] = functionDescription;
+
+            if constexpr (TemplatedDef<StaticFunctionDef>){
+                (*type)["templateParameters"] = StaticFunctionDef::templateParameterNames;
+            }
         }
     };
 

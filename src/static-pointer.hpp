@@ -47,11 +47,5 @@ namespace APICore {
     template<StringLiteral Key, typename T, T* Pointer, StringLiteral Description>
     bool Static<Key, Pointer, Description>::isCustomMember = false;
 
-    template<typename T>
-    concept StaticPtrSpec = requires  {
-       requires std::is_same_v<decltype(T::key), std::string>;
-       requires std::is_same_v<decltype(T::ptr), typename T::ptrType>;
-       requires std::is_same_v<decltype(T::ptr), typename T::type*>;
-       requires !T::isMember ;
-    };
+    
 };

@@ -4,6 +4,7 @@
 #include "./member-pointer.hpp"
 #include "./type-lookup.hpp"
 #include "./function-parameters.hpp"
+#include "./templated-types.hpp"
 #include <type_traits>
 #include <string>
 #include <vector>
@@ -30,7 +31,7 @@ namespace APICore
         using classType = void;
         using returnType = void;
 
-        template<class T>
+        template <class T>
         using childMemberCast = void;
 
         static const size_t parameterCount = 0;
@@ -42,14 +43,19 @@ namespace APICore
         using classType = ClassType;
         using returnType = ReturnType;
 
-        template<class T>
-        requires std::is_base_of_v<ClassType, T>
-        using childMemberCast = ReturnType (T::*)(Parameters...);
-        
+        template <class T>
+            requires std::is_base_of_v<ClassType, T>
+        using childMemberCast = ReturnType(T::*)(Parameters...);
+
         static const size_t parameterCount = sizeof...(Parameters);
 
-        template<size_t N> using ParameterType =
-        typename std::tuple_element<N, std::tuple<Parameters...>>::type;
+        template <size_t N>
+        using ParameterType =
+            typename std::tuple_element<N, std::tuple<Parameters...>>::type;
+    };
+    template <class ClassType, typename ReturnType, ParameterPackDefinition ParameterDescriptions, typename... Parameters>
+    struct MemberFunctionTyping<ReturnType (*)(ClassType &, Parameters...), ParameterDescriptions> : public MemberFunctionTyping<ReturnType (ClassType::*)(Parameters...), ParameterDescriptions>
+    {
     };
 
     template <typename PointerType, StringLiteral Key, PointerType Pointer, StringLiteral Description, ParameterPackDefinition Parameters>
@@ -75,30 +81,44 @@ namespace APICore
                                      };
                                  };
 
-    template <typename T>
-    concept MemberFunctionPtrSpec = requires() {
-                                        requires MemberPtrSpec<T>;
-                                        requires std::is_class_v<typename T::functionTyping::classType>;
-                                        requires std::is_same_v<
-                                            typename T::functionTyping::returnType,
-                                            std::type_identity_t<typename T::functionTyping::returnType>>;
-                                    };
-
-
+ 
     template <class T>
     concept MemberOverloadSpec = requires() {
-        requires T::isMemberOverload;
-    };
-    
-    template<MemberFunctionPtrSpec FirstFunction, MemberFunctionPtrSpec... Functions>
-    struct MemberOverload {
+                                     requires T::isMemberOverload;
+                                 };
+
+    template <MemberFunctionPtrSpec FirstFunction, MemberFunctionPtrSpec... Functions>
+    struct MemberOverload
+    {
         static const bool isMemberOverload = true;
-        static std::string getKey() {
+        static const bool isConstructor = false;
+        static std::string key;
+        static size_t functionCount;
+        static std::string getKey()
+        {
             return FirstFunction::key;
         }
-        
-        template<MemberFunctionPtrSpec... OtherFunctions>
-        using AddOverloads = MemberOverload<FirstFunction, OtherFunctions..., Functions...>;
-    };
 
+        template <MemberFunctionPtrSpec... OtherFunctions>
+        using AddOverloads = MemberOverload<FirstFunction, OtherFunctions..., Functions...>;
+
+        template <template <class...> class Temp>
+        using IterateOverloads = Temp<FirstFunction, Functions...>;
+    };
+    template <MemberFunctionPtrSpec FirstFunction, MemberFunctionPtrSpec... Functions>
+    std::string MemberOverload<FirstFunction, Functions...>::key = FirstFunction::key;
+    template <MemberFunctionPtrSpec FirstFunction, MemberFunctionPtrSpec... Functions>
+    size_t MemberOverload<FirstFunction, Functions...>::functionCount = 1 + sizeof...(Functions);
+
+    struct FunctionTemplater
+    {
+        template <class InputType, class ImplementationType>
+        using ConvertType = std::conditional_t<std::is_base_of_v<APICore::TemplateParamBase, InputType>, ImplementationType, InputType>;
+
+        template<class PtrType>
+        auto wrap(PtrType inputFunction){
+            using typing = //MemberFunctionTyping<PtrType, ParameterPack<>>;
+            return [](){};
+        }
+    };
 };

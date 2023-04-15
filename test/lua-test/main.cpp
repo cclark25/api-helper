@@ -10,7 +10,6 @@
 using namespace APICore;
 using namespace std;
 
-
 int main(int argc, char **argv)
 {
 	bool generateTypes = false;
@@ -48,34 +47,34 @@ int main(int argc, char **argv)
 		return 0;
 	}
 
-	sol::state lua2;
-	LuaBinder<CustomObjectData>::declareType(lua);
-	LuaBinder<CustomObjectData>::declareType(lua2);
+	// sol::state lua2;
+	// LuaBinder<CustomObjectData>::declareType(lua);
+	// LuaBinder<CustomObjectData>::declareType(lua2);
 	LuaBinder<CustomObjectData2>::declareType(lua);
-	LuaBinder<CustomObjectData2>::declareType(lua2);
-	auto customInstance = (new CustomObjectData());
+	// LuaBinder<CustomObjectData2>::declareType(lua2);
+	// auto customInstance = (new CustomObjectData());
 	auto customInstance2 = (new CustomObjectData2());
 
 	lua["testObject"] = customInstance2;
-	lua2["testObject"] = customInstance2;
+	// lua2["testObject"] = customInstance2;
 	lua["runNum"] = 1;
-	lua2["runNum"] = 2;
+	// lua2["runNum"] = 2;
 
 	lua.open_libraries(sol::lib::base, sol::lib::package, sol::lib::table, sol::lib::math, sol::lib::string, sol::lib::coroutine, sol::lib::debug, sol::lib::os);
-	lua2.open_libraries(sol::lib::base, sol::lib::package, sol::lib::table, sol::lib::math, sol::lib::string, sol::lib::coroutine, sol::lib::debug, sol::lib::os);
+	// lua2.open_libraries(sol::lib::base, sol::lib::package, sol::lib::table, sol::lib::math, sol::lib::string, sol::lib::coroutine, sol::lib::debug, sol::lib::os);
 
 	if (inputFile != "")
 	{
 		lua.safe_script_file(inputFile);
 		lua.collect_garbage();
-		lua2.safe_script_file(inputFile);
-		lua2.collect_garbage();
-		lua.safe_script_file(inputFile);
-		lua.collect_garbage();
-		lua2.safe_script_file(inputFile);
-		lua2.collect_garbage();
+		// lua2.safe_script_file(inputFile);
+		// lua2.collect_garbage();
+		// lua.safe_script_file(inputFile);
+		// lua.collect_garbage();
+		// lua2.safe_script_file(inputFile);
+		// lua2.collect_garbage();
 
-		delete customInstance;
+		// delete customInstance;
 
 		return 0;
 	}

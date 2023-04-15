@@ -142,13 +142,18 @@ namespace APICore
         }
     };
 
+    template <ClassTypingDef T, StringLiteral... TP>
+    struct JSONFieldTypings<Templated<T, TP...>> 
+    : public JSONFieldTypings<T>
+    {};
+
     template <ClassTypeConcept ClassType>
     struct JsonTypingGenerator<ClassType>
     {
         using type_definition = TypeLookup<ClassType>;
         static void generateType(std::shared_ptr<json> type)
         {
-
+            string name = type_definition::registeredType::name;
             (*type)["name"] = type_definition::registeredType::name;
             (*type)["description"] = type_definition::registeredType::description;
 
@@ -163,6 +168,10 @@ namespace APICore
                 using ParentType = type_definition::registeredType::inheritedFrom;
                 auto parentType = JsonTyper<ParentType>::declareType();
                 (*type)["inheritsFrom"] = (*parentType)["typeId"];
+            }
+
+            if constexpr (TemplatedDef<typename type_definition::registeredType>){
+                (*type)["templateParameters"] = type_definition::registeredType::templateParameterNames;
             }
         }
     };

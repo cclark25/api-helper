@@ -14,6 +14,7 @@
 #include "../../../src/class-typing.hpp"
 #include "../../../src/standard-bindings.hpp"
 // #include "../../../src/json-typing/json-typing.hpp"
+#include "../../../src/templated-types.hpp"
 
 using namespace APICore;
 using namespace std;
@@ -33,6 +34,7 @@ struct CustomObjectData
 
 	static double d1;
 	int i1 = 15;
+	std::string className = "CustomObjectData";
 	std::string s1 = "ABC123";
 	struct CustomObjectSubData
 	{
@@ -128,6 +130,7 @@ std::function<int(int)> CustomObjectData::staticFunctionPointer = [](int i)
 struct CustomObjectData2 : public CustomObjectData
 {
 	int secondI = 12;
+	std::string className = "CustomObjectData2";
 
 	/*
 		Since this function is virtual, there is no need to redeclare this member function
@@ -290,6 +293,7 @@ using CustomObjectDataSpec = ClassTyping<
 	F11,
 	F12,
 	F13,
+	Member<"className", &CustomObjectData::className>,
 
 	CustomConstructor>;
 
@@ -328,6 +332,7 @@ using CustomObjectDataSpec2 = ClassTyping<
 	G1,
 	SecondCustomObjectDataDoStuffOverloads,
 	SecondCustomObjectDataStaticOverloads,
+	Member<"className", &CustomObjectData2::className>,
 	Constructor<
 		+[](double d)
 		{

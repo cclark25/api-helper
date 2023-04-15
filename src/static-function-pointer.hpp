@@ -28,12 +28,18 @@ namespace APICore
     struct StaticFunctionTyping
     {
         using returnType = void;
+
+        template <class T>
+        using childMemberCast = PointerType;
     };
 
     template <typename ReturnType, typename... Parameters>
     struct StaticFunctionTyping<ReturnType *(Parameters...)>
     {
         using returnType = ReturnType;
+
+        template <class T>
+        using childMemberCast = ReturnType *(Parameters...);
     };
 
     template <typename PointerType, StringLiteral Key, PointerType Pointer, StringLiteral Description, ParameterPackDefinition Parameters>
@@ -50,14 +56,7 @@ namespace APICore
         requires T::isConstructor;
     };
 
-    template <typename T>
-    concept StaticFunctionPtrSpec = requires() {
-                                        requires StaticPtrSpec<T>;
-                                        
-                                        requires std::is_same_v<
-                                            typename T::functionTyping::returnType,
-                                            std::type_identity_t<typename T::functionTyping::returnType>>;
-                                    };
+    
 
     template <class T>
     concept StaticOverloadSpec = requires() {
@@ -69,6 +68,8 @@ namespace APICore
     {
         static const bool isStaticOverload = true;
         static const bool isConstructor = FirstFunction::isConstructor;
+        static std::string key;
+        static size_t functionCount;
         static std::string getKey()
         {
             return FirstFunction::key;
@@ -76,5 +77,12 @@ namespace APICore
 
         template <StaticFunctionPtrSpec... OtherFunctions>
         using AddOverloads = StaticOverload<FirstFunction, OtherFunctions..., Functions...>;
+
+        template<template<class...> class Temp>
+        using IterateOverloads = Temp<FirstFunction, Functions...>;
     };
+    template <StaticFunctionPtrSpec FirstFunction, StaticFunctionPtrSpec... Functions>
+    std::string StaticOverload<FirstFunction, Functions...>::key = FirstFunction::key;
+    template <StaticFunctionPtrSpec FirstFunction, StaticFunctionPtrSpec... Functions>
+    size_t StaticOverload<FirstFunction, Functions...>::functionCount = 1 + sizeof...(Functions);
 };

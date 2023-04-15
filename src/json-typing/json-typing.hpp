@@ -105,3 +105,4 @@ namespace APICore
 #include "./class-json-typing.hpp"
 #include "./function-json-typing.hpp"
 #include "./reference-json-typing.hpp"
+#include "./template-json-typing.hpp"
